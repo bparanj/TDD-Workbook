@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red115\green115\blue115;\red125\green125\blue125;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 The two implementations of times are remarkably similar:\
+\
+Def times(multiplier)\
+Return Franc.new(amount * multiplier)\
+End\
+\
+Def times(multiplier)\
+Return Dollar.new(amount * multiplier)\
+End\
+\
+The two subclasses of Money aren\'92t doing enough work to justify their existence, so we can eliminate them. We will not do it with on big step because we want an effective demonstration of TDD.\
+\
+Ok, we would be one step closer to eliminating the subclasses if there were fewer references to the subclasses directly. We can introduce a Factory Method in Money that returns a Dollar: We would use it like this:\
+\
+Test_multiplication\
+Five = Money.dollar(5)\
+Assert(Dollar.new(10), five.times(2))\
+Assert(Dollar.new(15), five.times(3))\
+\
+The implementation creates and returns a Dollar:\
+\
+Class Money\
+Dollar(amount)\
+Return Dollar.new(amount)\
+End\
+\
+Our compiler complains that times is not defined for Money. Let\'92s define it in Money. The tests all run. We can now use our factory method everywhere in the tests:\
+\
+Test_multiplication\
+Five = Money.dollar(5)\
+Assert(Money.dollar(10), five.times(2))\
+Assert(Money.dollar(15), five.times(3))\
+\
+Test_equality\
+Assert(Money.dollar(5).equals(Money.dollar(5))\
+AssertFalse(Money.dollar(5).equals(Money.dollar(6))\
+Assert(Franc.new(5).equals(Franc.new(5))\
+AssertFalse(Franc.new(5).equals(Franc.new(6))\
+AssertFalse(Franc.new(5).equals(Money.dollar(5))\
+\
+We are now in a slightly better position than before. No client code knows that there is a subclass called Dollar. By de-coupling the tests from the existence of the subclasses, we have given ourselves freedom to change inheritance without affecting client code.\
+\
+Before we go blindly changing the test_franc_multiplication, we notice that it isn\'92t testing any logic that isn\'92t tested by the test for Dollar multiplication. If we delete the test, will we lose any confidence in the code? Still a little, so we leave it there. But it\'92s suspicious>\
+\
+\pard\pardeftab720
+\cf2 public void \cf0  testEquality() \{\
+assertTrue(Money.dollar(5).equals(Money.dollar(5)));\
+assertFalse(Money.dollar(5).equals(Money.dollar(6)));\
+assertTrue(Money.franc(5).equals(Money.franc(5)));\
+assertFalse(Money.franc(5).equals(Money.franc(6)));\
+assertFalse(Money.franc(5).equals(Money.dollar(5)));\
+\}\
+\cf2 public void \cf0  testFrancMultiplication() \{\
+Money five = Money.franc(5);\
+assertEquals(Money.franc(10), five.times(2));\
+\
+ assertEquals(Money.franc(15), five.times(3));\
+\}\
+The implementation is just like Money.dollar():\
+\pard\pardeftab720
+\cf3 Money\
+\pard\pardeftab720
+\cf2 static \cf0  Money franc(\cf2 int \cf0  amount) \{\
+\cf2 return new \cf0  Franc(amount);\
+\}
+\f1\fs20 \
+\
+\pard\pardeftab720
+
+\f0\fs28 \cf0 We\'92ll get rid of the duplication of times next. For now, reviewing, we:\
+Moved at least a declaration of the method to the common superclass\
+Decoupled test code from the existence of concrete subclasses by introducing factory methods\
+Noticed that when the subclasses disappear some tests will be redundant, but took no action\
+\
+\pard\pardeftab720
+
+\f1 \cf0 $5 + 10 CHF = $10 if rate is 2:1\
+\strike \strikec0 $5 * 2 = $10\
+Make \'93amount\'94 private\
+Dollar side-effects?\
+\strike0\striked0 Money rounding?\
+\strike \strikec0 equals()\strike0\striked0 \
+hashCode()\
+Equal null\
+Equal object\
+\strike \strikec0 5 CHF * 2 = 10 CHF\strike0\striked0 \
+\pard\pardeftab720
+
+\b \cf0 Dollar/Franc duplication
+\b0 \
+\pard\pardeftab720
+\cf0 \strike \strikec0 Common equals\strike0\striked0 \
+Common times\
+\strike \strikec0 Compare Francs to Dollars\strike0\striked0 \
+Currency?\
+Delete testFrancMultiplication?
+\b\fs18 \
+\pard\pardeftab720
+
+\f0\b0\fs28 \cf0 \
+}

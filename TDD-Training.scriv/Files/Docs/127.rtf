@@ -1,0 +1,134 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 This part discusses the qualities we look for in test code that keep the development habitable. We want to make sure the tests pull their weigh by making them expressive, so that we can tell what\'92s important when we read them and when they fail, and by making sure they don\'92t become a maintenance drag themselves. We need to apply as much care and attention to the tests as we do to the production code, although the coding styles may differ. Difficulty in testing might imply that we need to change our test code, but often it\'92s a hint that our design ideas are wrong and that we ought to change the production code.\
+\
+TDD combines testing, specification and design into one holistic activity.\
+\
+
+\b Listening to the Tests
+\b0 \
+\
+Sometimes we find it difficult to write a test for some functionality we want to add to our code. In our experience, this usually means that our design can be improved - perhaps the class is too tightly coupled to its environment or does not have clear responsibilities. When this happens, we first check whether it\'92s an opportunity to improve our code, before working around the design by making the test more complicated or using more sophisticated tools. The qualities that make an object easy to test also make our code responsive to change. \
+\
+The trick is to let our tests drive our design. TDD is about testing code, verifying its externally visible qualities such as functionality and performance. TDD is also about feedback on the code\'92s internal qualities. The coupling and cohesion of its classes, dependencies that are explicit or hidden, and effective information hiding - the qualities that keep the code maintainable.\
+\
+With practice, we\'92ve become more sensitive to the rough edges in our tests, so we can use them for rapid feedback about the design. Now when we find a feature that\'92s difficult to test, we don\'92t just ask ourselves how to test it, but also why is it difficult to test.\
+\
+
+\b I Need to Mock an Object I Can\'92t Replace (without Magic)
+\b0 \
+\
+Many systems are impossible to test because the developers did not isolate the concept of time. We want to know about this dependency.\
+\
+With two objects, we can make sure that each behavior (date checking and request processing) is unit-tested cleanly.\
+\
+
+\b Implicit Dependencies are Still Dependencies
+\b0 \
+\
+One goal of object orientation as a technique for structuring code is to make the boundaries of an object clearly visible. An object should only deal with values and instances that are either local - created and managed within its scope - or passed in explicitly.\
+\
+Use the Same Techniques to Break Dependencies in Unit Tests as in Production Code\
+\
+
+\b Notification Rather Than Logging
+\b0 \
+\
+The noise in the test reminds us that our code is working at two levels: our domain and the logging infrastructure. \
+\
+Here\'92s a common example of code with logging:\
+\
+Notice the shift in vocabulary and style between the functional part of the loop and the emphasized logging part. The code is doing two things at once - something to do with locations and rendering support information - which breaks the single responsibility principle. Maybe we could do this instead:\
+\
+Where the support object might be implemented by a logger, a message bus, pop-up windows, or whatever\'92s appropriate; this detail is not relevant to the code at this level.\
+\
+This code is also easier to test. We, not the logging framework, own the support object, so we can pass in a mock implementation at our convenience and keep it local to the test case. The other simplification is that now we\'92re testing for objects, rather than formatted contents of a string. Of course, we will still need to write an implementation of support and some focused integration tests to go with it.\
+\
+The idea of encapsulating support reporting sounds like over-design. It means we\'92re writing code in terms of our 
+\i intent
+\i0  (helping the support people) rather than 
+\i implementation 
+\i0 (logging), so it\'92s more expressive. All the support reporting is handled in a few known places, so it\'92s easier to be consistent about how things are reported and to encourage reuse. It can also help us structure and control our reporting in terms of the application domain, rather than in terms of specific programming language terms. \
+\
+
+\b Mocking Concrete Classes
+\b0 \
+\
+One approach to interaction testing is to mock concrete classes rather than interfaces. The technique is to inherit from the class you want to mock and override the methods that will be called within the test, either manually or with any mocking framework. This technique should be used only when you have no other options.\
+\
+Our intention in TDD is to use mock objects to bring out the relationships between objects. If we subclass, there\'92s nothing in the domain code to make such a relationship visible - just methods on an object. This makes it harder to see if the service that supports this relationship might be relevant elsewhere, and we\'92ll have to do the analysis again next time we work with the class. \
+\
+There\'92s a more subtle but powerful reason for not mocking concrete classes. When we extract an interface as part of our TDD process, we have to think up a name to describe the relationship we\'92ve just discovered. We find that this makes us think harder about the domain and teases out concepts that we might otherwise miss. Once something has a name, we can talk about it.\
+\
+
+\b Break Glass in Case of Emergency
+\b0 \
+\
+There are a few occasions when we can ignore this smell. The least unacceptable situation is where we\'92re working with legacy code that we control but can\'92t change all at once. Alternatively, we might be working with third-party code that we can\'92t change at all. It\'92s almost always better to write a veneer over an external library rather than mock it directly - but occasionally, it\'92s just not worth it.\
+\
+Above all, do not override a class internal features - this locks down your test to the quirks of the current implementation. Only override visible methods. This rule also prohibits exposing internal methods just to override them in a test. If you can\'92t get to the structure you need, then the tests are telling you that it\'92s time to break up the class into smaller, composable features.\
+\
+
+\b Don\'92t Mock Values
+\b0 \
+\
+There\'92s no point in writing mocks for values (which should be immutable). Just create an instance and use it. There are a couple of heuristics for when a class is likely to be a value and so not worth mocking. First, its values are immutable - although that might also mean that it\'92s an adjustment object. Second we cannot think of a meaningful name for a class that would implement an interface for the type. If you\'92re tempted to mock a value because it\'92s too complicated to set up an instance, consider writing a builder.\
+\
+
+\b Bloated Constructor
+\b0 \
+\
+By adding the object\'92s dependencies one at time, we end up with unwieldy list of arguments in the constructor. The process helped us sort out the design of the class and its neighbors, but now it\'92s time to clean up. We will still need the functionality that depends on all the current constructor arguments, so we should see if there\'92s any implicit structure there that we can tease out. Some of the arguments together define a concept that should be packaged up and replaced with a new object to represent it.\
+\
+
+\b Confused Object
+\b0 \
+\
+Another diagnosis for a bloated constructor might be that the object is too large because it has too many responsibilities. An associated smell for this kind of class is that its test suite will look confused too. The tests for its various features will have no relationship with each other, so we\'92ll be able to make major changes in one area without touching others. If we can break up the test class into slices that don\'92t share anything, it might be best to go ahead and slice up the object too.\
+\
+
+\b Too Many Dependencies
+\b0 \
+\
+When a constructor is too large, and we don\'92t believe there\'92s an implicit new type amongst the arguments, we can use more default values and only overwrite them for particular test cases.\
+\
+
+\b Too Many Expectations
+\b0 \
+\
+When a test has too many expectations, it\'92s hard to see what\'92s important and what\'92s really under test. What makes the test hard to read is that everything is an expectation, so everything looks equally important. We can\'92t tell what\'92s significant and what\'92s just there to get through the test.\
+\
+We can make our intentions clearer by distinguishing between 
+\i stubs
+\i0 , simulations of real behavior that help us get the test to pass, and 
+\i expectations
+\i0 , assertions we want to make about how an object interacts with its neighbors. Be explicit about how we expect the object to change the world around it.\
+\
+
+\b Write Few Expectations
+\b0 \
+\
+Avoid too many assertions in a test. Avoid too many expectations. If we have more than a few, then either we\'92re trying to test too large a unit, or we\'92re locking down too many of the object\'92s interactions. Pull out a chain of objects to get to the case object, exposing dependencies that aren\'92t relevant here. Instead, we should have told the nearest object to do the work for us.\
+\
+
+\b What the Tests Will Tell Us
+\b0 \
+\
+Keep the knowledge local. Needing magic to create mocks, are to do with knowledge leaking between components. If we can keep knowledge local to an object (either internal or passed in), then its implementation is independent of its context; we can safely move it wherever we like. Do this consistently and your application, built out of pluggable components, will be easy to change.\
+\
+If it\'92s explicit, we can name it. One reason why we don\'92t like mocking concrete classes is that we like to have names for the relationships between objects as well as the objects themselves. If we have something\'92s true name, we can control it. If we can see it, we have a better chance of finding its other uses and so reducing duplication.\
+\
+More names mean more domain information. When we emphasize how objects communicate, rather than what they are, we end up with types and roles defined more in terms of the domain than of the implementation. This might be because we have a greater number of smaller abstractions, which gets us further away from the underlying language. Somehow we seem to get more domain vocabulary into the code.\
+\
+Pass behavior rather than data. By applying \'93Tell, Don\'92t Ask\'94 consistently, we end up with a coding style where we tend to pass behavior (in the form of callbacks) into the system instead of pulling values up through the stack. \
+\
+More precise interfaces give us better information-hiding and clearer abstractions. We care about keeping the tests and code clean as we go, because it helps to ensure that we understand our domain and reduces the risk of being unable to cope when a new requirement triggers changes to the design. It\'92s much easier to keep a codebase clean than to recover from a mess.\
+\
+Refactoring should not lead to massive changes in test code. A unit test shouldn\'92t be 1000 lines long. It should focus on at most a few classes and should not need to create a large fixture or perform lots of preparation just to get the objects into a state where the target feature can be exercised. Such tests are hard to understand - there\'92s just so much to remember when reading them. And, of course, they\'92re brittle, all the objects in play are too tightly coupled and too difficult to set to the state the test requires.\
+\
+Poor quality tests can slow development to a crawl, and poor internal quality of the system being tested will result in poor quality tests. By being alert to the internal quality feedback we get from writing tests, we can nip this problem in the bud, long before our unit tests approach 1000 lines of code, and end up with tests we can live with. \
+\
+Write tests that are readable and flexible. It gives us more feedback about the internal quality of the code we are testing. We end up with tests that help, rather than hinder continued development.}

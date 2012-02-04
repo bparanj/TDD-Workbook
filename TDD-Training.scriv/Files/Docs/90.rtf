@@ -1,0 +1,11 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 I was going to implement making sure tear_down is called regardless of exceptions during the test method. However, we have to catch exception to make the test work. If we make a mistake implementing this, we won\'92t be able to see the mistake because the exceptions won\'92t be reported. In general, the order of implementing the tests is important. When I pick the next test to implement, I find a test that will teach me something but which I have confidence I can make it work. If I get that test working but get stuck on the next one, I consider backing up two steps.\
+\
+Reviewing, we:\
+Wrote a fake implementation, and gradually began making it real by replacing constants with variables.\
+Wrote another test.\
+When that test failed, we wrote yet another test, at a smaller scale to support making the failing test work.}

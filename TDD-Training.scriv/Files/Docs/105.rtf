@@ -1,0 +1,132 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Write the Tests First
+\b0 \
+\
+The unit tests save us a lot of debugging effort - effort that often fully offsets the cost of automating the tests.\
+Writing the tests before we write the code forces the code to be designed for testability. \
+\
+
+\b Design for Testability
+\b0 \
+\
+\
+
+\b Use the Front Door First
+\b0 \
+\
+Objects have several kinds of interfaces. There is the public interface that clients are expected to use. There may also be a private interface. Many objects also have an outgoing interface consisting of the used part of the interfaces of any objects on which they depend. \
+\
+The types of interfaces we use influence the robustness of our tests. Overuse of behavior verification and mock objects can result in over specified software and test that are brittle and may discourage developers from doing  desirable refactorings.\
+\
+When all choices are equally effective, we should use round-trip tests to test our SUT. To do so, we test an object through its public interface and use state verification to determine whether it behaved correctly. If this is not sufficient to accurately describe the expected behavior, we can make our tests layer-crossing test and use behavior verification to verify the calls the SUT makes to DoCs. If we must replace a slow or unavailable DoC with a faster test double, using a fake object is preferable because it encodes fewer assumptions into the test (the only assumption is that the component that the fake object replaces is actually needed).\
+\
+
+\b Communicate Intent
+\b0 \
+\
+Higher-Level Language , Single-Glance readable\
+\
+Fully automated test need to be syntactically correct to compile and semantically correct to run successfully. They need to implement whatever detailed logic is required to put the SUT into the appropriate starting state and to verify that the expected outcome has occurred.\
+\
+Tests that contain a lot of code or conditional test logic are usually obscure tests. They are much harder to understand because we need to infer the big picture from all the details. This reverse engineering of meaning take extra time whenever we need to revisit the test either to maintain it or to use the tests as documentation. It also increases the cost of ownership of the tests and reduces their return on investment.\
+\
+Anything more than about 10 lines is getting to be too much. We can communicate intent by calling test utility methods with intent revealing names to set up our test fixture and to verify that the expected outcome has been realized. It should be readily apparent within the test method, how the test fixture influences the expected outcome of each test - that is which inputs result in which outputs. A rich library of test utility methods also makes tests easier to write because we don\'92t have to code the details into every test. It reduces cognitive load.\
+\
+
+\b Don\'92t Modify the SUT
+\b0 \
+\
+Suppose, for example, that we are writing test for object X,Y, and Z, where object X depends on object Y, which in turn depends on object Z. When writing test for X, it is reasonable to replace Y and Z with a test double. When testing Y, we can replace Z with a test double. When testing Z, however we cannot replace it with a test double because Z is what we are testing. This consideration is particularly salient when we have to refactor the code to improve its testability.\
+\
+Another way of looking at this principle is as follows: the term SUT is relative to the test we are writing. In our \'93X uses Y uses Z\'94 example, the SUT for some component tests might be the aggregate of X, Y, and Z; for unit testing purposes, it might be just X for some tests, just Y for other tests, and just Z for yet other tests. Just about the only time we consider the entire application to be the SUT is when we are doing user acceptance testing using the user interface and going all the way back to the database. Even here, we might be testing only one module of the entire application (eg., the customer management module). Thus SUT rarely equals application.\
+\
+
+\b Keep Tests Independent
+\b0 \
+\
+An independent test can be run by itself. It sets up its own fixture to put the SUT into a state that lets it verify the behavior it is testing. Test that build a fresh fixture are much more likely to be independent than test that use a shared fixture. With independent tests, unit test failures give us defect localization to help us pinpoint the source of the failure.\
+\
+
+\b Isolate the SUT
+\b0 \
+\
+Most software build on other software developed by us or by others. When our software depends on other software that may change over time our tests may start failing because the behavior of the other software has changed. This problem, which is called context sensitivity is a form of fragile test.\
+\
+When our software depends on other software whose behavior we cannot control, we may find it difficult to verify that our software behaves properly with all possible return values.  This is likely to lead to untested code or untested requirements. To avoid this problem, we need to be able to inject all possible reactions of the DoC into our software under the complete control of our test.\
+\
+Whatever application, component, class, or method we are testing, we should strive to isolate it as much as possible from all other parts of the software that we choose not to test. This isolation of elements allows us to test concerns separately and allows us to keep tests independent of one another. \
+\
+We can satisfy this principle by designing our software such that each piece of depended-on-software can be replaced with a test double using dependency injection. This design for testability makes our test more repeatable and robust.\
+\
+
+\b Minimize test Overlap
+\b0 \
+\
+Most applications have lots of functionality to verify. Proving that all of the functionality works correctly in all possible combinations and interaction scenarios is nearly impossible. Therefore, picking the tests to write is an exercise in risk management.\
+\
+We should structure our test so that as few tests as possible depend on a particular piece of functionality. We do want to ensure that all test conditions are covered by the test that we do use. Each test condition should be covered by exactly one test - no more, no less. If it seems to provide value to test the code in several different ways, we may have identified several different test conditions.\
+\
+
+\b Minimize Untestable Code
+\b0 \
+\
+GUI components, multithreaded code and test methods are difficult to test using fully automated tests. All of these kinds of code share the same problem: they are embedded in a context that makes it hard to instantiate or interact with them from automated tests.\
+\
+Untestable code wont\'92 have any fully automated tests to protect it from bugs. That makes it more difficult to refactor this code safely and more dangerous to modify existing functionality or introduce new functionality.\
+\
+It is highly desirable to minimize the amount of untestable code that we have to maintain. We can refactor the untestable code to improve its testability by moving the logic we want to test out of the class that is causing the lack of testability. Test methods can have much of their untestable code extracted into test utility methods, which can then be tested.\
+\
+When we minimize untestable code, we improve the overall test coverage of our code. In so doing, we also improve our confidence in the code and extend our ability to refactor at will. The fact that this technique improves the quality of the code is yet another benefit.\
+\
+
+\b Keep Test Logic Out of Production Code
+\b0 \
+\
+When the production code hasn\'92t been designed for testability, we may be tempted to put \'93hooks\'94 into the production code to make it easier to test. These hooks typically take the form of if testing then .. And may either run alternative logic or prevent certain logic from running.\
+\
+Testing is about verifying the behavior of a system. If the system behaves differently when under test, then how can we be certain that the product code actually works? Also it should not contain any test logic. \
+\
+A well-designed system (from a testing perspective) is one that allows for the isolation of functionality. \
+\
+
+\b Verify One Condition Per Test
+\b0 \
+
+\i Single-Condition Test\
+\
+
+\i0 Many tests require a starting state other than the default state of the SUT, and many operations of the SUT leave it in a different state from its original state. There is a strong temptation to reuse the end state of one test condition as the starting state of the next test condition by combining the verification of the two test conditions into a single test method because it takes testing more efficient. This approach is not recommended, because when one assertion fails, the rest of the test will not be executed. As a consequence, it becomes more difficult to achieve defect localization.\
+\
+With automated tests, a single failed assertion will cause the test to stop running and the rest of the test will provide no data on what works and what doesn\'92t.\
+\
+We design each test to have four distinct phases that are executed in sequence: fixture setup, exercise SUT, result verification and fixture teardown.\
+\
+In the first phase, we set up the test fixture (the before picture) that is required for the SUT to exhibit the expected behavior as well as anything we need to put in place to observe the actual outcome (such as using a test double).\
+\
+In the second phase, we interact with the SUT to exercise whatever behavior we are trying to verify. This should be a single, distinct behavior; if we try to exercise several parts of the SUT, we are not writing a single condition test.\
+\
+In the third phase, we do whatever is necessary to determine whether the expected outcome has been obtained and fail the test if it has not.\
+\
+In the fourth phase, we tear down the test fixture and put the world back into the state in which we found it.\
+\
+Note that there is a single exercise SUT phase and a single result verification phase. We avoid having a series of such alternating calls (exercise, verify, exercise, verify) because that approach would be trying to verify several distinct conditions - something that is better handled via distinct test methods.\
+\
+What do we mean by one condition? You could have one assertion per test and name the test based on what the one assertion is verifying. Having one assertion per test makes such naming very easy but also leads to many more test methods if we have to assert on many output fields. Of course, we can comply by extracting a custom assertion or verification method that allows us to reduce the multiple assertion method calls to a single call. Sometimes that approach makes the test more readable. When it doesn\'92t we can violate the single assertion rule.\
+\
+
+\b Test Concerns Separately
+\b0 \
+\
+Testing our concerns separately allows a failure to tell us that we have a problem in a specific part of our system rather than simply saying that we have a problem somewhere. This approach to testing also makes it easier to understand the behavior now and to separate the concerns in subsequent refactorings. That is, we should just be able to move a subset of the tests to a different test case class that verifies the newly created class; it shouldn\'92t be necessary to modify the test much more than changing the class name of the SUT.\
+\
+
+\b Ensure Commensurate Effort and Responsibility
+\b0 \
+\
+The amount of effort it takes to write or modify tests should not exceed the effort it takes to implement the corresponding functionality.\
+\
+}

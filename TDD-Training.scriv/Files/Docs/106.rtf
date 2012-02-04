@@ -1,0 +1,110 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 What\'92s Strategic?
+\b0 \
+\
+Be aware of the strategic decisions necessary and to make them just in time rather than much too late.\
+\
+What makes a decision strategic? A decision is strategic if it is hard to change. That is, a strategic decision affects a large number of tests, especially such that many or all the tests would need to be converted to a different approach at the same time. Put another way, any decision that could cost a large amount of effort to change is strategic.\
+\
+Common strategic decisions include the following considerations:\
+Which kinds of tests to automate?\
+Which tools to use to automate them?\
+How to manage the test fixture?\
+How to ensure that the system is easily tested and how the tests interact with the SUT?\
+\
+Each of these decisions can have far-reaching consequences, so they are best made consciously, at the right time, and based on the best available information.\
+\
+
+\b Which Kinds of Tests Should We Automate?
+\b0 \
+\
+We can divide tests into following two categories:\
+\
+Per-functionality tests (aka functional tests) verify the behavior of the SUT in response to a particular stimulus.\
+Cross-functional tests verify various aspects of the system\'92s behavior that cut across specific functionality.\
+\
+
+\b Introducing xUnit
+\b0 \
+\
+xUnit design is intended to meet the following goals:\
+Make it easy for developers to write tests without needing to learn a new programming language.\
+Make it easy to test individual classes and objects without needing to have the rest of the application available. We just have to design for testability to take advantage of this capability.\
+Make it easy to run one test or many tests with a single action.\
+Minimize the cost of running the tests so programmers aren\'92t discouraged from running the existing tests.\
+\
+
+\b Mechanics of Making Software Testable
+\b0 \
+\
+
+\b Control Points and Observation Points
+\b0 \
+\
+A test interacts with the software through one or more interfaces or interaction points. From the test\'92s point of view, these interfaces can act as either control points or observation points.\
+\
+Figure 6-6 Control Points and Observation Points. The test interacts with the SUT through interaction points. Direct interaction points are synchronous method calls made by the test; indirect interaction points require some form of back door manipulation. Control points have arrows pointing toward the SUT; observation points have arrows pointing away from the SUT.\
+\
+A control point is how the test asks the software to do something for it. This could be for the purpose of putting the software into a specific state as part of setting up or tearing down the test fixture, or it could be to exercise the SUT. Some control points are provided strictly for the tests; they should not be used by the production code because they bypass input validation or short-circuit the normal life cycle of the SUT or some object on which it depends. \
+\
+An observation point is how the test finds out about the SUT\'92s behavior during the result verification phase of the test. Observation points can be used to retrieve the post-test state of the SUT or a DoC. They can also be used to spy on the interactions between the SUT and any components with which it is expected to interact while it is being exercised. Verifying these indirect outputs is an example of back door verification.\
+\
+Both control points and observation points can be provided by the SUT as synchronous method calls; we call this \'93going in the front door\'94. Some interaction points may be via a \'91back door\'92 to the SUT; we call this back door manipulation. \
+\
+In the diagrams that follow, control points are represented by the arrowheads that pint to the SUT, whether from the test or from a DoC. Observation points are represented by the arrows whose heads point back to the test itself. These arrows typically start at the SUT or DoC or start at the test and interact with either the SUT or DoC  (an asynchronous observation point) before returning to the test (a synchronous observation point).\
+\
+
+\b Interaction Styles and Testability Patterns
+\b0 \
+\
+Tests can take one of two basic forms. A round-trip test interacts with the SUT in question only through its public interface. Both the control points and the observation points in a typical round-trip test are simple method calls. The nice thing about this approach is that it does not violate encapsulation. The test needs to know only the public interface of the software; it doesn\'92t need to know anything about how it is built.\
+\
+Fig 6.7 A round-trip test interacts with the SUT only via the public interface. The test on the right replaces a DoC with a fake object to improve its repeatability or performance. \
+\
+The main alternative is the layer-crossing test in which we exercise the SUT through the API and keep an eye on what comes out the back door using some form of test double such as a test spy or mock object. This can be a very powerful testing technique for verifying certain kinds of mostly architectural requirements. Unfortunately, this approach can also result in over specified software if it is over used because changes in how the software implements its responsibilities can cause tests to fail.\
+\
+Fig 6.8 A layer-crossing test can interact with the SUT via a back door. The test on the left controls the SUT\'92s indirect inputs using a test stub. The test on the right verifies its indirect outputs using a mock object. \
+\
+In fig 6.8, the test on the left uses a test stub that stands in for the DoC as a control point. The test on the right uses a mock object that stands in for the DoC as the observation point. Testing in this style implies a Layered Architecture, which in turn opens the door to using layer tests to test each layer of the architecture independently. An even more general concept is the use of component tests to test each component within a layer independently.\
+\
+Fig 6.9. A pair of layer test each testing a different layer of the system. Each layer of a layered architecture can be tested independently using a distinct set of layer tests. This ensures good separation of concerns, and the tests reinforce the layered architecture.\
+\
+Whenever we want to write layer-crossing tests, we need to ensure that we have built in a substitutable dependency mechanism for any components on which the SUT depends but that we want to test independently. \
+\
+Fig 6.10 A test double being injected into a SUT by a test. A test can use dependency injection to replace a DoC with an appropriate test double. The DoC is passed to the SUT by the test as or after it has been created.\
+\
+Asynchronous test interacts with the SUT through real messaging. Because the responses to these requests also come asynchronously, these tests must include some kind of interprocess synchronization such as calls to wait. Unfortunately, the need to wait for message responses that might never arrive can cause these tests to take a very long time to execute.\
+\
+
+\b Humble Executable Pattern
+\b0 \
+\
+It can remove the need to conduct asynchronous test. It involves putting the logic that handles the incoming message into a separate class of component, which can then be tested synchronously using either a round-trip or layer-crossing style.\
+\
+Fig 6.11 A humber executable making testing easier. It can improve the repeatability and speed of verifying logic that would otherwise have to be verified via asynchronous  tests.\
+\
+A related issue is the testing of business logic through the UI. In general such indirect testing is a bad idea because changes to the UI code will break tests that are trying to verify the business logic behind it. Because the UI tends to change frequently, especially on agile projects, this strategy will greatly increase test maintenance costs. Another reason that is a bad idea is that UIs are inherently asynchronous. Tests that exercise the system through the UI have to be asynchronous tests along with all the issues that come with them.\
+\
+
+\b Divide and Test
+\b0 \
+\
+We can turn almost any hard to test code into easily tested code through refactoring as long as we have enough tests in place to ensure that we do not introduce bugs during this refactoring.\
+\
+We can avoid using the UI for customer tests by writing those tests as Subcutaneous Tests. These tests bypass the UI layer of the system and exercise the business logic via a Service Facade that exposes the necessary synchronous interaction points to the test. The UI relies on the same facade, enabling us to verify that the business logic works correctly even before we hook up the UI logic. The layered architecture also enables us to test the UI logic before the business logic is finished; we can replace the Service Facade with a test double that provides completely deterministic behavior that our tests can depend on.\
+\
+The test double should be independent of the real implementation so that the UI tests need to know only which data to use to evoke specific behaviors from the service facade, not the logic behind it.\
+\
+To unit test non trivial UIs we can use a humble dialog to move the logic that makes decisions about the UI out of the visual layer, which is difficult to test synchronously, and into a layer of supporting objects, which can be verified with standard unit-testing techniques. This approach allows the presentation logic behavior to be tested as thoroughly as the business logic behavior.\
+\
+Any UI that contains state information or support  conditional display or enabling of elements should be considered non trivial.\
+\
+Fig 6.12 A humble dialog reducing the dependency of the test on the UI framework. The logic that controls the state of UI components can be very difficult to test. Extracting it into a testable component leaves behind a humble dialog that requires very little testing.\
+\
+From a test automation strategy perspective, the key thing is to make the decision about which test - SUT interaction styles should be used and which ones should be avoided, and to ensure that the software is designed to support that decision.\
+\
+}

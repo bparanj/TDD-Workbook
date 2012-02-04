@@ -1,0 +1,113 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red38\green38\blue38;\red52\green52\blue52;\red0\green0\blue239;
+}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{square\}}{\leveltext\leveltemplateid1\'01\uc0\u9642 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{square\}}{\leveltext\leveltemplateid101\'01\uc0\u9642 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 1. Test Driven Development by Example - Kent Beck\
+2. The Art of Unit Testing with Examples in .NET\
+3. Growing Object Oriented Software Guided by Tests\
+4. xUnit Test Patterns    \
+5. Brain Fitness : Peak Performance\
+\
+Recommended Books\
+\
+1. Refactoring by Marin Fowler\
+2. Object Oriented Design Heuristics by Arthur Reihl\
+3. Object Oriented Software Construction by Bertrand Meyer\
+4. Design Patterns \
+\
+\pard\tx720\fi720\pardirnatural
+{\field{\*\fldinst{HYPERLINK "http://softwaregreenhouses.com/2011/01/30/using-wayk-to-describe-tdd-fluency/"}}{\fldrslt \cf0 http://softwaregreenhouses.com/2011/01/30/using-wayk-to-describe-tdd-fluency/}}\
+\
+\pard\pardeftab720\sl480\sa120
+\cf2 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
+\ls1\ilvl0\cf3 {\listtext	\uc0\u9642 	}We verify stubs by checking state after an interaction.\
+{\listtext	\uc0\u9642 	}We tell mocks to verify interactions.\
+{\listtext	\uc0\u9642 	}Sometimes stubs just make the system run.\
+\pard\pardeftab720\sl480\sa120
+\cf2 \
+\pard\pardeftab720\sl380\sa280
+
+\i\b \cf3 Isolation from Non-Determinism
+\i0\b0 :  randomness, time etc.\
+
+\i\b Isolation from External Dependencies
+\i0\b0 :  Database, Network, Third Party API etc\
+
+\i\b Polymorphic Collaborators
+\i0\b0 : E.g., employee that knows how to pay itself, uses a strategy. \
+\pard\pardeftab720\sl120\slmult1\slminimum380\sa280
+\cf3 payment_strategy = mock() \
+\pard\pardeftab720\sl380\sa280
+\cf3 employee = E.new(payment_strategy) \
+payment_strategy.expects(:pay) \
+employee.pay\
+When are message expectations helpful?\
+
+\i\b Side Effects
+\i0\b0 : background processing\
+
+\i\b Caching
+\i0\b0 : only call a network zipcode lookup once\
+\pard\pardeftab720\sl380
+
+\i\b \cf3 Interface discovery
+\i0\b0 : tool to discover the parts of the system that you haven't really worked out yet. Mock something out that doesn't exist yet, while designing its interface.\
+\
+All of these concepts are 
+\i Isolation Testing
+\i0  - testing an object in isolation from others. This is a good fit when you have lots of little objects.\
+\
+\pard\pardeftab720\sl380
+
+\b \cf3 BDD Approach
+\b0  : \
+Customer specs are implemented as end to end testing.\
+Developer specs are implemented as isolation tests.\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
+\ls2\ilvl0\cf3 {\listtext	\uc0\u9642 	}Keep things simple\
+{\listtext	\uc0\u9642 	}Focus on Roles\
+{\listtext	\uc0\u9642 	}Try to avoid tight coupling\
+{\listtext	\uc0\u9642 	}Complex setup is a red flag for design issues\
+{\listtext	\uc0\u9642 	}Don't stub and mock the object that you are testing\
+{\listtext	\uc0\u9642 	}Concern: impedes refactoring (but some say refactoring is improving design without changing behavior, so tests should not change. This really depends what level you are refactoring at).\
+{\listtext	\uc0\u9642 	}Concern: false positives\
+\pard\tx560\pardeftab720\sl360
+\cf3 \
+\pard\pardeftab720
+\cf0 Stubs - a common helper to testing environments. There is a difference in how test results are verified: a distinction between state verification and behavior verification. Focusing on one element of the software at a time -hence the common term unit testing. The problem is that to make a single unit work, you often need other units.\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720
+\ls3\ilvl0
+\b \cf0 {\listtext	\'95	}Dummy
+\b0  objects are passed around but never actually used. Usually they are just used to fill parameter lists.\
+\ls3\ilvl0
+\b {\listtext	\'95	}Fake
+\b0  objects actually have working implementations, but usually take some shortcut which makes them not suitable for production (an {\field{\*\fldinst{HYPERLINK "http://www.martinfowler.com/bliki/InMemoryTestDatabase.html"}}{\fldrslt \cf4 \ul \ulc4 in memory database}} is a good example).\
+\ls3\ilvl0
+\b {\listtext	\'95	}Stubs
+\b0  provide canned answers to calls made during the test, usually not responding at all to anything outside what's programmed in for the test. Stubs may also record information about calls, such as an email gateway stub that remembers the messages it 'sent', or maybe only how many messages it 'sent'.\
+\ls3\ilvl0
+\b {\listtext	\'95	}Mocks
+\b0  are what we are talking about here: objects pre-programmed with expectations which form a specification of the calls they are expected to receive.\
+\pard\tx560\pardeftab720
+\cf0 \
+\pard\pardeftab720
+\cf0 Only mocks insist upon behavior verification.\cf3  \cf0 The other doubles can, and usually do, use state verification.\
+\
+\pard\pardeftab720\sa240
+\cf0 The 
+\b classical TDD
+\b0  style is to use real objects if possible and a double if it's awkward to use the real thing. A 
+\b mockist TDD
+\b0  practitioner, however, will always use a mock for any object with interesting behavior.\
+\pard\pardeftab720
+\cf0 An acknowledged issue with state-based verification is that it can lead to creating query methods only to support verification. It's never comfortable to add methods to the API of an object purely for testing, using behavior verification avoids that problem.\
+}

@@ -1,0 +1,357 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Obscure Test
+\b0 \
+\
+Long Test, Complex Test, Verbose Test\
+\
+It is difficult to understand the test at a glance\
+\
+Automated tests should serve at least two purposes. First they should act as documentation of how the SUT 
+\i should 
+\i0 behave (tests as documentation). Second, they should be a self-verifying executable specification. These two goals are often contradictory because the level of detail needed for tests to be executable may make the test so verbose as to be difficult to understand.\
+\
+The  first is issue is the high test maintenance cost. The second issue is it may allow bugs to slip through because of hidden test coding errors. This can result in buggy tests. Further more, a failure of one assertion in an eager test may hide many more errors that aren\'92t run, leading to a loss of test debugging data.\
+\
+Keep test code clean and simple. Avoid \'93just do it in-line\'94 mentality when writing tests. Putting code in-line results in large, complex test methods.\
+\
+Eager Test: The test verifies too much functionality in a single test method.\
+Mystery Guest: The reader is not able to see the cause and effect between fixture and verification logic because part of it is done outside the test method.\
+\
+The problem of Verbose Tests - tests that use too much code to say what they need to say - can be further broken down into a number of root causes:\
+General Fixture : The test builds or references a larger fixture than is needed to verify the functionality in question.\
+Irrelevant Information: The test exposes a lot of irrelevant details about the fixture that distract the reader from what really affects the behavior of the SUT.\
+Hard-Coded Test Data: Data values in the fixture, assertions, or arguments of the SUT are hard-coded in the test method, obscuring cause - effect relationships between inputs and expected outputs.\
+Indirect Testing: The test method interacts with the SUT indirectly via another object, thereby making the interactions more complex.\
+\
+
+\b Eager Test
+\b0 \
+\
+The test goes on and on verifying this, that and \'91everything but the kitchen sink\'92. It is hard to tell which part is fixture setup and which part is exercising the SUT.\
+\
+Single condition tests provide good defect localization.\
+\
+
+\b Mystery Guest
+\b0 \
+\
+Tests require passing data to the SUT. The data used in the fixture setup and exercise SUT phases of the Four-Phase Test define the pre-conditions of the SUT and influence how it should behave. The post-conditions (the expected outcomes) are reflected in the data passed as arguments to the assertion methods in the verify outcome phase of the test.\
+\
+When either the fixture setup or the result verification part of a test depends on information that is not visible within the test and the reader finds it difficult to understand the behavior that is being verified without first finding and inspecting the external information.\
+\
+It can take many forms:\
+\
+A filename of an existing external file is passed to a method of the SUT; the contents of the file should determine the behavior of the SUT.\
+The contents of a database record identified by a literal key are read into a object that is then used by the test or passed to the SUT.\
+A setup decorator is used to create a shared fixture, and objects in this fixture are then referenced via variables within the result verification logic.\
+\
+Use fresh fixture built using in-line setup. When applied to the file example, this would involve creating the contents of the file as a string within our test so that the contents are visible and then writing them out to the file system. To avoid irrelevant information, we may want to hide the details of the construction behind one or more creation methods that append to the file\'92s contents.\
+\
+If we must use external resources such as files, we should put them into a special directory and give them names that make it obvious what kind of data they hold.\
+\
+
+\b General Fixture
+\b0 \
+\
+There seems to be a lot of test fixture being built - much more than would appear to be necessary for any particular test. It is hard to understand the cause-effect relationship between the fixture, the part of the SUT being exercised, and the expected outcome of a test. \
+\
+We need to move to a minimal fixture to address this problem. To do so, we can use a fresh fixture for each test.\
+\
+
+\b Irrelevant Information
+\b0 \
+\
+It is hard to determine which of the values passed to objects actually affect the expected outcome.\
+\
+Fixture setup logic may seem very long and complicated as it weaves together many interrelated objects. This makes it hard to determine what the test is verifying because the reader doesn\'92t understand the pre-conditions of the test.\
+\
+The code that verifies the expected outcome of a test can also be too complicated to understand.\
+\
+A test contains a lot of data. Irrelevant information often occurs in conjunction with hard-coded test data or a general fixture but can also arise because we make visible all data the test needs to 
+\i execute 
+\i0 rather than focusing on the data the test needs to be 
+\i understood.
+\i0  When writing tests, the path of least resistance is to use whatever methods are available (on the SUT and other objects) and to fill in all parameters with values, whether or not they are relevant to the test.\
+\
+Another possible cause is when we include all the code needed to verify the outcome using procedural state verification rather than using a much more compact declarative style  to specify the expected outcome.\
+\
+The best way to get rid of irrelevant information in fixture setup logic is to replace direct calls to the constructor or factory methods with calls to parameterized creation methods that take only the relevant information as parameters. Fixture values that do not matter to the test (those that do not affect the expected outcome) should be defaulted within creation methods or replaced by dummy objects. In this way we say to the reader, \'93The values you don\'92t see don\'92t affect the expected outcome\'94. We can replace fixture values that appear in both the fixture setup and outcome verification parts of the test with suitably initialized named constants as long as we are using a fresh fixture approach to fixture setup.\
+\
+To hide irrelevant information in result verification logic, we can use assertions on entire expected objects, rather than asserting on individual fields, and we can create custom assertions that hid complex procedural verification logic.\
+\
+
+\b Hard-Coded Test Data
+\b0 \
+\
+It is difficult to determine how various hard-coded (i.e., literal) values in the test are related to one another and which values should affect the behavior of the SUT. \
+\
+Tests require passing data to the SUT. The data used in the fixture setup and exercise SUT phases of the Four-Phase Test define the preconditions of the SUT and influence how it should behave. The post-conditions (the expected outcomes) are reflected in the data passed as arguments to the assertion methods in the verify outcome phase of the test. When writing tests, the path of least resistance is to use whatever methods are available (on the SUT and other objects) and to fill in all parameters with values, whether or not they are relevant to the test.\
+\
+When we use copy-paste reuse of test logic, we find ourselves replicating the literal values to the derivative tests.\
+\
+The best way to get rid of the obscure test smell is to replace the literal constants with named constants.\
+\
+Fixture values that do not matter to the test (those that do not affect the expected outcome) should be defaulted within creation methods. Same solution as irrelevant information above.\
+\
+Values in the result verification logic that are based on values used in the fixture or that are used as arguments of the SUT should be replaced with derived values to make those calculations obvious to the test reader.\
+\
+
+\b Indirect Testing 
+\b0 \
+\
+A test interacts primarily with objects other than the one whose behavior it purports to verify. The test constructs and interacts with objects that contain references to the SUT rather than with the SUT itself. Testing business logic through the presentation layer is a common example of indirect testing.\
+\
+It may result in fragile tests because changes in the intermediate objects may require modification of the tests even when the SUT is not modified.\
+\
+
+\b Solution Patterns
+\b0 \
+\
+A good test strategy helps keep the test code understandable. Nevertheless, just as \'93no battle plan survives the first contact with the enemy\'94, no test infrastructure can anticipate all needs of all tests. We should expect the test infrastructure to evolve as the software matures and our test automation skills improve.\
+\
+We can reuse test logic for several scenarios by having several tests call test utility methods or by asking a common parameterized test to pass in the already built test fixture or expected objects.\
+\
+Writing tests in an outside-in way can minimize the likelihood of producing an obscure test that might then need to be refactored. This approach starts by outlining the Four-Phase Test using calls to nonexistent test utility methods. Once we are satisfied with these tests, we can write the utility methods needed to run them. By writing the test first, we gain a better understanding of what the utility methods need to do for us to make writing the tests as simple as possible. Write test utility tests before writing the test utility methods.\
+\
+
+\b Conditional Test Logic
+\b0 \
+\
+Indented Test Code\
+\
+A test contains code that may or may not be executed\
+\
+A fully automated test is just code that verifies the behavior of other code. But if this code is complicated, how do we verify that it works properly? We could write tests for our tests - but when would this recursion stop? The simple answer is that test methods must be simple enough to not need tests.\
+\
+Conditional test logic make tests complicated. This means no looping logic and if statements. What is this test code doing and how do we know that it is doing it correctly? Conditional test logic makes it difficult to know exactly what a test is going to do when it really matters. Code that has multiple execution paths does not give you confidence about its outcome. Code that has only a single execution path always executes in exactly the same way. \
+\
+To increase our confidence in production code, we can write self-checking tests that exercise the code. How can we increase our confidence in the test code if it executes differently each time we run it? It is hard to know or prove that the test is verifying the behavior we want it to verify. A test that has branches, loops or that uses different values each time it is run, can be very difficult to debug simply because it isn\'92t completely deterministic.\
+\
+Conditional test logic makes writing the test correctly a difficult task. Because the test itself cannot be tested easily, how do we know that it will actually detect the bugs it is intended to catch? Obscure tests are more likely to result in buggy tests than simple code.\
+\
+
+\b Flexible Test
+\b0 \
+\
+The test code verifies different functionality depending on when or where it is run. It contains conditional logic that does different things depending on the current environment. Most commonly this functionality takes the form of conditional test logic to build different versions of the expected results based on some factor external to the test.\
+\
+For example, a test which depends on a certain time to determine what the output of the SUT should be.\
+\
+A flexible test is caused by a lack of control of the environment. The developer was not able to decouple the SUT from its dependencies and decided to adapt the test logic based on the state of the environment.\
+\
+It makes the test harder understand and maintain. We don\'92t know which test scenarios are actually being exercised and whether all scenarios are exercised regularly. \
+\
+Decouple the SUT from external dependencies by refactoring the SUT to support substitutable dependency. We can then replace the dependency with a test double such as test stub or mock object and write separate tests for different scenarios.\
+\
+
+\b Conditional Verification Logic
+\b0 \
+\
+Conditional test logic create problems when it is used to verify the expected outcome. This happens when developer tries to prevent the execution of assertions if the SUT fails to return the right objects or uses loops to verify the contents of collections returned by the SUT.\
+\
+We can replace the if statements that steer execution to a call to fail with a guard assertion that causes the test to fail before we reach the code we don\'92t want to execute. We can replace conditional test logic for verification of complex objects with an equality assertion on an expected object. We can use a custom assertion to define test-specific equality.\
+\
+We should move loops in the verification logic to a custom assertion. We can then verify this assertion\'92s behavior by using custom assertion tests.\
+\
+
+\b Production Logic in Test
+\b0 \
+\
+This is due to verification of multiple test conditions in a single test method. Given that multiple input values are passed to the SUT, we should also have multiple expected results. The expected SUT logic is replicated in the test to calculate the expected values for assertions.\
+\
+1. Create a calculator instance\
+2. Initialize expected = 0\
+3. Outermost loop iterates from 0 to 9\
+4. Innermost loop iterates from 0 to 9\
+5. Exercise SUT : actual = sut.calculate(i, j)\
+6. Verify result : if conditions to handle special case - expected = 8 else expected = i+j; assert(expected, actual)\
+\
+Solution:\
+\
+1. Create a calculator instance\
+2. Initialize an array of TestValue objects with 4 data sets.\
+3. Loop through the array to exercise SUT and verify result\
+\
+
+\b Multiple Test Conditions
+\b0 \
+\
+The same test logic is applied to many sets of input values, each with its own corresponding expected result. The developer is testing many test conditions using the same test logic in a single test method. \
+\
+In the previous section\'92s solution the test iterates over a collection of test values and applies the test logic to each set.\
+\
+This bad ass test stops executing at the first failure and doesn\'92t provide defect localization. The solution is to call a parameterized test from a separate test method for each test condition. For large data sets, a data driven test is better.\
+\
+
+\b Hard-to-Test Code
+\b0 \
+ \
+Hard-Coded Dependency\
+Highly Coupled Code\
+\
+A class cannot be tested without also testing several other classes. Code that is highly coupled to other code is difficult to unit test because it won\'92t execute in isolation. This is caused by poor design, lack of OOD experience etc.\
+\
+The key to testing overly coupled code is to break the coupling. A technique that is often used to decouple code for the purpose of testing is a test double (either a test stub or a mock object). \
+\
+
+\b Asynchronous Code
+\b0 \
+\
+A class cannot be tested via direct method calls. The test must start an executable (such as a thread, process or application) and wait until its start-up has finished before interaction with the executable. \
+\
+The key to testing asynchronous code is to separate the logic from the asynchronous access mechanism. The design for testability pattern humble object is a good example of a way to restructure otherwise asynchronous code so it can be tested in a synchronous manner.\
+\
+
+\b Untestable Test Code
+\b0 \
+\
+The body of a test method is obscure enough or contains enough conditional test logic that we wonder whether the test is correct.\
+\
+We can remove the need to test the body of a test method by making it extremely simple and relocating any conditional test logic from it into test utility methods for which we can easily write self checking tests.\
+\
+Focus on the big picture (the intent) of the test. Write the test methods in an outside-in manner, focusing on their intent. Whenever we need to do something that involves several lines of code, we simply call a nonexistent test utility method to do it. We write all our tests this way and then fill in implementations of the test utility methods to get the tests to compile and run. \
+\
+
+\b Test Logic in Production
+\b0 \
+\
+The code that is put into production contains logic that should be exercised only during tests.\
+\
+Instead of adding test logic into the production code directly, we can move logic into a substitutable dependency. We can put code that should be run in only production into a strategy object that is installed by default and replaced by a Null object when running our tests. In contrast, code that should be run only during tests can be put into a strategy object that is configured as a null object by default. Then when we want the SUT to execute extra code during testing, we can replace this strategy object with test specific version. \
+\
+
+\b Erratic Test
+\b0 \
+\
+Sometimes they pass and sometimes they fail. If the cause cannot be easily determined, collect data systematically over a period of time. In which environments did the tests pass and where did they fail? Were all the tests being run or just a subset of them? Did any change in behavior occur when the test suite was run several times in a row? Did any change in behavior occur when it was run from several test runners at the same time.\
+\
+Once we have some data, match up the observed symptoms with those listed for each of the potential causes and to narrow the list of possibilities to a handful of candidates. Then we can collect some more data focusing on differences in symptoms between the possible causes. \
+\
+
+\b Unrepeatable Test
+\b0 \
+\
+A test behaves differently the first time it is run compared with how it behaves on subsequent test runs. In effect, it is interacting with itself across test runs.\
+\
+
+\b Nondeterministic Test
+\b0 \
+\
+The first step is to make our tests repeatable by ensuring that they execute in a completely linear fashion by removing any conditional test logic. Then we go about replacing any random values with deterministic values. \
+\
+
+\b Interface Sensitivity
+\b0 \
+\
+A test written in a dynamically typed language may experience a test error when it invokes an API that has been modified (via a method name change or method signature change). Alternatively the test may fail to find a UI element it needs to interact with the SUT via a UI. \
+\
+When the interface is used only internally (within the company or application) and by automated tests, SUT API encapsulation is the best solution for interface sensitivity. It reduces the cost and impact of changes to the API and therefore, does not discourage necessary changes from being made. A common way to implement SUT API encapsulation is through the definition of higher-level language that is used to express the tests. The verbs in the test language are translated into the appropriate method calls by the encapsulation layer, which is then the only software that needs to be modified when the interface is altered in somewhat backward compatible ways. The test language can be implemented in the form of test utility methods such as creation methods and verification methods that hide the API of the SUT from the test.\
+\
+
+\b Behavior Sensitivity
+\b0  \
+\
+This occurs when changes to the SUT cause other tests to fail. A test that once passed suddenly starts failing when a new feature is added to the SUT or a bug is fixed.\
+\
+The functionality the regression tests use to set up the pre-test state of the SUT has been modified.\
+The functionality the regression tests use to verify the post-test state of the SUT has been modified.\
+The code the regression tests use to tear down the fixture has been changed.\
+\
+If the code that changed is not part of the SUT we are verifying, then we may be testing too large a SUT. In such a case, what we really need to do is to separate the SUT into the part we are verifying and the components on which that part depends.\
+\
+Any newly incorrect assumptions about the behavior of the SUT used during fixture setup may be encapsulated behind creation methods. Similarly assumptions about the details of post-test state of the SUT can be encapsulated in custom assertions or verification methods. These measures reduce the amount of test code that needs to be changed.\
+\
+
+\b Data Sensitivity
+\b0  \
+\
+This occurs when a test fails because the data being used to test the SUT has been modified. This sensitivity most commonly arises when the contents of the test database change.\
+\
+A test once passed suddenly starts failing :\
+\
+Data is added to the database that holds the pre-test state of the SUT.\
+Records in the database are modified or deleted.\
+The code that sets up a standard fixture is modified.\
+A shared fixture is modified before the first test that uses it.\
+\
+Use fresh fixture to fix this problem. Another solution is to verify that the right changes have been made to the data. Compare before and after snapshots of the data, thereby ignoring data that hasn\'92t changed. They eliminate the need to hard-code knowledge about the entire fixture into the result verification phase of the test.\
+\
+
+\b Context Sensitivity
+\b0 \
+\
+This occurs when a test fails because the state or behavior of the context in which the SUT executes has changed.\
+\
+A test that once passed suddenly starts failing for mysterious reasons. Unlike the erratic test, the test produces consistent results when run repeatedly over a short period of time. What is different is that it consistently fails regardless of how it is run.\
+Tests may fail for two reasons:\
+The functionality they are verifying depends in some way on the time or date.\
+The behavior of some other code or system on which the SUT depends on has changed.\
+\
+A major source of context sensitivity is confusion about which SUT we are intending to verify. Recall that the SUT is whatever piece of software we are intending to verify. When unit testing, it should be very small part of the overall system or application. Failure to isolate the specific unit (e.g., class or method) is bound to lead to context sensitivity because we end up testing too much software all at once. Indirect inputs that should be controlled by the test are then left to chance. If someone then modifies a DoC, our tests fail.\
+To eliminate context sensitivity, we must track down which indirect input to the SUT has changed and why. If the system contains any date or time related logic we should examine this logic to see whether the length of the month or other similar factors could be the cause of the problem.\
+\
+If the SUT depends on input from any other systems, we should examine these inputs to see if anything has changed recently. Logs of the previous interactions with these other systems are very useful for comparison with logs of the failure scenarios.\
+\
+We need to control all the inputs of the SUT if our tests are to be deterministic. If we depend on inputs from other systems, we may need to control these inputs by using a test stub that is configured and installed by the test. If the system contains any time related logic we need to be able to control the system clock as part of our testing. This means stubbing out the system clock with a virtual clock that gives the test a way to set the starting time or date and possibly to simulate the passage of time.\
+\
+
+\b Over specified Software
+\b0 \
+\
+Overcoupled Test\
+\
+A test says too much about how the software should be structured or behave. This form of behavior sensitivity is associated with the style of testing called behavior verification. It is characterized by extensive use of mock objects to build layer-crossing tests. The main issue is that the tests describe 
+\i how
+\i0  the software should do something, not 
+\i what 
+\i0 it should achieve. That is, the tests will pass only if the software is implemented in a particular way. This problem can be avoided by applying the principle Use the Front Door First whenever possible to avoid encoding too much knowledge about the implementation of the SUT into the tests.\
+\
+
+\b Frequent Debugging
+\b0 \
+\
+We may be missing the component tests for a cluster of classes (i.e., a component) that would point out an integration error between the individual classes. This can happen when we use mock objects extensively to replace depended on objects but the unit tests of the depended on objects don\'92t match the way the mock objects are programmed to behave.\
+\
+Write unit tests for individual classes as well as component tests for the collections of related classes to ensure we have good defect localization.\
+\
+
+\b Slow Tests 
+\b0 \
+\
+We can make our tests run faster by replacing the slow components with a test double. Use fake database to make your database unit tests run faster.\
+\
+
+\b Too Many Tests
+\b0 \
+\
+This might be due to a large system or overlap between tests. The less obvious case is that we are running too many tests too frequently. We don\'92t have to run all the tests all the time. The key is to ensure that all tests are run regularly. \
+\
+If the system is large in size, it is a good idea to break it into a number of fairly independent subsystems or components. This allows teams working on each component to work independently and to run only those tests specific to their own component. Some of those tests should act as proxies for how the other components would use the component; they must be kept up-to-date if the interface contract changes.\
+\
+
+\b Untested Code
+\b0 \
+\
+If the untested code is caused by an inability to control the indirect inputs of the SUT, the most common solution is to use a test stub to feed the various kinds of indirect inputs into the SUT to cover all the code paths. Otherwise it may be sufficient to configure the DoC to cause it to return the various indirect inputs required to fully test the SUT.\
+\
+
+\b Untested Requirement
+\b0 \
+\
+We may just know that some piece of functionality is not being tested. Alternatively we may be trying to test a piece of software but cannot see any visible functionality that can be tested via the public interface of the software. All the tests we have written pass, however. \
+\
+When doing TDD, we know we need to add some code to handle a requirement. The most common cause of untested requirements is that the SUT includes behavior that is not visible through its public interface. It may have expected \'93side effects\'94 that cannot be observed directly by the test (such as writing out a file or record or calling a method on another object or component) - in other words, it may have indirect outputs.\
+\
+When the SUT is an entire application, the untested requirement may be a result of not having a full suite of customer tests that verify all aspects of the visible behavior of the SUT.\
+\
+If the problem is missing customer tests, we need to write at least enough customer tests to ensure that all components are integrated properly. This may require improving the design-for-testability of the application by separating the presentation layer from the business logic layer. \
+\
+When we have indirect outputs that we need to verify, we can do behavior verification through the use of mock objects. Testing of indirect outputs is done using test doubles.\
+\
+\
+\
+}

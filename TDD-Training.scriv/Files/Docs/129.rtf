@@ -1,0 +1,90 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Design to Fail
+\b0 \
+\
+The point of a test is not to pass but to 
+\i fail
+\i0 . We want the production code to pass its tests, but we also want the tests to detect and report any errors that do exist. A failing test has actually succeeded at the job it was designed to do. Even unexpected test failures, in an area unrelated to where we are working, can be valuable because they reveal implicit relationships in the code that we hadn\'92t noticed.\
+\
+One situation we want to avoid, however, is when we can\'92t diagnose a test failure that has happened. The last thing we should have to do is open a debugger and step through the tested code to find the point of disagreement. At a minimum, it suggests that our tests don\'92t yet express our requirements clearly enough. In the worst case, we can find ourselves in debug hell, with deadlines to meet but no idea of how long a fix will take. At this point, the temptation will be high to just delete the test - and lose our safety net.\
+\
+
+\b Stay Close to Home
+\b0 \
+\
+Synchronize frequently with the source code repository - up to every few minutes - so that if a test fails unexpectedly it won\'92t cost much to revert your recent changes and try another approach.\
+\
+The other implication of this tip is not to be too inhibited about dropping code and trying again. Sometimes it\'92s quicker to roll back and restart with a clear head than to keep digging.\
+\
+Make tests fail 
+\i informatively. 
+\i0 If a failing test clearly explains what has failed and why, we can quickly diagnose and correct the code. Here are some practices that give us the information we need at runtime.\
+\
+
+\b Small, Focused, Well-Named Tests
+\b0 \
+\
+The easiest way to improve diagnostics is to keep each test small and focused and give tests readable names. If a test is small, its name should tell us most of what we need to know about what has gone wrong.\
+\
+
+\b Explanatory Assertion Messages
+\b0 \
+\
+The message should describe the cause instead of the symptom: comparison failure : expected: 10 but was 15.\
+Add a message to identify the value being asserted: comparison failure: outstanding balance expected: 10 but was: 15\
+\
+
+\b Highlight Detail with Matchers
+\b0 \
+\
+Failure report should show exactly which values are relevant.\
+\
+
+\b Self Describing Value
+\b0 \
+\
+An alternative to adding detail to the assertion is to build the detail into values in the assertion. We can take this in the same spirit has the idea that comments are a hint that the code needs to be improved: if we have to add detail to an assertion, maybe that\'92s a hint that we could make the failure more obvious.\
+\
+In the customer example, we could improve the failure message by setting the account identifier in the test Customer to the self-describing value \'93a customer account id\'94: comparison failure: expected: [a customer account id] but was [id not set]\
+\
+Now we don\'92t need to add an explanatory message, because the value itself explains its role.\
+\
+We might be able to do more when we\'92re working with reference types. For example, in a test that has this setup: start_date = Date.new(1000); end_date = Date.new(2000) the failure message reports that a payment date is wrong but doesn\'92t describe where the wrong value might have come from: payment date Expected: xyz got: abc\
+\
+What we really want to know is the meaning of these dates. If we force the display string: start_date = NamedDate.new(1000, \'93start date\'94); end_date = NamedDate.new(2000, \'93end date\'94); we get a message that describes the role that each date plays: payment date: Expected <start date> got: <end date> which makes it clear that we\'92ve assigned the wrong filed to the payment date. This is yet another motivation for defining more domain types to hide the basic types in the language. It gives us somewhere to hang useful behavior like this.\
+\
+
+\b Obviously Canned Value
+\b0 \
+\
+Sometimes, the values being checked can\'92t easily explain themselves. There\'92s not enough information in a char or int, for example. One option is to use improbable values that will be obviously different from the values we would expect in production. For an int, we might use a negative value (if that doesn\'92t break the code) or MAX_VALUE (if it\'92s wildly out of range). Similarly, for dates you could use values that is not expected in your production code. Team can develop conventions for common values, it can ensure that they stand out. INVALID_ID = 123 would be obviously wrong if the real system ids were 5 digits and up.\
+\
+
+\b Tracer Object
+\b0 \
+\
+Sometimes we just want to check that an object is passed around by the code under test and routed to the appropriate collaborator. We can create a tracer object, a type of Obviously Canned Value, to represent this value. A tracer object is a dummy object that has no supported behavior of its own, except to describe its role when something fails. \
+\
+Tracer objects can be a useful design tool when TDD\'92ing a class. We sometimes use an empty interface to mark (and name) a domain concept and show how it\'92s used in a collaboration. Later, as we grow the code, we fill in the interface with methods to describe its behavior. \
+\
+
+\b Explicitly Assert That Expectations Were Satisfied
+\b0 \
+\
+A test that has both expectations and assertions can produce a confusing failure. In some mock object frameworks, the expectations are checked after the body of the test. If, for example, a collaboration doesn\'92t work properly and returns a wrong value, an assertion might fail before any expectations are checked. This would produce a failure report that shows, say, an incorrect calculation result rather than the missing collaboration that actually caused it.\
+\
+In a few cases, then, its worth calling the assert_is_satisfied method on the Mockery before any of the test assertions to get the right failure report. This demonstrates why it is important to watch the test fail. If you expect the test to fail because an expectation is not satisfied but a post condition assertion fails instead, you will see that you should add an explicit call to assert that all expectations have been satisfied.\
+\
+
+\b Diagnostics Are a First Class Feature
+\b0 \
+\
+Follow the four-step TDD cycle (fail, report, pass, refactor) because that\'92s how we know we\'92ve understood the feature - and whoever has to change it later will also understand it. \
+\
+Fig 23.1 shows that we need to maintain the quality of tests, as well as the production code. Improve the diagnostics as part of the TDD cycle.\
+\
+}

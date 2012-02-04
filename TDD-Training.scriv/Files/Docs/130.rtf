@@ -1,0 +1,155 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Test Flexibility
+\b0 \
+\
+We can reduce the ongoing cost of tests by making them easy to read and generating helpful diagnostics on failure. We also want to make sure that each test fails only when its relevant code is broken. Otherwise, we end up with brittle tests that slow down development and inhibit refactoring. Common causes of test brittleness include:\
+\
+The tests are too tightly coupled to unrelated parts of the system or unrelated behavior of the objects they are testing.\
+The tests over specify the expected behavior of the target code, constraining it more than necessary.\
+There is duplication when multiple tests exercise the same production code behavior.\
+\
+Test brittleness is not just an attribute of how the tests are written; it\'92s also related to the design of the system. If an object is difficult to decouple from its environment because it has many dependencies or its dependencies are hidden, its tests will fail when distant parts of the system change. It will be hard to judge the knock-on effects of altering the code. So, we can use test brittleness as a valuable source of feedback about design quality.\
+\
+There\'92s a virtuous relationship with test readability and resilience. A test that is focused, has clean set-up, and has minimal duplication is easier to name and is more obvious about its purpose.\
+\
+
+\b Specify Precisely What Should Happen and No More
+\b0 \
+\
+Specify just what we want from the target code. The more precise we are, the more the code can flex in other unrelated dimensions without breaking tests misleadingly. The other benefit of keeping tests flexible is that they\'92re easier for us to understand because they are clearer about what they\'92re testing - about what is and is not important in the tested code.\
+\
+
+\b Test for Information Not Representation
+\b0 \
+\
+A test might need to pass a value to trigger the behavior it\'92s supposed to exercise in its target object. The value could either be passed in as a parameter to a method on the object, or returned as a result from a query the object makes on one of its neighbors stubbed by the test. If the test is structured in terms of how the value is represented by other parts of the system, then it has a dependency on those parts and will break when they change.\
+\
+For example, we have a system that uses a CustomerBase to store and find information about our customers. One of its features is to look up a customer given an email address; it returns null if there\'92s no customer with the given address. When we test the parts of the code that search for customers by email address, we stub CustomerBase as a collaborating object. In some of those tests, no customer will be found so we return null. There are two problems with this use of null in a test. First, we have to remember what null means here, and when its appropriate; the test is not self-explanatory. The second concern is the cost of maintenance.\
+\
+Some time later, we experience a null pointer exception in production and track the source of the null reference down to the CustomerBase. We realize we\'92ve broken one of our design rules: Never Pass Null Between Objects. \
+\
+If, instead, we\'92d given the tests their own representation of \'93no customer found\'94 as a single well-named constant instead of the literal null, we could have avoided this drudgery. We would have changed on line: NO_CUSTOMER_FOUND = null  to NO_CUSTOMER_FOUND = Maybe.nothing() without changing the tests themselves.\
+\
+Tests should be written in terms of the information passed between objects, not of how that information is represented. Doing so will both make the tests more self-explanatory and shield them from changes in implementation controller elsewhere in the system. Significant values, like NO_CUSTOMER_FOUND, should be defined in one place as a constant. For more complex structures, we can hide the details of the representation in test data builders.\
+\
+
+\b Precise Assertions
+\b0 \
+\
+In a test, focus the assertions on just what\'92s relevant to the scenario being tested. Avoid asserting values that aren\'92t driven by the test inputs, and avoid reasserting behavior that is covered in other tests.\
+\
+These heuristics guide us towards writing tests where each method exercises a unique aspect of the target code\'92s behavior. This makes the tests more robust because they\'92re not dependent on unrelated results, and there\'92 less duplication.\
+\
+Most test assertions are simple checks for equality. Testing for equality doesn\'92t scale well as the value being returned becomes more complex. Different test scenarios may make the tested code return results that differ only in specific attributes, so comparing the entire result each time is misleading and introduces an implicit dependency on the behavior of the whole tested object.\
+\
+There are a couple of ways in which a result can be more complex. First, it can be defined as a structured value type. This is straightforward since we can just reference directly any attributes we want to assert. For example, if we take the financial instrument from Use Structure to Explain, we might need to assert only its strike price, without comparing the whole instrument.\
+\
+This tells the programmer that the only thing we really care about it that the new identifier is larger than the previous one - its actual value is not important in this test. The assertion also generates a helpful message when it fails.\
+\
+The second source of complexity is implicit, but very common. We often have to make assertions about a text string. Sometimes we know exactly what the text should be, for example when we have the FakeAuctionServer look for specific messages in Extending the Fake Auction. Sometimes, however, all we need to check is that certain values are included in the text.\
+\
+A frequent example is when generating a failure message. We don\'92t want all our unit tests to be locked to its current formatting, so that they fail when we add whitespace, and we don\'92t want to have to do anything clever to cope with timestamps. We just want to know that the critical information is included, so we write: message.contains(\'93strike_price = 98\'94) which asserts that all these strings occur somewhere in failure_message. That\'92s enough reassurance for us, and we can write other tests to check that a message is formatted correctly if we think it\'92s significant.\
+\
+One interesting effect of trying to write precise assertions against text strings is that the effort often suggests that we\'92re missing an intermediate structure object - in this case perhaps an InstrumentFailure. Most of the code would be written in terms of an InstrumentFailure, a structured value that carries all the relevant fields. The failure would be converted to a string only at the last possible moment, and that string conversion can be tested in isolation.\
+\
+
+\b Precise Expectations
+\b0 \
+\
+Each mock object test should specify just the relevant details of the interactions between the object under test and its neighbors. The combined unit test for an object describe its protocol for communicating with the rest of the system.\
+\
+Specify the communication between objects as precisely as it should be. The API of isolation framework is designed to produce tests that clearly express how objects relate to each other and that are flexible because they\'92re not too restrictive. This may require a little more test code than some of the alternatives, but we find that the extra rigor keeps the tests clear.\
+\
+
+\b Precise Parameter Matching
+\b0 \
+\
+We want to be as precise about the values passed in to a method as we are about the value it returns. For example, here is an expectation where one of the accepted arguments is any type of RuntimeException; the specific class doesn\'92t matter. Similarly another example where the method sniper_for_item returns a Matcher that checks only the item identifier when given an AuctionSniper. This test doesn\'92t care about anything else in the sniper\'92s state, such as its current bid or last price, so we don\'92t make it more brittle by checking those values.\
+\
+The same precision can be applied to expecting input strings. If, for example, we have audit_trail object to accept failure message, we can write a precise expectation for that auditing: failure_message.contains(\'93id=14\'94).\
+\
+
+\b Allowances and Expectations
+\b0 \
+\
+Expectations must be met during a test, but allowances may be matched or not. The point of the distinction is to highlight what matters in a particular test. Expectations describe the interactions that are essential to the protocol we\'92re testing: if we send 
+\i this 
+\i0 message to the object, we expect to see it send 
+\i this 
+\i0 other message to 
+\i this 
+\i0 neighbor.\
+\
+Allowances 
+\i support 
+\i0 the interaction we\'92re testing. We often use them as stubs to feed values into the object, to get the object into the right state for the behavior we want to test. We also use them to ignore other interactions that aren\'92t relevant to the current test. \
+\
+For example, the ignoring clause says that, in this test, we don\'92t care about messages sent to the auction; they will be covered in other tests. The allowing clause matches any call to sniper_state_changed with a Sniper that is currently bidding, but doesn\'92t insist that such a call happens. In this test, we use the allowance to record what the Sniper has told us about its state.\
+\
+In other tests we attach action clauses to allowances, so that the call will return a value or throw an exception. For example, we might have an allowance that stubs the catalog to return a price that will be returned for use later in the test.\
+\
+The distinction between allowances and expectations isn\'92t rigid, but this simple rule helps:\
+\
+
+\b Allow Queries; Expect Commands
+\b0 \
+\
+Commands are calls that are likely to have side effects, to change the world outside the target object. When we tell the audit_trail above to record a failure, we expect that to change the contents of some kind of log. The state of the system will be different if we call the method a different number of times.\
+\
+Queries don\'92t change the world, so they can be called any number of times, including none. In our example above, it doesn\'92t make any difference to the system how many times we ask the catalog for a price.\
+\
+The rule helps to decouple the test from the tested object. If the implementation changes, for example to introduce caching or use a different algorithm, the test is still valid. On the other hand, if we were writing a test for a cache, we would want to know exactly how often the query was made.\
+\
+The number of times a call is expected is defined by the cardinality clause that starts the expectation.\
+\
+
+\b Ignoring Irrelevant Objects
+\b0 \
+\
+We can simplify a test by ignoring collaborators that are not relevant to the functionality being exercised. Isolation framework will not check 
+\i any 
+\i0 calls to ignored objects. This keeps the test simple and focused, so we can immediately see what\'92s important and changes to one aspect of the code do not break unrelated tests. With one ignore clause, the test can focus on the code\'92s domain behavior by disabling everything to do with irrelevant details.\
+\
+Like all power tools, ignoring should be used with care. A chain of ignore objects might suggest that the functionality ought to be pulled out into a new collaborator. As programmers, we must also make sure that ignored features are tested somewhere, and there are higher-level tests to make sure everything works together. In practice, we usually introduce ignoring only when writing specialized tests after the basics are in place.\
+\
+
+\b Invocation Order
+\b0 \
+\
+Isolation framework allows invocations on a mock object to be called in any order; the expectations don\'92t have to be declared in the same sequence. The less we say in the tests about the order of interactions, the more flexibility we have with the implementation of the code. We also gain flexibility in how we structure the tests; for example, we can make test methods more readable by packaging up expectations in helper methods.\
+\
+
+\b Only Enforce Invocation Order When it Matters
+\b0 \
+\
+Sometimes the order in which calls are made is significant, in which case we add explicit constraints to the test. Keeping such constraints to a minimum avoids locking down the production code. It also helps us see whether each case is necessary - ordered constraints are so uncommon that each use stands out.\
+\
+Isolation frameworks have two mechanisms for constraining invocation order: 
+\i sequences, 
+\i0 which define an ordered list of invocations, and 
+\i state machines, 
+\i0  which can describe more sophisticated ordering constraints. Sequences are simpler to understand than state machines, but their restrictiveness can make tests brittle if used inappropriately.\
+\
+Sequences are most useful for confirming that an object sends notifications to its neighbors in the right order. States and sequences can be used in combination. We rarely need such complexity - it\'92s most common when responding to external feeds of events where we don\'92t own the protocol - and we always take it as a hint that something should be broken up into smaller, simpler pieces.\
+\
+
+\b The Power of Mock States
+\b0 \
+\
+We can use it to model each of the three types of participants in a test: the object being tested, its peers and the test itself.\
+\
+A states describes what the test finds relevant about the object, not its internal structure. We don\'92t want to constrain the object\'92s implementation.\
+\
+We can represent the state of the test itself. For example, we could enforce that some interactions are ignored while the test is being setup.\
+\
+
+\b Guinea Pig Objects
+\b0 \
+\
+\
+\
+}

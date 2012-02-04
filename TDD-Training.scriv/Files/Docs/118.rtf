@@ -1,0 +1,161 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 State Verification\
+\
+
+\b0 State Based Testing\
+\
+How do we make tests self-checking when there is state to be verified?\
+We inspect the state of the SUT after it has been exercised and compare it to the expected state.\
+Fig goes here.\
+\
+We exercise the SUT by invoking the methods of interest. Then, as a separate step, we interact with the SUT to retrieve its post-exercise state and compare it with the expected end state by calling assertion methods.\
+\
+We should use state verification when we care about only the end state of the SUT - not how the SUT got there. Taking such a limited view helps us maintain encapsulation of the implementation of the SUT.\
+\
+State verification comes naturally when we are building the software inside out. That is, we build the innermost objects first and then build the next layer of objects on top of them. Of course, we may need to use test stubs to control the indirect inputs of the SUT to avoid production bugs caused by untested code paths. Even then, we are choosing not to verify the indirect outputs of the SUT.\
+\
+When we 
+\i do 
+\i0 care about the side effects of exercising the SUT that are not visible in its end state (its indirect outputs), we can use behavior verification to observe the behavior directly. We must be careful, however, not to create fragile tests by over specifying the software.\
+\
+There are two basic styles of implementing state verification.\
+\
+
+\b Procedural State Verification\
+
+\b0 \
+We write a series of calls to assertion methods that pick apart the state information into pieces and compare those bits of information to individual expected values. Most people who are new to automating tests take such a path of least resistance. The major disadvantage of this approach is that it can result in obscure tests owing to the number of assertions it may take to specify the expected outcome. When the same sequence of assertions must be carried out in many tests or many times within a single test method we also have test code duplication.\
+\
+
+\b Expected State Specification\
+
+\b0 \
+Expected Object\
+\
+When doing Expected State Specification, we construct a specification for the post-exercise state of the SUT in the form of one or more objects populated with the expected attributes. We then compare the actual state directly with these objects using a single call to an equality assertion. This tends to result in more concise and readable tests. We can use and Expected State Specification whenever we need to verify several attributes and it is possible to construct an object that looks like the object we expect the SUT to return. The more attributes we have that need to be compared and the more test that need to compare them, the more compelling the argument for using an Expected State Specification. In the most extreme cases, when we have a lot of data to verify, we can construct an expected table and verify that the SUT contains it. FIT\'92s row fixtures offer a good way to do this in customer tests.\
+\
+The Expected State Specification is most often an instance of the same class that we expect to get back from the SUT. We may have difficulty using Expected State Specification if the object doesn\'92t implement equality in a way that involves comparing the values of attributes (e., by comparing the object references with each other) or if our test-specific definition of equality differs from that implemented by the equals method.\
+\
+In these cases, we can still use an Expected State Specification if we create a custom assertion that implements test specific equality. Alternatively, we can build the Expected State Specification from a class that implements our test specific equality. This class can either be a test specific subclass that overrides the equals method.\
+\
+When the class is difficult to instantiate, we can define a fake object that has the necessary attributes plus an equals method that implements test specific equality. These last few tricks are made possible by the fact that equality assertions usually ask the expected state specification to compare itself to the actual result, rather than the reverse.\
+\
+We can build the Expected State Specification either during the result verification phase of the test immediately before it is used in the equality assertion or during the fixture setup phase of the test. The latter strategy allows us to use attributes of the expected state specification as parameters to the SUT or as the base for derived values when building other objects in the test fixture. This makes it easier to see the cause - effect relationship between the fixture and the expected state specification, which in turn helps us achieve tests as documentation. It is particularly useful when the expected state specification is created out of sight of the reader such as when using creation methods to do the construction.\
+\
+
+\b Behavior Verification\
+\
+
+\b0 Interaction Testing\
+\
+How do we make tests self-checking when there is no state to verify?\
+\
+We capture the indirect outputs of the SUT as they occur and compare them to the expected behavior. A self-checking test must verify that the expected outcome has occurred without manual intervention. But what do we mean by expected outcome? The SUT may not be stateful; if it is stateful, it may not be expected to end up in a different state after it has been exercised. The SUT may also be expected to invoke methods on other objects.\
+\
+Behavior verification involves verifying the indirect outputs of the SUT as it is being exercised.\
+\
+Each test specifies not only how the client of the SUT interacts with it during the exercise SUT phase of the test, but also how the SUT interacts with the components on which it should depend. This ensures that the SUT really is behaving as specified rather than just ending up in the correct post-exercise state.\
+\
+Behavior verification involves interacting with or replacing a DoC with which the SUT interacts at runtime. The line between behavior verification and state verification can get a bit blurry when the SUT stores its state in the DoC because both forms of verification involves layer-crossing tests. We can distinguish between the two cases based on whether we are verifying the post-test state in the DoC (State Verification) or whether we are verifying the method calls made by the SUT on the DoC (Behavior Verification).\
+\
+Behavior Verification is primarily a technique for unit tests and component tests. We can use behavior verification whenever the SUT calls methods on other objects or components. We  must use behavior verification whenever the expected outputs of the SUT are transient and cannot be determined simply by looking at the post-exercise state of the SUT or the DoC. This forces us to monitor these indirect outputs as they occur.\
+\
+A common application of behavior verification is when we are writing our code in an outside-in manner. This approach, which is often called need-driven development, involves writing the client code before we write the DoC. It is a good way to find out exactly what the interface provided by the DoC needs to be based on real, concrete examples rather than on speculation. The main objection to this approach is that we need to use a lot of test doubles to write these tests. That could result in fragile tests because each test knows so much about how the SUT is implemented. Because the tests specify the behavior of the SUT in terms of its interactions with the DoC, a change in the implementation of the SUT could break a lot of tests. This kind of over specified software could lead to high test maintenance cost.\
+\
+In most cases state verification is clearly necessary; in some cases behavior verification is clearly necessary. One reason why behavior verification came about : Some functionality of the SUT is not visible within the end state of the SUT itself, but can be seen only if we intercept the behavior at an internal observation point between the SUT and the DoC or if we express the behavior in terms of state changes for the objects with which the SUT interacts.\
+\
+Before we exercise the SUT by invoking the methods of interest, we must ensure that we have a way of observing its behavior. Sometimes the mechanisms that the SUT uses to interact with the components surrounding it make such observation possible; when this is not the case, we must install some sort of test double to monitor the SUT\'92s indirect outputs. We can use a test double as long as we have a way to replace the DoC with the test double. This could be via dependency injection.\
+\
+There are two fundamentally different ways to implement behavior verification. The mock object is commonly used approach for expected behavior specification.\
+\
+
+\b Procedural Behavior Verification\
+
+\b0 \
+We capture the method calls made by the SUT as it executes and later get access to them from within the test method. Then we use equality assertions to compare them with the expected results.\
+\
+The most common way of trapping the indirect outputs of the SUT is to install a test spy in place of the DoC during fixture setup phase. During the result verification phase of the test, we ask the test spy how it was used by the SUT during the exercise SUT phase. \
+\
+
+\b Expected Behavior Specification\
+
+\b0 \
+Instead of waiting until after the fact to verify the indirect output of the SUT by using a sequence of assertions, we load the Expected Behavior Specification into a mock object and let it verify that the method calls are correct as they are received.\
+\
+We can use an Expected Behavior Specification when we know exactly what should happen ahead of time and we want to remove all procedural behavior specification from the test method. This tends to make the test shorter (assuming we are using a compact representation of the expected behavior) and can be used to cause the test to fail on the first deviation from the expected behavior if we so choose.\
+\
+
+\b Custom Assertion
+\b0 \
+\
+How do we make tests self-checking when we have test-specific equality logic? How do we reduce test code duplication when the same assertion logic appears in many tests? How do we avoid conditional test logic?\
+We create a purpose-built assertion method that compares only those attributes of the object that define test-specific equality.\
+\
+Fig\
+\
+This test would be so much easier to write if I just had an assertion that did\'85 We hide the complexity of whatever it takes to prove the system is behaving correctly behind an assertion method with an intent revealing name.\
+\
+We encapsulate the mechanics of verifying that something is true (an assertion) behind an intent revealing name. To do so, we factor out all the common assertion code within the tests into a custom assertion that implements the verification logic. A custom equality assertion takes two parameters: an expected object and the actual object.\
+\
+Typically custom assertions are created by identifying common patters of assertions in our tests. We might also call a nonexistent custom assertion because it makes writing our test easier; this tactic lets us focus on the part of the SUT that needs to be tested rather than the mechanics of how the test would be carried out.\
+\
+Custom assertions are created when:\
+\
+We find ourselves writing the same assertion logic in test after test.\
+We find ourselves writing conditional test logic in the result verification part of our tests. That is, our calls to assertion methods are embedded in if statements or loops.\
+The result verification parts of our tests suffer from obscure test because we use procedural rather than declarative result verification in the tests.\
+We find ourselves doing frequent debugging whenever assertions fail because they do not provide enough information.\
+\
+
+\b Custom Equality Assertion
+\b0 \
+\
+The custom assertion must be passed an expected object and the actual object to be verified. It should also take an assertion message.\
+\
+
+\b Domain Assertion
+\b0 \
+\
+A domain assertion is a stated outcome assertion that states something that should be true in domain specific terms\
+\
+
+\b Diagnostic Assertion
+\b0 \
+\
+A special kind of custom assertion that may look like one of the built-in assertions but provide more information about what is different between the expected and actual values than a built-in assertion.\
+\
+
+\b Verification Method
+\b0 \
+\
+A form of custom assertion that interact directly with the SUT, thereby relieving their callers from this task. This simplifies the tests significantly and leads to a more declarative style of outcome specification. \
+\
+
+\b Custom Assertion Test
+\b0 \
+\
+The assertion method is the SUT, the exercise SUT and verify outcome phases of the Four-Phase Test are combined into a single phase.\
+\
+
+\b Delta Assertion
+\b0 \
+\
+How do we make tests self-checking when we cannot control the initial contents of the fixture? We specify assertions based on differences between the pre and post exercise state of the SUT.\
+\
+Fig.\
+\
+
+\b Guard Assertion
+\b0 \
+\
+How do we avoid conditional test logic? We replace an if statement in a test with an assertion that fails the test if not satisfied.\
+\
+Fig.\
+\
+Some verification logic may fail because information returned by the SUT is not initialized as expected. When a test encounters an unexpected problem, it may produce a test error rather than a test failure. \
+\
+We should use a guard assertion whenever we want to avoid executing statements in our test method because they would cause an error if they were executed when some condition related to values returned by the SUT is not true. We take this step instead of putting an if then else fail code construct around the sensitive statements. Normally a guard assertion is placed between the exercise SUT and the verify outcome phases of a Four-Phase test.}

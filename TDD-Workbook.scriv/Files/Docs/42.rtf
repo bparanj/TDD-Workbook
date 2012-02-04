@@ -1,0 +1,113 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;\red246\green246\blue246;\red48\green110\blue186;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{circle\}}{\leveltext\leveltemplateid2\'01\uc0\u9702 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{square\}}{\leveltext\leveltemplateid3\'01\uc0\u9642 ;}{\levelnumbers;}\fi-360\li2160\lin2160 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\deftab720
+\pard\pardeftab720\sl640
+
+\f0\b\fs46 \cf0 \cb2 "Why You Don't Get Mock Objects" by Gregory Moeck\
+\pard\pardeftab720\sl360\sa260
+
+\fs26 \cf0 RubyConf 2011
+\b0  | 
+\b 2011-09-29
+\b0  | 
+\b Gregory Moeck ({\field{\*\fldinst{HYPERLINK "http://twitter.com/gregmoeck"}}{\fldrslt \cf3 @gregmoeck}})
+\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
+\ls1\ilvl0\cf0 {\listtext	\'95	}Recommended as the best book on mocks: {\field{\*\fldinst{HYPERLINK "http://amazon.com/dp/0321503627"}}{\fldrslt \cf3 Growing Object-Oriented Software, Guided by Tests}} by Steve Freeman & Nat Pryce\
+{\listtext	\'95	}Common arguments against mocks\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
+\ls1\ilvl1\cf0 {\listtext	
+\f1 \uc0\u9702 
+\f0 	}They duplicate implementation\
+{\listtext	
+\f1 \uc0\u9702 
+\f0 	}They lead to brittle tests\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
+\ls1\ilvl0\cf0 {\listtext	\'95	}Mock objects + procedural programming = bad idea\
+{\listtext	\'95	}If you're doing traditional Rails development (which tends to follow more of a "procedural", do-this-and-then-do-that style), mock objects probably aren't for you\
+{\listtext	\'95	}Mocks are not stubs\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
+\ls1\ilvl1\cf0 {\listtext	
+\f1 \uc0\u9702 
+\f0 	}When you're asserting on state, you're stubbing\
+{\listtext	
+\f1 \uc0\u9702 
+\f0 	}When you're asserting on messages between objects, you're mocking\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
+\ls1\ilvl0\cf0 {\listtext	\'95	}Emphasized specific OO principles\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
+\ls1\ilvl1\cf0 {\listtext	
+\f1 \uc0\u9702 
+\f0 	}Tell, don't ask (i.e., commands)\
+{\listtext	
+\f1 \uc0\u9702 
+\f0 	}Hides internal state (i.e., no getters)\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
+\ls1\ilvl0\cf0 {\listtext	\'95	}If you have these principles in play, you cannot assert on 
+\i state
+\i0 \
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
+\ls1\ilvl1\cf0 {\listtext	
+\f1 \uc0\u9702 
+\f0 	}You could add getters just for the tests, but that's a bad idea\
+{\listtext	
+\f1 \uc0\u9702 
+\f0 	}Instead, use mocks to assert on the message going between objects\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
+\ls1\ilvl0\cf0 {\listtext	\'95	}Key mocking rules\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
+\ls1\ilvl1\cf0 {\listtext	
+\f1 \uc0\u9702 
+\f0 	}Mock roles, not objects\
+\pard\tx1660\tx2160\pardeftab720\li2160\fi-2160\sl360
+\ls1\ilvl2\cf0 {\listtext	
+\f1 \uc0\u9642 
+\f0 	}Wanting to mock concrete objects is a design smell\
+{\listtext	
+\f1 \uc0\u9642 
+\f0 	}Well designed objects don't know explicitly who they're talking to\
+{\listtext	
+\f1 \uc0\u9642 
+\f0 	}They should only know the 
+\i role
+\i0  that their collaborator is playing\
+{\listtext	
+\f1 \uc0\u9642 
+\f0 	}When mocking roles, TDD becomes a design process\
+{\listtext	
+\f1 \uc0\u9642 
+\f0 	}Helps you follow the Single Responsibility Principle\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
+\ls1\ilvl1\cf0 {\listtext	
+\f1 \uc0\u9702 
+\f0 	}Only mock types that you own\
+\pard\tx1660\tx2160\pardeftab720\li2160\fi-2160\sl360
+\ls1\ilvl2\cf0 {\listtext	
+\f1 \uc0\u9642 
+\f0 	}If you don't own the API, there is no design feedback that you'll get by writing a test for it\
+{\listtext	
+\f1 \uc0\u9642 
+\f0 	}Instead of mocking a role, you're mocking an implementation\
+{\listtext	
+\f1 \uc0\u9642 
+\f0 	}You're duplicating production code in a test, and this is a test smell\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
+\ls1\ilvl1\cf0 {\listtext	
+\f1 \uc0\u9702 
+\f0 	}Only mock peers, not internals\
+\pard\tx1660\tx2160\pardeftab720\li2160\fi-2160\sl360
+\ls1\ilvl2\cf0 {\listtext	
+\f1 \uc0\u9642 
+\f0 	}Decide what is inside and what is outside your object\
+{\listtext	
+\f1 \uc0\u9642 
+\f0 	}Not everything belongs to a peer\
+{\listtext	
+\f1 \uc0\u9642 
+\f0 	}Ask yourself, "Is this the role that this object is supposed to play?" If so, the behavior is internal to the object and should therefore 
+\i not
+\i0  be mocked.\
+}

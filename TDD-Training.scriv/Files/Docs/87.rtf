@@ -1,0 +1,124 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red125\green125\blue125;}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  Tests will sometimes need to allocate external resources in setUp(). If we want the\
+tests to remain independent, a test that allocates external resources should release\
+them before it is done, perhaps in a tearDown() method.\
+\
+The simple minded way to write the test for deallocation is to introduce yet another\
+flag. All those flags are starting to bug me, and they are missing an important aspect\
+of the methods\'97setUp() is called before the test method is run, and tearDown() is\
+called afterwards. I\'92m going to change the testing strategy to keep a little log of\
+what methods are called. By always appending to the log, we will preserve the\
+order in which the methods are called.\
+\pard\pardeftab720
+\cf2 \
+WasRun\
+\pard\pardeftab720
+\cf0 def setUp(self):\
+self.wasRun= None\
+self.wasSetUp= 1\
+self.log= "setUp "\
+\
+ Now we can change testSetUp() to look at the log instead of the flag:\
+\pard\pardeftab720
+\cf2 TestCaseTest\
+\pard\pardeftab720
+\cf0 \
+def testSetUp(self):\
+self.test.run()\
+assert("setUp " == self.test.log)\
+\
+ Now we can delete the wasSetUp flag. We can record the running of the test\
+method, too:\
+\pard\pardeftab720
+\cf2 \
+WasRun\
+\pard\pardeftab720
+\cf0 def testMethod(self):\
+self.wasRun= 1\
+self.log= self.log + "testMethod "\
+ This breaks testSetUp, because the actual log contains \'93setUp testMethod \'94. We\
+change the expected value:\
+\pard\pardeftab720
+\cf2 \
+TestCaseTest\
+\pard\pardeftab720
+\cf0 def testSetUp(self):\
+self.test.run()\
+assert("setUp testMethod " == self.test.log)\
+ Now this test is doing the work of both tests, so we can delete testRunning and\
+rename testSetUp:\
+\pard\pardeftab720
+\cf2 \
+TestCaseTest\
+\pard\pardeftab720
+\cf0 def setUp(self):\
+self.test= WasRun("testMethod")\
+def testTemplateMethod(self):\
+self.test.run()\
+assert("setUp testMethod " == self.test.log)\
+ Unfortunately, we are only using the instance if WasRun in one place, so we have\
+to undo our clever setUp hack:\
+\pard\pardeftab720
+\cf2 \
+TestCaseTest\
+\pard\pardeftab720
+\cf0 def testTemplateMethod(self):\
+test= WasRun("testMethod")\
+test.run()\
+assert("setUp testMethod " == test.log)\
+ (Doing a refactoring based on a couple of early uses, then having to undo it soon\
+after is fairly common. Some folks wait until they have three or four uses before\
+refactoring because they don\'92t like undoing work. I prefer to spend my thinking\
+cycles on design, so I just reflexively do the refactorings without worrying about\
+whether I will have to undo them immediately afterward.)\
+\
+ Now we are ready to implement tearDown(). Got you! We are ready to test for tear-\
+Down:\
+\pard\pardeftab720
+\cf2 TestCaseTest\
+\pard\pardeftab720
+\cf0 def testTemplateMethod(self):\
+test= WasRun("testMethod")\
+test.run()\
+assert("setUp testMethod tearDown " == test.log)\
+ This fails. Making it work is simple:\
+\pard\pardeftab720
+\cf2 TestCase\
+\pard\pardeftab720
+\cf0 def run(self, result):\
+result.testStarted()\
+self.setUp()\
+exec "self." + self.name + "()"\
+self.tearDown()\
+\pard\pardeftab720
+\cf2 WasRun\
+\pard\pardeftab720
+\cf0 def setUp(self):\
+self.log= "setUp "\
+def testMethod(self):\
+self.log= self.log + "testMethod "\
+def tearDown(self):\
+self.log= self.log + "tearDown "\
+ Surprisingly, we get an error, not in WasRun, but in the TestCaseTest. We don\'92t\
+have a no-op implementation of tearDown() in TestCase:\
+\pard\pardeftab720
+\cf2 TestCase\
+\pard\pardeftab720
+\cf0 def tearDown(self):\
+pass\
+ This time we got value out of using the same testing framework we are developing.\
+Yippee\'85\
+No refactoring necessary. The Obvious Implementation, after that one glitch,\
+worked and was clean.\
+Next we\'92ll go on to report the results of running a test explicitly, instead of letting\
+Python\'92s native error handling and reporting system tell us when there is a problem\
+with an assertion. Reviewing, in this chapter we:\
+ Restructured the testing strategy from flags to a log\
+\
+\'95  Tested and implemented tearDown() using the new log\
+\'95  Found a problem and, daringly, fixed it instead of backing up}

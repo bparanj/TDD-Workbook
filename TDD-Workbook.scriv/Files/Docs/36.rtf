@@ -1,0 +1,110 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red148\green0\blue157;\red233\green233\blue255;
+\red51\green66\blue119;\red133\green0\blue0;\red16\green109\blue109;\red209\green0\blue51;\red131\green0\blue97;
+\red20\green136\blue136;}
+\deftab720
+\pard\pardeftab720\sl440\sa440\qj
+
+\f0\b\fs44 \cf0 \cb2 Why you should care about information hiding\
+\pard\pardeftab720\sl440\sa300\qj
+
+\b0\fs30 \cf0 As I mentioned in my {\field{\*\fldinst{HYPERLINK "http://gmoeck.github.com/2011/09/20/why-you-should-care-about-encapsulation.html"}}{\fldrslt \cf3 \ul \ulc3 last}} post, in preparation for my upcoming RubyConf talk I'm writing a series of blog posts about the design priciples that drive the use of mock objects. In that post I covered what encapsulation is, and why you should care about it. Today I want to take up a closely related, yet slightly different topic: Information Hiding.\
+\pard\pardeftab720\sl440\qj
+
+\b\fs38 \cf0 What is information hiding?\
+\pard\pardeftab720\sl440\sa300\qj
+
+\b0\fs30 \cf0 Before talking about why you should care about information hiding, lets talk a bit about what information hiding is, and what it is not. When I say that an object hides its information well, I mean that an object hides how it implements its behavior from the outside world. That is, its API only exposes 
+\i what
+\i0  a given object does, not 
+\i how
+\i0  it does it. I've found that people are generally confused as to the benefits of information hiding because the general example that is given to illustrate information hiding is something like the following:\
+\pard\pardeftab720\sl440\qj
+
+\f1\fs24 \cf0 \cb4 class \cf5 Encapsulation\cf0 \
+  def \cf6 initialize\cf0 (value)\
+    \cf7 @value\cf0  = value\
+  end\
+\
+  def \cf6 set_value\cf0 (value)\
+    \cf7 @value\cf0  = value\
+  end\
+\
+  def \cf6 get_value\cf0 \
+    \cf7 @value\cf0 \
+  end\
+end\
+\pard\pardeftab720\sl440\sa300\qj
+
+\f0\fs30 \cf0 \cb2 There are some benefits to doing something like this (you could have value be computed somehow for instance), but this isn't really accomplishing information hiding as I described above. It's really providing an API to modify the data which the object is "encapsulating". The object isn't really exposing behavior as much as it is holding data and as such, in order to use the object, you still have to keep in mind the low level details of how it works. Any code that does not hide its information behind a solid API is inherantly a {\field{\*\fldinst{HYPERLINK "http://www.joelonsoftware.com/articles/LeakyAbstractions.html"}}{\fldrslt \cf3 \ul \ulc3 leaky abstraction}}.\
+\pard\pardeftab720\sl440\qj
+
+\b\fs38 \cf0 Why should I care?\
+\pard\pardeftab720\sl440\sa300\qj
+
+\b0\fs30 \cf0 Maybe it's just me, but when my applications get large I find it difficult to keep all of the details about how everything works in my head. Even when I'm the one who has written all of the code, it eventually becomes too much, and it only gets worse when there are multiple developers working in the same code base. But when the implementation of 
+\i how
+\i0  an object accomplishes what its API promises to do is hidden, it enables us to treat the object essentially as a black box. We can trust that the object will do what it is supposed to do, even if we don't know how it does it.\
+The biggest benefit to having good information hiding in my mind is that it allows you to build abstractions that allow you to work on higher and higher layers because you can ignore details that are not related to what your 
+\i currently
+\i0  working on. Almost every programmer expects this out of their libraries, but rarely do they expect it from their own code.\
+Consider the following ticket machine interface:\
+\pard\pardeftab720\sl440\qj
+
+\f1\fs24 \cf0 \cb4 class \cf5 TicketMachineInterface\cf0 \
+  def \cf6 initialize\cf0 (ticket_reserver)\
+    \cf7 @ticket_reserver\cf0  = ticket_reserver\
+    \cf7 @current_display\cf0  = \cf8 ""\cf0 \
+  end\
+\
+  def \cf6 number_pressed\cf0 (number)\
+    \cf7 @current_display\cf0  += number.to_s\
+  end\
+\
+  def \cf6 delete_pressed\cf0 \
+    \cf7 @current_display\cf0 .chop!\
+  end\
+\
+  def \cf6 submit_request\cf0 \
+    \cf7 @ticket_reserver\cf0 .reserve(\cf7 @current_display\cf0 .to_i)\
+  end\
+end\
+\pard\pardeftab720\sl440\sa300\qj
+
+\f0\fs30 \cf0 \cb2 The key thing to notice is that the API exposes behavior instead of data, or implementation. In order to use the object, you need only to know its API, and give it a ticket reserver on creation. Notice also, that the "ticket reserver" is merely a role that another object is going to play. From the perspective of the ticket machine, all it cares about is that it implements an api to reserve tickets. It could do that by communicating over HTTP, writing to a database, or whatever. Since the ticket reserver seems to have hidden its information as well, the object is just a role, and any object which implements the role's API can just step in.\
+\pard\pardeftab720\sl440\qj
+
+\b\fs38 \cf0 Isn't this just encapsulation?\
+\pard\pardeftab720\sl440\sa300\qj
+
+\b0\fs30 \cf0 You can see that one of the nice side effects of good information hiding is that it tends to produce well encapsulated code. If your API does not expose how it does what it does, it is very difficult to change the behavior of an object without calling its API. However as {\field{\*\fldinst{HYPERLINK "http://nat.truemesh.com/archives/000498.html"}}{\fldrslt \cf3 \ul \ulc3 Nat Price}} has pointed out, the two still have different goals, and it can be helpful to focus on only one of thos goals at a time.\
+\pard\pardeftab720\sl440\qj
+
+\b\fs38 \cf0 What does this have to do with Mock Objects?\
+\pard\pardeftab720\sl440\sa300\qj
+
+\b0\fs30 \cf0 I think that the above ticket machine interface code is a good example of encapsulated code that hides its information well. Now if you were to follow the state based sort of unit testing approach, how would you write a test for that object? I think the only way you could is to add getters or setters for the information that your attempting to "hide". Whereas with a mock object, you would write a test something like the following:\
+\pard\pardeftab720\sl440\qj
+
+\f1\fs24 \cf0 \cb4 describe \cf7 TicketMachineInterface\cf0  do\
+  it \cf8 "reserves the number of tickets inputted when the user submits a\cf0 \
+\pard\pardeftab720\sl440\qj
+\cf8 request"\cf0  do\
+    ticket_reserver = double(\cf8 'ticket_reserver'\cf0 )\
+    ticket_reserver.should_receive(\cf9 :reserve\cf0 ).with(\cf10 55\cf0 )\
+\
+    machine = \cf7 TicketMachineInterface\cf0 .new(ticket_reserver)\
+    machine.number_pressed(\cf10 5\cf0 )\
+    machine.number_pressed(\cf10 5\cf0 )\
+    machine.submit_request\
+  end\
+end\
+\pard\pardeftab720\sl440\qj
+
+\f0\b\fs38 \cf0 \cb2 Conclusion\
+\pard\pardeftab720\sl440\sa300\qj
+
+\b0\fs30 \cf0 If your interested further, I'm going to be giving my RubyConf talk on {\field{\*\fldinst{HYPERLINK "http://rubyconf.org/presentations/21"}}{\fldrslt \cf3 \ul \ulc3 "Why You Don't Get Mock Objects"}}, which will focus on these issues some more. I'll also likely follow up with some more blog posts after the fact.\
+\
+Your tests have no tests. How do you prove correctness of your test?}

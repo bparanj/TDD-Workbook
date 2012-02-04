@@ -1,0 +1,175 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 For the most part we assumed that the SUT was designed such that it could be tested easily in isolation of other pieces of software. When a class does not depend on any other classes, testing it is relatively straightforward. When a class does depend on other classes, we have two choices: we can test it together with all the other classes it depends on or we can try to isolate it from the other classes so that we can test it by itself. We will now see techniques for isolating the SUT from the other software components on which it depends.\
+\
+
+\b What Are Indirect Inputs and Outputs?
+\b0 \
+\
+The problem with testing classes in groups or clusters is that it becomes very hard to cover all the paths through the code. The DoC may return values or throw exceptions that affect the behavior of the SUT, but it may prove difficult or impossible to cause certain cases to occur. The indirect inputs received from the DoC may be unpredictable (such as system clock or calendar). In other cases, the DoC may not be available in the test environment or may not even exist. How can we test dependent classes in these circumstances?\
+\
+In other cases, we need to verify that certain side effects of executing the SUT have, indeed, occurred. If it is too difficult to monitor these indirect outputs of the SUT (or if it is too expensive to retrieve them), the effectiveness of our automated testing may be compromised.\
+\
+The solution to these problems is often the use of a test double. We will start by looking how we can use test doubles to test indirect inputs and outputs. \
+\
+
+\b Why Do We Care about Indirect Inputs?
+\b0 \
+\
+Calls to DoCs often return objects or values, update their arguments or even throw exceptions. Many of the execution paths within the SUT are intended to deal with these return values and to handle the possible exceptions. Leaving these paths untested leads to untested code. These paths can be the most challenging to test effectively but are also among the most likely to lead to catastrophic failures if exercised for the very first time in production.\
+\
+It is desirable to have automated tests for exception-handling code. The testing challenge is to somehow cause the DoC to throw an exception so that the error path can be tested. The exception we expect the DoC to throw is a good example of an indirect input test condition. Our means of injecting this input is a control point. \
+\
+Fig 11.1 an indirect input being received by the SUT from a DoC. Not all inputs of the SUT come from the test. Some indirect inputs come from other components called by the SUT in the form of return values, updated parameters, or exceptions thrown. \
+\
+
+\b Why Do We Care about Indirect Outputs?
+\b0 \
+\
+The concept of encapsulation often directs us to not care about how something is implemented. When testing, we try to verify the implementation precisely so our clients do not have to care about it.\
+\
+If a method does not return anything or at least nothing that can be used to determine whether it has performed its function correctly. In this situation, we have no choice but to test through the back door. A good example of this is a message logging system. Calls to the API of a logger rarely return anything that indicates it did its job correctly. The only way to determine whether the message logging system is working as expected is to interact with it through some other interface - one that allows us to retrieve the logged messages.\
+\
+A client of the logger may specify that the logger called when certain conditions are met. These calls will not be visible on the client\'92s interface but would typically be a requirement that the client needs to satisfy and therefore would be something we want to test. The circumstances that should result in a messaging being logged are indirect output test conditions for which we need to write tests so that we can avoid having untested requirements. Our means of seeing this output is an observation point.\
+\
+Fig 11.2 An indirect output being received by the SUT. Not all outputs of the SUT are directly visible to the test. Some indirect outputs are sent to other components in the form of method calls or messages.\
+\
+In other cases, the SUT does produce visible behavior that can be verified through the front door but also has some expected side effects. Both outputs need to be verified in our tests. Sometimes this testing is simply a matter of adding assertions for the indirect outputs to the existing tests to verify the untested requirement.\
+\
+
+\b How Do We Control Indirect Inputs?
+\b0 \
+\
+Testing with indirect inputs is a bit simpler than testing with indirect outputs because the techniques used to test outputs build on those used to test inputs. Let\'92s look at indirect inputs first.\
+\
+To test the SUT with 
+\i indirect 
+\i0 inputs, we must be able to control the DoC to cause it to return every possible kind of return value. That implies the availability of a suitable control point. \
+\
+Examples of the kinds of indirect inputs we want to be able to induce via this control point include:\
+\
+Return values of methods / functions\
+Values of updatable arguments\
+Exceptions that could be thrown\
+\
+Often, the test can interact with the DoC to set up how it will respond to requests. For example, if a component provides access to data in a database, then we can use back door setup to insert specific values into a database that cause the component to respond in the desired ways (no items found, one item found, many items found). In this specific case, we can use the database itself as a control point.\
+\
+Fig 11.3 Using back door manipulation to indirectly control and observe the SUT. When the SUT stores its state in another component, we may be able to manipulate that state by having the test interact directly with the other component via a back door.\
+\
+In most cases this approach is not practical for the following reasons:\
+\
+The real component cannot be manipulated to produce the desired indirect input. Only a true software error within the real component would result in the desired input to the SUT.\
+The real component could be manipulated to make the input occur but doing so would not be cost-effective.\
+The real component could be manipulated to make the input occur but doing so could have unacceptable side effects.\
+The real component is not yet available for use.\
+\
+If we cannot use the real component as a control point, then we have to replace it with one that we can control. This replacement can be done in a number of different ways. The most common approach is to configure a test stub with a set of values to return from its functions and then to install this test stub into the SUT. During execution of the SUT, the test stub receives the calls and returns the previously configured responses. It has become our control point.\
+\
+Fig 11.4 Using a test stub as a control point for indirect inputs. One way to use a control point to inject indirect inputs into the SUT is to install a test stub in place of the DoC. Before exercising the SUT, we tell the test stub what it should return to the SUT when it is called. This strategy allows us to force the SUT through all its code paths.\
+\
+
+\b How Do we Verify Indirect Outputs?
+\b0 \
+\
+In normal usage, as the SUT is exercised, it interacts naturally with the components upon which it depends. To test the 
+\i indirect 
+\i0 outputs, we must be able to observe the calls that the SUT makes to the API of the DoC. Furthermore, if we need the test to progress beyond that point, we need to be able to control the values returned.\
+\
+Fig 11.5 Using behavior verification to verify the indirect outputs of the SUT. When we care about exactly what calls our SUT makes to other components, we may have to do behavior verification rather than simply verifying the post-test state of the SUT.\
+\
+In many cases, the test can use the DoC as an observation point to find out how it has been used. For example:\
+\
+We can ask the file system for the contents of a file that the SUT has written to verify that it exists and was written with the expected contents.\
+We can ask the database for the contents of a table or specific record to verify that the SUT wrote the expected records to the database.\
+We can interact directly with the e-mail sending component to ask whether the SUT had asked it to send a particular email.\
+\
+These are examples of back door verification. Some DoCs allow us to configure their behavior in such a way that we can use them to keep the test informed of how they are being used:\
+\
+We can ask the file system to notify the test whenever a file is created or modified so we can verify its contents.\
+We can use a database trigger to notify the test when a record is written or deleted.\
+We can configure the email sending component to deliver all outgoing email to the test.\
+\
+Sometimes it is not practical to use the real component as an observation point. We need to replace the real component with a test-specific alternative. For example:\
+The calls to (or the internal state of) the DoC cannot be queried.\
+The real component can be queried but doing so is cost-prohibitive\
+The real component can be queried but doing so has unacceptable side effects.\
+The real component is not yet available for use.\
+\
+There are two basic styles of indirect output verification. Procedural behavior verification captures the calls to a DoC (or their results) during SUT execution and then compares them with the expected calls after the SUT has finished executing. This verification involves replacing a substitutable dependency with a test spy. During execution of the SUT, the test spy receives the calls and records them. After the test method has finished exercising the SUT, it retrieves the actual calls from the test spy and uses assertion methods to compare them with the expected calls.\
+\
+Fig 11.6 Using a test spy as an observation point for indirect outputs of the SUT. One way to implement behavior verification is to install a test spy in place of the target of the indirect outputs. After exercising the SUT, the test asks the test spy for information about how it was used and compares that information to the expected behavior using assertions.\
+\
+Expected behavior involves building a behavior specification during the fixture setup phase of the test and then comparing the actual behavior with this expected behavior. It is typically done by loading a mock object with a set of expected procedure call descriptions and installing this object into the SUT. During execution of the SUT, the mock object receives the calls and compares them to the previously defined expected calls (the behavior specification). As the test proceeds, if the mock object receives an unexpected call, it fails the test immediately. The test failure traceback will show the exact location in the SUT where the problem occurred because the assertions methods are called from the mock object, which is in turn called by the SUT. We can also see exactly where in the test method the SUT was being exercised.\
+\
+Fig 11.7 Using a mock object as an observation point for indirect outputs of the SUT. Another way to implement behavior verification is to install a mock object in place of the target of the indirect outputs. As the SUT makes calls to the DoC, the mock objects uses assertions to compare the actual calls and arguments with the expected calls and arguments.\
+\
+When we use a test spy or a mock object, we may also have to employ it as a control point for any indirect inputs on which the SUT depends after the test spy or mock object has been called to allow test execution to continue.\
+\
+
+\b Testing with Doubles
+\b0 \
+\
+How to replace inflexible and uncooperative real components with something that makes it easier to control the indirect inputs and to verify the indirect outputs?\
+\
+To test the indirect inputs, we must be able to control the DoC to cause it to return every possible kind of return value (valid, invalid and exception). To test indirect outputs, we must be able to track the calls the SUT makes to other components. A test double object is used for this purpose.\
+\
+
+\b Types of Test Doubles
+\b0 \
+\
+A test double is any object that we install in place of the real component for the purpose of running a test. Depending on the reason whey we are using it, a test double can behave in one of four ways:\
+\
+A dummy object is a placeholder object that is passed to the SUT as an argument (or an attribute of an argument) but is never actually used.\
+A test stub is an object that replaces a real component on which the SUT depends so that the test can control the indirect inputs of the SUT. It allows the test to force the SUT down paths it might not otherwise exercise. A test spy is a more capable version of a test stub used to verify the indirect outputs of the SUT by giving the test a way to inspect them after exercising the SUT.\
+A mock object is an object that replaces a real component on which the SUT depends so that the test can verify its indirect outputs.\
+A fake object is an object that replaces the functionality of the real DoC with an alternative implementation of the same functionality.\
+\
+Fig 11.8 Several kinds of test doubles exist. Dummy objects are really an alternative to the value patterns. Test stubs are used to verify indirect inputs; test spies and mock objects are used to verify indirect outputs. Fake objects emulate the behavior of the real DoC but with test-friendly characteristics.\
+\
+
+\b Dummy Objects
+\b0 \
+\
+They are a degenerate form of test double. They exist solely to be passed around from method to method; they are never used. That is dummy objects are not expected to do anything except exist. Often we can get away with using nil or nothing; at other times, we may be forced to create a real object because the code expects something non-null. In dynamically types languages, almost any real object will do. For example we pass an instance of dummy customer to the invoice constructor to satisfy a mandatory argument. We do not expect the dummy customer to be used by the code we are testing.\
+\
+Dummy object is not the same as a Null Object. A dummy object is not used by the SUT, so its behavior is irrelevant. By contrast, a Null Object is used by the SUT but is designed to do nothing. \
+\
+
+\b Test Stubs
+\b0 \
+\
+A test stub is an object that acts as a control point to deliver indirect inputs to the SUT when the test stub\'92s methods are called. Its use allows us to exercise untested code paths in the SUT that might otherwise be impossible to traverse during testing. A Responder is a basic test stub that is used to inject valid and invalid indirect inputs into the SUT via normal returns from method calls. A Saboteur is a special test stub that raises exceptions or errors to inject abnormal indirect inputs into the SUT. \
+\
+
+\b Test Spies 
+\b0 \
+\
+A test spy is an object that can act as an observation point for the indirect outputs of the SUT. To the capabilities of a test stub, it adds the ability to quietly record all calls made to its methods by the SUT. The verification part of the test performs procedural behavior verification on those calls by using a series of assertions to compare the actual calls received by the test spy with the expected calls.\
+\
+
+\b Mock Objects
+\b0 \
+\
+A mock object is also an object that can act as an observation point for the indirect outputs of the SUT. Like a test stub it may need to return information in response to method calls. Also like a test spy, it pays attention to how it was called by the SUT. It differs from a test spy, in that it compares actual calls received with the previously defined expectations using assertions and fails the test on behalf of the test method. As a consequence we can reuse the logic employed to verify the indirect outputs of the SUT across all tests that use the same mock object. \
+\
+Like test stubs, mock objects often support configuration with any indirect inputs required to allow the SUT to advance to the point where it would generate the indirect outputs they are verifying.\
+\
+
+\b Fake Objects
+\b0 \
+\
+A fake object is neither directly controlled nor observed by the test. It is used to replace the functionality of the real DoC in a test for reasons other than verification of indirect inputs and outputs. Typically a fake object implements the same functionality or a subset of the functionality of the real DoC in a much simpler way. The most common reasons for using them are that the real DoC has not yet been built, is too slow or is not available in the test environment.\
+Example: Encapsulate all database access behind a persistence layer interface and then replace the persistence layer component with one that used in-memory hash tables instead of a real database, thereby making tests run faster.\
+\
+
+\b Dependency Injection 
+\b0 \
+\
+Dependency injection is a class of design decoupling in which the client tells the SUT which DoC to use at runtime. This makes it possible to reuse the SUT more broadly because it removes knowledge of the dependency from the SUT; often the SUT will be aware of only a generic interface that the DoC must implement. \
+\
+Don\'92t fall into the new hammer trap. Overuse of test doubles (especially mock objects or test stubs_ can lead to over specified software by encoding implementation-specific information about the design in our tests. The design may be then much more difficult to change if many tests are affected by the change simply because they use a test double that has been affected by the design change.\
+\
+}

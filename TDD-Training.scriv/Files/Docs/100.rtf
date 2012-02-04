@@ -1,0 +1,33 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red51\green49\blue41;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 The first test shows that fib(0) = 0. The implementation returns a constant.\
+The second test shows that fib(1) = 1\
+\
+I just put the second assert in the same method because there didn\'92t seem to be any substantial communication value to writing test_fibonacci_of_one_is_one\
+\
+There are several ways I could go to making this run. I\'92ll choose to treat 0 as a special case: if n == 0 return 0; return 1;\
+\
+The duplication in the test case is starting to bug me. We can factor out the common structure of assertions by driving the test from a table of input and expected values. BP: I would extract this into custom assertion and remove login in test code.\
+\
+Now adding the next case requires 6 keystrokes and no additional lines:\
+\
+Disconcertingly, the test works. It just so happens that our constant 1 is right for this case as well. On to the next test: 3,2\
+\
+It fails. Applying the same strategy as before (treating smaller inputs as special cases), we write: if (n<=2) return 1;\
+\
+Now we are ready to generalize. We wrote 2, but we don\'92t really mean 2, we mean 1 + 1 return 1 + 1;\
+\
+That first 1 is an example of fib(n-1) : return fib(n-1) + 1;\
+\
+The second 1 is an example of fib(n-2): return fib(n-1) + fib(n-2)\
+\
+Cleaning up now, the same structure should work for fib(2), so we can tighten up the second condition:\
+\
+\
+And there we have fibonacci, derived totally from the tests.\
+\
+\pard\pardeftab720
+\cf2  The progression of a Lisp programmer - the newbie realizes that the difference between code and data is trivial. The expert realizes that all code is data. And the true master realizes that all data is code.}

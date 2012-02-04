@@ -1,0 +1,125 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red115\green115\blue115;\red27\green27\blue27;\red125\green125\blue125;
+}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  We need to implement Sum.plus() to finish Expression.plus, and then we need\
+Expression.times(), and then we\'92re finished with the whole example. Here\'92s the test\
+for Sum.plus():\
+\pard\pardeftab720
+\cf2 \
+public void \cf0 testSumPlusMoney() \{\
+Expression fiveBucks= Money.dollar(5);\
+Expression tenFrancs= Money.franc(10);\
+Bank bank= \cf2 new \cf0 Bank();\
+bank.addRate(\cf3 "CHF"\cf0 , \cf3 "USD"\cf0 , 2);\
+Expression sum= \cf2 new \cf0 Sum(fiveBucks, tenFrancs).plus(fiveBucks);\
+Money result= bank.reduce(sum, \cf3 "USD"\cf0 );\
+assertEquals(Money.dollar(15), result);\
+\}\
+\
+ We could have created a Sum by adding fiveBucks and tenFrancs, but the form\
+above, where we explicitly create the Sum, communicates more directly. You are\
+writing these tests not just to make your experience of programming more fun and\
+rewarding, but also as a Rosetta Stone for future generations to appreciate your\
+genius. Think, oh think, of your readers.\
+\
+The test, in this case, is longer than the code. The code is the same as the code in\
+Money (do I hear an abstract class in the distance?):\
+\
+\pard\pardeftab720
+\cf4 Sum\
+\pard\pardeftab720
+\cf2 public \cf0 Expression plus(Expression addend) \{\
+\cf2 return new \cf0 Sum(\cf2 this\cf0 , addend);\
+\}\
+\
+You will likely end up with about the same number of lines of test code as model\
+code when TDDing. For TDD to make economic sense, either you will have to be\
+able to write twice as many lines per day as before, or write half as many lines for\
+the same functionality. You\'92ll have to measure and see what effect TDD has on\
+your own practice. Be sure to factor debugging, integrating, and explaining time\
+into your metrics, though.\
+\
+If we can make Sum.times() work, then declaring Expression.times() will be one\
+simple step. The test is:\
+\cf2 public void \cf0 testSumTimes() \{\
+Expression fiveBucks= Money.dollar(5);\
+Expression tenFrancs= Money.franc(10);\
+Bank bank= \cf2 new \cf0 Bank();\
+bank.addRate(\cf3 "CHF"\cf0 , \cf3 "USD"\cf0 , 2);\
+Expression sum= \cf2 new \cf0 Sum(fiveBucks, tenFrancs).times(2);\
+Money result= bank.reduce(sum, \cf3 "USD"\cf0 );\
+assertEquals(Money.dollar(20), result);\
+\}\
+\
+Again, the test is longer than the code (you JUnit geeks will know how to fix that\'97\
+the rest of you will have to read Fixture):\
+\pard\pardeftab720
+\cf4 \
+Sum\
+\pard\pardeftab720
+\cf0 Expression times(\cf2 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf2 return new \cf0 Sum(augend.times(multiplier),\
+addend.times(multiplier));\
+\}\
+\
+Since we abstracted augend and addend to Expressions in the last chapter, we now\
+have to declare times() in Expression before the code will compile:\
+\pard\pardeftab720
+\cf4 \
+Expression\
+\pard\pardeftab720
+\cf0 Expression times(\cf2 int \cf0 multiplier);\
+Which forces us to raise the visibility of Money.times() and Sum.times():\
+\
+\pard\pardeftab720
+\cf4 Sum\
+\pard\pardeftab720
+\cf2 public \cf0 Expression times(\cf2 int \cf0 multiplier) \{\
+\cf2 return new \cf0 Sum(augend.times(multiplier),\
+addend.times(multiplier));\
+\}\
+\pard\pardeftab720
+\cf4 \
+Money\
+\pard\pardeftab720
+\cf2 public \cf0 Expression times(\cf2 int \cf0 multiplier) \{\
+\cf2 return new \cf0 Money(amount * multiplier, currency);\
+\}\
+\
+And it works.\
+The only loose end to tie up is to experiment with returning a Money when we add\
+$5 + $5. The test would be:\
+\cf2 \
+public void \cf0 testPlusSameCurrencyReturnsMoney() \{\
+Expression sum= Money.dollar(1).plus(Money.dollar(1));\
+assertTrue(sum \cf2 instanceof \cf0 Money);\
+\}\
+\
+This test is a little ugly, because it is testing the guts of the implementation, not the\
+externally visible behavior of the objects. However, it will drive us to make the\
+changes we need to make, and this is only an experiment, after all. Here is the code\
+we would have to modify to make it work:\
+\pard\pardeftab720
+\cf4 Money\
+\pard\pardeftab720
+\cf2 public \cf0 Expression plus(Expression addend) \{\
+\cf2 return new \cf0 Sum(\cf2 this\cf0 , addend);\
+\}\
+\
+There is no obvious, clean way (not to me, anyway, I\'92m sure you could think of\
+something) to check the currency of the argument if and only if it is a Money. The\
+experiment fails, we delete the test (which we didn\'92t like much anyway), and away\
+we go.\
+\
+Reviewing, we:\
+\
+\'95 Wrote a test with future readers in mind\
+\'95 Suggested an experiment comparing TDD with your current programming style\
+\'95 Once again had changes of declarations ripple through the system, and once\
+again followed the compiler\'92s advice to fix them\
+ Tried a brief experiment, then discarded it when it didn\'92t work out}

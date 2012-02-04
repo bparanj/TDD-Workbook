@@ -1,0 +1,182 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red125\green125\blue125;\red115\green115\blue115;\red27\green27\blue27;
+}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  When we are done with this chapter we will have a single class to represent Money. The two implementations of times() are close, but not identical.\
+\
+\pard\pardeftab720
+\cf2 Franc\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return \cf0 Money.franc(amount * multiplier);\
+\}\
+\pard\pardeftab720
+\cf2 Dollar\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return \cf0 Money.dollar(amount * multiplier);\
+\}\
+\
+ There\'92s not an obvious way to make them identical. Sometimes you have to go backwards to go forwards, a little like a Rubik\'92s Cube. What happens if we inline the factory methods? \
+\
+\pard\pardeftab720
+\cf2 Franc\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Franc(amount * multiplier, \cf4 "CHF"\cf0 );\
+\}\
+\
+\pard\pardeftab720
+\cf2 Dollar\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Dollar(amount * multiplier, \cf4 "USD"\cf0 );\
+\}\
+\
+In Franc, though, we know that the currency instance variable is always \'93CHF\'94, so we can write:\
+\
+\pard\pardeftab720
+\cf2 Franc\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Franc(amount * multiplier, currency);\
+\}\
+\
+That works. The same trick works in Dollar:\
+\pard\pardeftab720
+\cf2 \
+Dollar\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Dollar(amount * multiplier, currency);\
+\}\
+\
+We\'92re almost there. Does it really matter whether we have a Franc or a Money? We could carefully reason about this given our knowledge of the system. However, we have clean code and we have tests that give us confidence that the clean code works. Rather than apply minutes of suspect reasoning, we can just ask the computer by making the change and running the tests. In teaching TDD I see this situation all the time\'97excellent programmers spending 5-10 minutes reasoning about a question that can be answered by the computer in 15 seconds. Without the tests you\
+have no choice, you have to reason. With the tests you can decide whether an experiment would answer the question faster. Sometimes you should just ask the computer.\
+\
+To run our experiment we change Franc.times() to return a Money:\
+\
+\pard\pardeftab720
+\cf2 Franc\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Money(amount * multiplier, currency);\
+\}\
+\
+The compiler tells us that Money must be a concrete class:\
+\
+\pard\pardeftab720
+\cf2 Money\
+\pard\pardeftab720
+\cf3 class \cf0 Money\
+Money times(\cf3 int \cf0 amount) \{\
+\cf3 return null\cf0 ;\
+\}\
+\
+And we get a red bar. The error message says, \'93expected:<Money.Franc@31aebf>\
+but was: <Money.Money@478a43>\'94. Not as helpful as we would perhaps like. We\
+can define toString() to give us a better error message:\
+\pard\pardeftab720
+\cf2 \
+Money\
+\pard\pardeftab720
+\cf3 public \cf0 String toString() \{\
+\cf3 return \cf0 amount + \cf4 " " \cf0 + currency;\
+\}\
+\
+Whoa! Code without a test? Can you do that? We could certainly have written a test\
+for toString() before we coded it. However:\
+\'95 We are about to see the results on the screen\
+\'95 Since toString() is only used for debug output, the risk of it failing is low\
+\'95 We already have a red bar, and we\'92d prefer not to write a test when we have a\
+red bar\
+Exception noted.\
+\
+Now the error message says: \'93expected:<10 CHF> but was:<10 CHF>\'94. That\'92s a\
+little better, but still confusing. We got the right data in the answer, but the class\
+was wrong\'97Money instead of Franc. The problem is in our implementation of\
+equals():\
+\
+\pard\pardeftab720
+\cf2 Money\
+\pard\pardeftab720
+\cf3 public boolean \cf0 equals(Object object) \{\
+Money money = (Money) object;\
+\cf3 return \cf0 amount == money.amount\
+&& getClass().equals(money.getClass());\
+\}\
+\
+We really should be checking to see that the currencies are the same, not that the\
+classes are the same.\
+We\'92d prefer not to write a test when we have a red bar. However, we are about to\
+change real model code, and we can\'92t change model code without a test. The conservative \
+course is to back out the change that caused the red bar so we\'92re back to\
+green. Then we can change the test for equals(), fix the implementation, and re-try\
+the original change.\
+This time, we\'92ll be conservative.\
+\
+\pard\pardeftab720
+\cf2 Franc\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Franc(amount * multiplier, currency);\
+\}\
+ That gets us back to green. The situation that we had was a Franc(10, \'93CHF\'94) and a\
+Money(10, \'93CHF\'94) that were reported to be not equal, even though we would like\
+them to be equal. We can use exactly this for our test:\
+\cf3 public void \cf0 testDifferentClassEquality() \{\
+assertTrue(\cf3 new \cf0 Money(10, \cf4 "CHF"\cf0 ).equals(\cf3 new \cf0 Franc(10, \cf4 "CHF"\cf0 )));\
+\}\
+ It fails, as expected. The equals() code should compare currencies, not classes:\
+\pard\pardeftab720
+\cf2 Money\
+\pard\pardeftab720
+\cf3 public boolean \cf0 equals(Object object) \{\
+Money money = (Money) object;\
+\cf3 return \cf0 amount == money.amount\
+&& currency().equals(money.currency());\
+\}\
+ Now we can return a Money from Franc.times() and still pass the tests:\
+\pard\pardeftab720
+\cf2 Franc\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Money(amount * multiplier, currency);\
+\}\
+ Will the same will work for Dollar.times()?\
+\pard\pardeftab720
+\cf2 Dollar\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Money(amount * multiplier, currency);\
+\}\
+\
+ Yes! Now the two implementations are identical, so we can push them up.\
+\pard\pardeftab720
+\cf2 Money\
+\pard\pardeftab720
+\cf0 Money times(\cf3 int \cf0 multiplier) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Money(amount * multiplier, currency);\
+\}\
+ Multiplication in place, we are ready to eliminate the stupid subclasses. Reviewing,\
+we:\
+\
+\'95  Reconciled two methods (times()) by first inlining the methods they called and then replacing constants with variables\
+\'95  Wrote a toString() without a test just to help us debug\
+\'95  Tried a change (returning Money instead of Franc) and let the tests tell us whether it worked\
+\'95  Backed out an experiment and wrote another test. Making the test work made the experiment work.\
+}

@@ -1,0 +1,225 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red125\green125\blue125;\red115\green115\blue115;\red27\green27\blue27;
+}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  We can\'92t mark our test for $5 + $5 done until we\'92ve removed all the duplication.\
+We don\'92t have code duplication, but we do have data duplication. The $10 in the\
+fake implementation:\
+\pard\pardeftab720
+\cf2 \
+Bank\
+\pard\pardeftab720
+\cf0 Money reduce(Expression source, String to) \{\
+\pard\pardeftab720
+\cf3 return \cf0 Money.dollar(10);\
+\}\
+\
+ is really the same as the \'93$5 + $5\'94 in the test:\
+\cf3 public void \cf0 testSimpleAddition() \{\
+Money five= Money.dollar(5);\
+Expression sum= five.plus(five);\
+Bank bank= \cf3 new \cf0 Bank();\
+Money reduced= bank.reduce(sum, \cf4 "USD"\cf0 );\
+assertEquals(Money.dollar(10), reduced);\
+\}\
+\
+ Before when we\'92ve had a fake implementation, it\'92s been obvious how to work\
+backwards to the real implementation. It\'92s just been a matter of replacing constants\
+with variables. This time, though, it\'92s not obvious to me how to work backwards.\
+So, even though it feels a little speculative, we\'92ll work forwards.\
+\
+ First, Money.plus() needs to return a real Expression, a Sum, not just a Money (perhaps\
+later we\'92ll optimize the special case of adding two identical currencies, but\
+that\'92s later.)\
+\
+The sum of two Moneys should be a Sum:\
+\cf3 public void \cf0 testPlusReturnsSum() \{\
+Money five= Money.dollar(5);\
+Expression result= five.plus(five);\
+Sum sum= (Sum) result;\
+assertEquals(five, sum.augend);\
+assertEquals(five, sum.addend);\
+\}\
+\
+( first argument to addition is called the \'93augend\'94)\
+\
+ The test above is not one I would expect to live a long time. It is deeply concerned\
+with the implementation of our operation, not its externally visible behavior. However,\
+if we make it work, we expect we\'92ve moved one step closer to our goal.\
+To get it to compile, all we need is a Sum class with two fields, augend and addend:\
+\
+\pard\pardeftab720
+\cf2 Sum\
+\pard\pardeftab720
+\cf3 class \cf0 Sum \{\
+Money augend;\
+Money addend;\
+\}\
+\
+ This gives us a ClassCastException, because Money.plus() is returning a Money,\
+not a Sum:\
+\pard\pardeftab720
+\cf2 \
+Money\
+\pard\pardeftab720
+\cf0 Expression plus(Money addend) \{\
+\pard\pardeftab720
+\cf3 return new \cf0 Sum(\cf3 this\cf0 , addend);\
+\}\
+\
+ Sum needs a constructor:\
+\pard\pardeftab720
+\cf2 Sum\
+\pard\pardeftab720
+\cf0 Sum(Money augend, Money addend) \{\
+\}\
+\
+ And Sum needs to be a kind of Expression:\
+\pard\pardeftab720
+\cf2 \
+Sum\
+\pard\pardeftab720
+\cf3 class \cf0 Sum \cf3 implements \cf0 Expression\
+ Now the system compiles again, but the test is still failing, this time because the\
+Sum constructor is not setting the fields (we could fake the implementation by initializing\
+the fields, but I said I\'92d start going faster):\
+\pard\pardeftab720
+\cf2 \
+Sum\
+\pard\pardeftab720
+\cf0 Sum(Money augend, Money addend) \{\
+\pard\pardeftab720
+\cf3 this\cf0 .augend= augend;\
+\cf3 this\cf0 .addend= addend;\
+\}\
+\
+ Now Bank.reduce() is being passed a Sum. If the currencies in the Sum are all the\
+same, and the target currency is also the same, the result should be a Money whose\
+amount is the sum of the amounts:\
+\cf3 public void \cf0 testReduceSum() \{\
+Expression sum= \cf3 new \cf0 Sum(Money.dollar(3), Money.dollar(4));\
+Bank bank= \cf3 new \cf0 Bank();\
+Money result= bank.reduce(sum, \cf4 "USD"\cf0 );\
+assertEquals(Money.dollar(7), result);\
+\}\
+ I carefully chose parameters that would break the existing test. When we reduce a\
+Sum, the result (under these simplified circumstances) should be a Money whose\
+amount is the sum of the amounts of the two Moneys and whose currency is the\
+currency to which we are reducing.\
+\pard\pardeftab720
+\cf2 Bank\
+\pard\pardeftab720
+\cf0 Money reduce(Expression source, String to) \{\
+Sum sum= (Sum) source;\
+\pard\pardeftab720
+\cf3 int \cf0 amount= sum.augend.amount + sum.addend.amount;\
+\cf3 return new \cf0 Money(amount, to);\
+\}\
+\
+ This is immediately ugly on two counts:\
+\
+\'95  The cast. This code should work with any Expression.\
+\'95  The public fields, and two levels of references at that\
+\
+ Easy enough to fix. First, we can move the body of the method to Sum and get rid\
+of some of the visible fields.We are \'93sure\'94 we will need the Bank as a parameter in\
+the future, but this is pure, simple refactoring, so we leave it out.\
+\pard\pardeftab720
+\cf2 \
+Bank\
+\pard\pardeftab720
+\cf0 Money reduce(Expression source, String to) \{\
+Sum sum= (Sum) source;\
+\pard\pardeftab720
+\cf3 return \cf0 sum.reduce(to);\
+\}\
+\pard\pardeftab720
+\cf2 \
+Sum\
+\pard\pardeftab720
+\cf3 public \cf0 Money reduce(String to) \{\
+\cf3 int \cf0 amount= augend.amount + addend.amount;\
+\cf3 return new \cf0 Money(amount, to);\
+\}\
+\
+ (Which brings up the point of how we are going to implement, er\'85 test,\
+Bank.reduce() when the argument is a Money.)\
+Let\'92s write that test, since the bar is green and there is nothing else obvious to do\
+with the code above:\
+\cf3 \
+public void \cf0 testReduceMoney() \{\
+Bank bank= \cf3 new \cf0 Bank();\
+Money result= bank.reduce(Money.dollar(1), \cf4 "USD"\cf0 );\
+assertEquals(Money.dollar(1), result);\
+\}\
+\pard\pardeftab720
+\cf2 \
+Bank\
+\pard\pardeftab720
+\cf0 Money reduce(Expression source, String to) \{\
+if (source instanceof Money) return (Money) source;\
+Sum sum= (Sum) source;\
+\pard\pardeftab720
+\cf3 return \cf0 sum.reduce(to);\
+\}\
+\
+ Ugly, ugly, ugly. However, we now have a green bar, and refactoring is possible.\
+Any time you are checking classes explicitly, you should be using polymorphism\
+instead. Since Sum implements reduce(String), if Money implemented it, too, we\
+could then add it to the Expression interface.\
+\pard\pardeftab720
+\cf2 \
+Bank\
+\pard\pardeftab720
+\cf0 Money reduce(Expression source, String to) \{\
+\
+\pard\pardeftab720
+\cf3 if \cf0  (source \cf3 instanceof \cf0  Money)\
+\cf3 return \cf0  (Money) source.reduce(to);\
+Sum sum= (Sum) source;\
+\cf3 return \cf0  sum.reduce(to);\
+\}\
+\pard\pardeftab720
+\cf2 \
+Money\
+\pard\pardeftab720
+\cf3 public \cf0  Money reduce(String to) \{\
+\cf3 return this\cf0  ;\
+\}\
+\
+If we add reduce(String) to the Expression interface:\
+\pard\pardeftab720
+\cf2 Expression\
+\pard\pardeftab720
+\cf0  Money reduce(String to);\
+We can eliminate all those ugly casts and class checks:\
+\pard\pardeftab720
+\cf2 \
+Bank\
+\pard\pardeftab720
+\cf0  Money reduce(Expression source, String to) \{\
+\pard\pardeftab720
+\cf3 return \cf0  source.reduce(to);\
+\}\
+\
+I\'92m not entirely happy with the name of the method being the same in Expression\
+and in Bank, but having different parameter types. I\'92ve never found a satisfactory\
+general solution to this problem in Java. In languages with keyword parameters,\
+communicating the difference between Bank.reduce(Expression, String) and\
+Expression.reduce(String) is well supported by the language syntax. With positional\
+parameters, it\'92s not so easy to make the code speak for you about how the\
+two are different.\
+\
+Next we\'92ll actually exchange one currency for another. First, reviewing, we:\
+\
+\'95 Didn\'92t mark a test as done because the duplication had not been eliminated\
+\'95 Worked forwards instead of backwards to realize the implementation\
+\'95 Wrote a test to force the creation of an object we expected to need later (Sum)\
+\'95 Started implementing faster (the Sum constructor)\
+\'95 Implemented code with casts in one place, then moved the code where it belonged once the test were running\
+\'95 Introduced polymorphism to eliminate explicit class checking\
+\
+}

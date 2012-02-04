@@ -1,0 +1,92 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs32 \cf0 How large should your steps be?
+\b0 \
+
+\fs28 \
+There are really two questions lurking here:\
+How much ground should each test cover?\
+How many intermediate stages should you go through as you refactor?\
+\
+The tendency of TDDers over time has been smaller steps. \
+\
+
+\b\fs32 What don\'92t you have to test?
+\b0 \
+
+\fs28 \
+Write tests until fear is transformed into boredom. You should test: conditionals, loops, operations, polymorphism. But only those that you write. Unless you have a reason to distrust it, don\'92t test code from others. \
+\
+Sometimes I will document the presence of unusual behavior in external code with a test that will fail if the bug is ever fixed.\
+\
+
+\b\fs32 How do you know if you have good tests?
+\b0 \
+
+\fs28 \
+Here are some attributes of tests suggesting a design in trouble:\
+\
+
+\b Long Setup Code
+\b0 \
+\
+If you have to spend a hundred lines creating the objects for one simple assertion, something is wrong. Your objects are too big and need to be split.\
+\
+
+\b Setup Duplication
+\b0 \
+\
+If you can\'92t easily find a common place for common setup code there are too many objects too tightly intertwingled.\
+\
+
+\b Long Running Tests
+\b0 \
+\
+TDD tests that run a long time won\'92t be run often, and often haven\'92t been run for a while, and probably don\'92t work. Worse than this, though, they suggest that testing the bits and pieces of the application is hard. This is a design problem and needs to be addressed with design.\
+\
+
+\b Fragile Tests
+\b0 \
+\
+Tests that break unexpectedly suggest that one part of the application is surprisingly effecting another part. You need to design until the effect at a distance is eliminated, either by breaking the connection or by bringing the two parts together.\
+\
+
+\b\fs32 How does TDD lead to frameworks?
+\b0 \
+
+\fs28 \
+I\'92ve been test driving development long enough that I can recover from most of my mistakes faster than you can recognize I\'92ve made them.\
+\
+
+\b\fs32 How much feedback do you need?
+\b0 \
+
+\fs28 \
+How many tests should you write? Here\'92s a simple problem - given three integers representing the length of the sides a triangle, return:\
+\
+1 - equilateral\
+2 - isoceles\
+3 - scalene\
+\
+And throw an exception if the triangle is not well formed. I wrote 6 tests. Bob Binder wrote 65. You\'92ll have to decide from experience and reflection, about how many tests you want to write.\
+\
+TDD\'92s view of testing is pragmatic. In TDD, the tests are a means to an end, the end being code in which we have great confidence. \
+\
+
+\b\fs32 When should you delete tests?
+\b0 \
+
+\fs28 \
+More tests is better, but if two tests are redundant with respect to each other, should you keep them both around?\
+\
+The first criterion for your tests is confidence. Never delete a test if it reduces your confidence in the behavior of the system.\
+\
+The second criterion is communication. If you have two tests that exercise the same path through the code, but they speak to different scenarios for a reader leave them alone.\
+\
+If you have two tests that are redundant with respect to confidence and communication, delete the least useful of the two.\
+\
+\
+}

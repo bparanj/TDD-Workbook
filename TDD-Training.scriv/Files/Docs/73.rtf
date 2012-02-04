@@ -1,0 +1,35 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Compare Francs to Dollars\
+\
+
+\b0 The thought struck us at the end of the last chapter - what happens when we compare Francs and Dollars? We dutifully turned our dreadful thought into an item on our to-do list. Let\'92s see what happens:\
+\
+Test_equality\
+AssertTrue(Dollar.new(5).equals(Dollar.new(5))\
+AssertFalse(Dollar.new(5).equals(Dollar.new(6))\
+AssertTrue(Franc.new(5).equals(Franc.new(5))\
+AssertFalse(Franc.new(5).equals(Franc.new(6))\
+AssertFalse(Franc.new(5).equals(Dollar.new(5))\
+\
+It fails. Dollars are Francs. The equality code needs to check that it isn\'92t comparing Dollars and Francs. We can do this right now by comparing the class of the two objects - two Moneys are equal only if their amounts and classes are equal.\
+\
+Equals(object)\
+Return amount == money.amount && object.class.equals(self.class)\
+End\
+\
+Using classes like this in model code is a bit smelly. We would like to use a criteria that made sense in the domain of finance not the programming language domain. However, we don\'92t currently have anything like a currency, and this doesn\'92t seem like sufficient reason to introduce one, so this will have to do for the moment.\
+\
+Now we really need to get rid of common times code, so we can get to mixed currency arithmetic. Before we do, let\'92s review, we:\
+Took an objection that was bothering us and turned it into a test\
+Made the test run a reasonable, but not perfect way\
+Decided not to introduce more design until we had a better motivation\
+\
+
+\b Updated To-Do List
+\b0 \
+\
+Currency?}

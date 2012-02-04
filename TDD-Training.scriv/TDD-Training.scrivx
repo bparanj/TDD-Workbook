@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ScrivenerProject Version="1.0" Creator="SCRMAC-2.2-15858">
+    <Binder>
+        <BinderItem ID="0" Type="DraftFolder" Created="2011-12-11 11:50:01 -0800" Modified="2011-12-11 11:50:01 -0800">
+            <Title>Draft</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+            </MetaData>
+            <Children>
+                <BinderItem ID="4" Type="Text" Created="2011-12-11 11:52:42 -0800" Modified="2012-01-30 23:56:14 -0800">
+                    <Title>Structure</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>263,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="3" Type="Text" Created="2011-12-11 11:50:01 -0800" Modified="2011-12-27 22:20:45 -0800">
+                    <Title>Rhythm of TDD</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>489,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="5" Type="Text" Created="2011-12-11 12:02:10 -0800" Modified="2011-12-11 21:12:57 -0800">
+                    <Title>Money Example</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>161,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="67" Type="Text" Created="2011-12-11 13:10:51 -0800" Modified="2012-01-30 23:41:55 -0800">
+                    <Title>TDD Cyle</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4314,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="68" Type="Text" Created="2011-12-11 22:51:48 -0800" Modified="2011-12-11 23:52:21 -0800">
+                    <Title>Equality</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>2374,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="69" Type="Text" Created="2011-12-11 23:53:04 -0800" Modified="2011-12-13 18:35:44 -0800">
+                    <Title>Private</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1991,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="71" Type="Text" Created="2011-12-13 18:36:44 -0800" Modified="2011-12-13 18:56:42 -0800">
+                    <Title>Franc</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>377,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="72" Type="Text" Created="2011-12-13 18:57:07 -0800" Modified="2011-12-13 19:16:45 -0800">
+                    <Title>Common Equals</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>556,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="73" Type="Text" Created="2011-12-13 19:17:15 -0800" Modified="2011-12-13 19:30:20 -0800">
+                    <Title>Compare Francs to Dollars</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>36,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="74" Type="Text" Created="2011-12-13 19:31:47 -0800" Modified="2011-12-15 19:36:29 -0800">
+                    <Title>Making Objects</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>10,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="76" Type="Text" Created="2011-12-14 18:02:05 -0800" Modified="2011-12-27 22:25:11 -0800">
+                    <Title>Eliminating Subclasses</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4154,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="77" Type="Text" Created="2011-12-14 18:13:23 -0800" Modified="2011-12-27 22:25:28 -0800">
+                    <Title>Refactoring times method</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4699,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="79" Type="Text" Created="2011-12-14 18:35:37 -0800" Modified="2011-12-27 22:25:43 -0800">
+                    <Title>Deleting Subclasses</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1815,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="80" Type="Text" Created="2011-12-14 18:37:46 -0800" Modified="2011-12-27 22:26:22 -0800">
+                    <Title>Addition</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>5863,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="81" Type="Text" Created="2011-12-15 18:42:33 -0800" Modified="2011-12-27 22:27:39 -0800">
+                    <Title>Removing Duplication</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>5910,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="82" Type="Text" Created="2011-12-15 18:51:13 -0800" Modified="2011-12-27 22:28:37 -0800">
+                    <Title>Change</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4509,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="83" Type="Text" Created="2011-12-15 20:22:40 -0800" Modified="2011-12-27 22:29:30 -0800">
+                    <Title>Mixed Currencies</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4387,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="84" Type="Text" Created="2011-12-15 20:26:51 -0800" Modified="2011-12-27 22:30:14 -0800">
+                    <Title>Abstraction</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>3857,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="85" Type="Text" Created="2011-12-15 20:32:26 -0800" Modified="2011-12-27 22:31:40 -0800">
+                    <Title>Money Retrospective</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4065,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="86" Type="Text" Created="2011-12-15 20:41:58 -0800" Modified="2012-01-06 17:49:07 -0800">
+                    <Title>Set the Table</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4088,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="87" Type="Text" Created="2011-12-15 20:47:21 -0800" Modified="2011-12-27 22:34:25 -0800">
+                    <Title>Cleaning Up After</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>3327,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="90" Type="Text" Created="2011-12-19 17:27:12 -0800" Modified="2011-12-19 17:34:44 -0800">
+                    <Title>Counting</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>815,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="91" Type="Text" Created="2011-12-19 17:35:22 -0800" Modified="2011-12-19 17:36:42 -0800">
+                    <Title>Dealing with Failure</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>168,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="92" Type="Text" Created="2011-12-19 17:39:59 -0800" Modified="2011-12-27 22:35:33 -0800">
+                    <Title>TDD Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>245,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="93" Type="Text" Created="2011-12-19 23:55:46 -0800" Modified="2011-12-23 02:16:35 -0800">
+                    <Title>Red Bar Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>6029,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="94" Type="Text" Created="2011-12-20 10:19:11 -0800" Modified="2011-12-23 02:16:58 -0800">
+                    <Title>Testing Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>2672,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="95" Type="Text" Created="2011-12-20 10:48:09 -0800" Modified="2011-12-23 02:18:11 -0800">
+                    <Title>Green Bar Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4742,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="96" Type="Text" Created="2011-12-20 11:40:47 -0800" Modified="2012-01-06 18:00:41 -0800">
+                    <Title>xUnit Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1892,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="98" Type="Text" Created="2011-12-21 10:52:23 -0800" Modified="2011-12-23 02:19:47 -0800">
+                    <Title>Refactoring</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>366,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="99" Type="Text" Created="2011-12-21 10:59:05 -0800" Modified="2011-12-27 23:35:50 -0800">
+                    <Title>Mastering TDD</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1602,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="100" Type="Text" Created="2011-12-21 11:45:46 -0800" Modified="2011-12-27 23:41:14 -0800">
+                    <Title>Fibonacci</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>325,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="97" Type="Text" Created="2011-12-20 17:23:36 -0800" Modified="2011-12-21 15:50:40 -0800">
+                    <Title>xUnit Test Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="102" Type="Text" Created="2011-12-21 15:50:44 -0800" Modified="2011-12-22 23:57:33 -0800">
+                    <Title>Test Smells</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1625,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="103" Type="Text" Created="2011-12-21 16:23:50 -0800" Modified="2011-12-27 23:45:47 -0800">
+                    <Title>Goals of Test Automation</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4896,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="104" Type="Text" Created="2011-12-21 17:38:20 -0800" Modified="2011-12-23 02:21:45 -0800">
+                    <Title>Philosophy of Test Automation</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>644,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="105" Type="Text" Created="2011-12-21 18:03:27 -0800" Modified="2011-12-23 02:22:13 -0800">
+                    <Title>Principles of Test Automation</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>6326,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="106" Type="Text" Created="2011-12-22 00:28:57 -0800" Modified="2011-12-23 02:22:56 -0800">
+                    <Title>Test Automation Strategy</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>892,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="107" Type="Text" Created="2011-12-22 11:19:21 -0800" Modified="2011-12-23 02:23:03 -0800">
+                    <Title>Transient Fixture Management</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>300,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="108" Type="Text" Created="2011-12-22 11:33:16 -0800" Modified="2011-12-28 10:53:02 -0800">
+                    <Title>Result Verification</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1039,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="109" Type="Text" Created="2011-12-22 17:41:58 -0800" Modified="2011-12-23 02:25:00 -0800">
+                    <Title>Using Test Doubles</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>13364,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="110" Type="Text" Created="2011-12-22 19:59:41 -0800" Modified="2011-12-23 02:00:41 -0800">
+                    <Title>Organizing Tests</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1003,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="111" Type="Text" Created="2011-12-22 20:15:41 -0800" Modified="2011-12-23 02:50:02 -0800">
+                    <Title>A Roadmap to Effective Test Automation</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>7393,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="112" Type="Text" Created="2011-12-23 09:20:35 -0800" Modified="2011-12-23 18:12:02 -0800">
+                    <Title>Code Smells</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>7824,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="113" Type="Text" Created="2011-12-23 16:31:06 -0800" Modified="2011-12-28 12:24:01 -0800">
+                    <Title>Test Strategy Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4025,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="114" Type="Text" Created="2011-12-23 17:46:31 -0800" Modified="2011-12-28 12:28:09 -0800">
+                    <Title>xUnit Basic Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>14948,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="118" Type="Text" Created="2011-12-24 16:04:05 -0800" Modified="2011-12-28 15:18:05 -0800">
+                    <Title>Result Verification Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4824,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="119" Type="Text" Created="2011-12-24 17:49:49 -0800" Modified="2011-12-28 15:27:33 -0800">
+                    <Title>Test Double Patterns</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>12173,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="101" Type="Text" Created="2011-12-21 15:32:18 -0800" Modified="2011-12-22 19:54:14 -0800">
+                    <Title>xUnit Test Patterns Glossary</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>6589,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="88" Type="Text" Created="2011-12-18 11:02:52 -0800" Modified="2012-01-06 19:23:18 -0800">
+                    <Title>The Art of Unit Testing</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>44143,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="115" Type="Text" Created="2011-12-24 08:52:36 -0800" Modified="2011-12-28 16:17:48 -0800">
+                    <Title>Growing OO Sotware Guided by Tests</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1391,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="116" Type="Text" Created="2011-12-24 09:41:53 -0800" Modified="2011-12-26 17:10:52 -0800">
+                    <Title>TDD with Objects</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>997,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="117" Type="Text" Created="2011-12-24 10:51:10 -0800" Modified="2011-12-26 17:09:41 -0800">
+                    <Title>Kick-Starting the Test-Driven Cycle</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>31,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="120" Type="Text" Created="2011-12-25 00:54:30 -0800" Modified="2011-12-26 17:09:27 -0800">
+                    <Title>Maintaining the Test Driven Cycle</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>308,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="121" Type="Text" Created="2011-12-25 12:04:28 -0800" Modified="2011-12-26 17:08:26 -0800">
+                    <Title>Achieving Object Oriented Design</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>4647,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="122" Type="Text" Created="2011-12-25 13:48:00 -0800" Modified="2011-12-26 17:07:19 -0800">
+                    <Title>Building on Third Party Code</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1653,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="123" Type="Text" Created="2011-12-25 16:55:20 -0800" Modified="2011-12-26 17:06:54 -0800">
+                    <Title>Passing the First Test</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>867,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="124" Type="Text" Created="2011-12-25 17:02:15 -0800" Modified="2011-12-26 17:06:45 -0800">
+                    <Title>First Real Functionaliy</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>23,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="125" Type="Text" Created="2011-12-25 17:42:40 -0800" Modified="2011-12-26 17:06:06 -0800">
+                    <Title>Second Functionality</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1790,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="126" Type="Text" Created="2011-12-25 20:32:46 -0800" Modified="2011-12-26 17:04:54 -0800">
+                    <Title>Handling Failure</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>2637,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="127" Type="Text" Created="2011-12-25 20:50:55 -0800" Modified="2011-12-26 17:04:43 -0800">
+                    <Title>Sustainable TDD</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1313,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="128" Type="Text" Created="2011-12-26 01:31:11 -0800" Modified="2011-12-26 17:03:36 -0800">
+                    <Title>Test Readability</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>3424,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="129" Type="Text" Created="2011-12-26 14:23:07 -0800" Modified="2011-12-26 17:02:42 -0800">
+                    <Title>Test Diagnostics</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>16,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="130" Type="Text" Created="2011-12-26 15:14:39 -0800" Modified="2011-12-28 17:09:27 -0800">
+                    <Title>Test Flexibility</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>10786,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem ID="1" Type="ResearchFolder" Created="2011-12-11 11:50:01 -0800" Modified="2011-12-11 11:50:01 -0800">
+            <Title>Research</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+            </MetaData>
+            <Children>
+                <BinderItem ID="75" Type="Text" Created="2011-12-14 10:35:46 -0800" Modified="2012-02-04 03:08:33 -0800">
+                    <Title>References</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>291,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="70" Type="Text" Created="2011-12-13 11:18:48 -0800" Modified="2011-12-13 11:25:54 -0800">
+                    <Title>Tek Pub Screencast</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>181,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="78" Type="Text" Created="2011-12-14 18:25:39 -0800" Modified="2012-01-19 12:38:13 -0800">
+                    <Title>Q &amp; A</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>1082,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="89" Type="Text" Created="2011-12-18 17:50:16 -0800" Modified="2011-12-30 14:10:43 -0800">
+                    <Title>Course Outline</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>765,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem ID="2" Type="TrashFolder" Created="2011-12-11 11:50:01 -0800" Modified="2011-12-11 11:50:01 -0800">
+            <Title>Trash</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+            </MetaData>
+        </BinderItem>
+    </Binder>
+    <Collections>
+        <Collection Type="Binder" ID="E7196B67-4AC1-4679-A03C-95A067403AB6" Color="0.784026 0.815614 0.850358">
+            <Title>Binder</Title>
+        </Collection>
+        <Collection Type="RecentSearch" ID="B354D6F8-AC67-4657-81C3-0C2E718C7629" Color="0.922 0.91 0.98">
+            <Title>Search Results</Title>
+            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">stubs</SearchSettings>
+        </Collection>
+    </Collections>
+    <LabelSettings>
+        <Title>Label</Title>
+        <DefaultLabelID>-1</DefaultLabelID>
+        <Labels>
+            <Label ID="-1">No Label</Label>
+            <Label ID="0" Color="0.9 0.92 0.95">Concept</Label>
+            <Label ID="1" Color="0.985 0.875 0.85">Chapter</Label>
+        </Labels>
+    </LabelSettings>
+    <StatusSettings>
+        <Title>Status</Title>
+        <DefaultStatusID>-1</DefaultStatusID>
+        <StatusItems>
+            <Status ID="-1">No Status</Status>
+            <Status ID="0">To Do</Status>
+            <Status ID="1">First Draft</Status>
+            <Status ID="2">Revised Draft</Status>
+            <Status ID="3">Final Draft</Status>
+            <Status ID="4">Done</Status>
+        </StatusItems>
+    </StatusSettings>
+    <ProjectTargets Notify="No">
+        <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="No" Deadline="2011-12-11 11:50:00 -0800" IgnoreDeadline="Yes">0</DraftTarget>
+        <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="Yes" ResetType="Midnight" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
+        <PreviousSession Words="0" Characters="0" Date="2012-02-04 03:05:43 -0800"></PreviousSession>
+    </ProjectTargets>
+    <PrintSettings PaperSize="612.0,792.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="na-letter" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
+</ScrivenerProject>

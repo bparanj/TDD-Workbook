@@ -1,0 +1,110 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Making Steady Progress
+\b0 \
+\
+We made steady progress by adding little slices of functionality. First we made the Sniper show when it\'92s winning, then when it has won. We used empty implementation to get us through the compiler when we weren\'92t ready to fill in the code, and we stayed focused on the immediate task.\
+\
+
+\b 20/20 Hindsight
+\b0 \
+\
+Forehead slapping moments that make us wonder why we didn\'92t see it the first time around. Surely, if we\'92d spent more time on the design, we wouldn\'92t have to change it now? Sometimes that\'92s true. Our experience, however, is that nothing shakes out a design like trying to implement it. It\'92s difficult to get design always right. Our coping mechanism is to get into the critical areas of the code early and to allow ourselves to change our collective mind when we could do better. We rely on our skills, on taking small steps, and on the tests to protect us when we make changes.\
+\
+
+\b A Defect Exception
+\b0 \
+\
+Define a runtime exception DefectException or ProgrammerMistakeExpection. Throw this when the code reaches a condition that could only be caused by a programming error, rather than a failure in the runtime environment.\
+\
+
+\b Keyhole Surgery for Software
+\b0 \
+\
+We repeatedly used the practice of adding little slices of behavior all the way through the system: replace label with a table, get that working; show the sniper bidding, get that working; add the other values, get that working; In all of these cases, we\'92ve figured out where we want to get to (always allowing that we might discover a better alternative along the way), but we want to avoid ripping the application apart to get there. Once we start a major rework, we can\'92t stop until it\'92s finished, we can\'92t check in without branching, and merging with rest of the team is harder. \
+\
+
+\b Programmer Hyper-Sensitivity
+\b0 \
+\
+We have a well-developed sense of the value of our own time. We keep an eye out for activities that don\'92t seem to be making the best of our talents, such as boiler-plate copying and adapting code: if we had the right abstraction, we wouldn\'92t have to bother. Sometimes this just has to be done, especially when working with existing code - but there are fewer excuses when it\'92s our own. Deciding when to change the design requires a good sense for tradeoffs, which implies both sensitivity and technical maturity: \'93I\'92m about to repeat this code with minor variations, that seems dull and wasteful\'94 as against \'93This may not be the right time to rework this, I don\'92t understand it yet.\'94\
+\
+Developers should have a habit of reflecting on their activity, on the best way to invest their time for the rest of a coding session. This might mean carrying on exactly as before, but at least they will have thought about it.\
+\
+
+\b Celebrate Changing Your Mind
+\b0 \
+\
+We renamed several features in code. This is an essential part of our development process. Just as we learn more about what the structure should be by using the code we\'92ve written, we learn more about the names we\'92ve chosen when we work with them. We see how the type and method names fit together and whether the concepts are clear, which stimulates the discovery of new ideas. If the name of a feature isn\'92t right, the only smart thing to do is change it and avoid countless hours of confusion for all who will read the code later.\
+\
+
+\b The End of Off-by-One Errors
+\b0 \
+\
+Getting indexing right can be tricky, except in the simplest cases, and writing tests first clarifies the boundary conditions and then checks that our implementation is correct.\
+\
+
+\b Making Progress While We Can
+\b0 \
+\
+We can make development progress whilst the design is being sorted out. We can build to the team\'92s current understanding of the features and keep our code (and attitude) flexible to respond to design ideas as they firm up - and perhaps even feed our experience back into the process.\
+\
+
+\b A Design Moment
+\b0 \
+\
+To review our position: we have a broken acceptance test pending, we have the user interface structure but no behavior. This is a distinction we\'92d like to maintain, since it keeps the responsibilities of the two classes focused. We stop for a moment to think about the structure of the code, using the CRC cards to help us visualize our ideas.\
+\
+
+\b TDD Confidential
+\b0 \
+\
+It took us couple of attempts to get this design pointing in the right direction because we were trying to allocate behavior to the wrong objects. What kept us honest was that for each attempt to write tests that were focused and made sense, the setup and our assertions kept drifting apart. Once we\'92d broken through our inadequacies as programmers, the tests became much clearer.\
+\
+
+\b Finding a Role
+\b0 \
+\
+How do you know if an object has too many responsibilities? One clue is to look at its imports. Is it importing code from unrelated packages?\
+\
+
+\b Incremental Architecture
+\b0 \
+\
+We arrived at this design incrementally, by adding features and repeatedly following heuristics. Although we rely on our experience to guide our decisions, we reached this solution almost automatically by just following the code and taking care to keep it clean.\
+\
+
+\b Three Point Contact
+\b0 \
+\
+We can do significant refactorings incrementally. When we\'92re not sure what to do next or how to get there from here, one way of coping is to scale down the individual changes we make. By repeatedly fixing local problems in code, we find we can explore the design safely, never straying more than a few minutes from working code. Usually this is enough to lead us towards a better design, can we can always backtrack and take another path if it doesn\'92t work out.\
+\
+One way to think of this is the rock-climbing rule of three-point contact. Trained climbers only move one limb at a time to minimize the risk of falling off. Each move is minimal and safe, but combining enough of them will get you to the top of the route. With experience, we\'92ve learned to recognize fault lines in code so we can often take a more direct route.\
+\
+
+\b Dynamic as Well as Static Design
+\b0 \
+\
+Refactoring is a design activity. We should consider more than one view when refactoring code. We still need all the design skills. Refactoring is so focused on static structure (classes and interfaces) that it\'92s easy to lose sight of an application\'92s dynamic structure (instances and threads). Sometimes we just need to step back and draw out, say, an interaction diagram.	\
+
+\b Distinguishing between Test Setup and Assertions
+\b0 \
+\
+We use the allowing clause to distinguish between the test setup (getting the SUT into the right state) and the significant test assertion. Expressiveness is the only way for the tests to remain meaningful, and therefore useful, over time.\
+\
+
+\b Other Modeling Techniques Still Work
+\b0 \
+\
+TDD works best when it\'92s based on skill and judgment acquired from as wide an experience as possible - which includes taking advantage of older techniques and formats. State transition diagrams are one example of taking another view. What\'92s nice about state transition diagrams is that they map directly onto tests, so we can show that we\'92ve covered all the possibilities.\
+\
+The trick is to understand and use other modeling techniques for support and guidance, not as an end in themselves - which is how they got a bad name in the first place. When we\'92re doing TDD and we\'92re uncertain what to do, sometimes stepping back and opening a pack of index cards, or sketching out the interactions, can help us regain direction.\
+\
+
+\b Domain Types Are Better Than String
+\b0 \
+\
+It\'92s often better to define domain types to wrap not only strings but other built-in types too, including collections. }

@@ -1,0 +1,125 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red125\green125\blue125;}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  When you begin writing tests, you will discover a common pattern (Bill Wake\
+coined the phrase 3A for this):\
+\
+1.  Arrange\'97create some objects\
+2.  Act\'97stimulate them\
+3.  Assert\'97check the results\
+\
+The arrange step is often the same test-to-test, while the stimulation and checking\
+steps are unique. I have a 7 and 9. If I add them, I expect 16. If I subtract them, I\
+expect \'962, if I multiply them, I expect 63. The stimulation and expected results are\
+unique, the 7 and the 9 don\'92t change.\
+\
+If this pattern repeats at different scales (and it does), then we\'92re faced with the\
+question of how often do we want to create new objects to test. Looking back at our\
+initial set of constraints, two constraints come into conflict:\
+\
+\'95  Performance\'97we would like our tests to run as quickly as possible, so if we use\
+similar objects in several tests we would like to create them once for all tests\
+\'95  Isolation\'97we would like the success or failure of one test to be irrelevant to\
+other tests, and if one test changes the objects, following tests are likely to\
+change their results\
+\
+ Test coupling has an obvious nasty effect, where breaking one test causes the next\
+ten to fail even though the code is correct. Test coupling can have a subtle really\
+nasty effect, where the order of tests matters. If I run A before B, they both work,\
+but if I run B before A, then A fails. Or even nastier, the code exercised by B is\
+wrong, but because A ran first, the test passes.\
+\
+Test coupling\'97don\'92t go there. Let\'92s assume for the moment we can make object\
+creation fast enough. In this case, we would like to create the objects for a test every\
+time the test runs. We\'92ve already seen a disguised form of this in WasRun, where\
+we wanted to have a flag set to false before we ran the test. Taking steps towards\
+this, first we need a test:\
+\pard\pardeftab720
+\cf2 \
+TestCaseTest\
+\pard\pardeftab720
+\cf0 def testSetUp(self):\
+test= WasRun("testMethod")\
+test.run()\
+assert(test.wasSetUp)\
+\
+ Running this, (by adding the last line \'93TestCaseTest("testSetUp").run()\'94 to our file)\
+Python politely informs us that there is no \'93wasSetUp\'94 attribute. Of course not.We\
+haven\'92t set it. This method should do it.\
+\pard\pardeftab720
+\cf2 WasRun\
+\pard\pardeftab720
+\cf0 def setUp(self):\
+self.wasSetUp= 1\
+ It would if we were calling it. Calling setUp is the job of the TestCase, so we turn\
+there:\
+\pard\pardeftab720
+\cf2 TestCase\
+\pard\pardeftab720
+\cf0 def setUp(self):\
+pass\
+def run(self):\
+self.setUp()\
+exec "self." + self.name + "()"\
+ That\'92s two steps to get a test case running, which is too many in such ticklish circumstances.\
+We\'92ll see if it will work. Yes, it does pass. However, if you want to\
+learn something, try to figure out how we could have gotten the test to pass by\
+changing no more than one method at a time.\
+\
+\pard\pardeftab720
+
+\b \cf0 \
+\pard\pardeftab720
+
+\b0 \cf0 101\
+We can immediately use our new facility to shorten our tests. First, we can simplify\
+WasRun by setting the wasRun flag in setUp:\
+\pard\pardeftab720
+\cf2 \
+WasRun\
+\pard\pardeftab720
+\cf0 def setUp(self):\
+self.wasRun= None\
+self.wasSetUp= 1\
+\
+We have to simplify testRunning not to check the flag before running the test. Are\
+we willing to give up this much confidence in our code? Only if testSetUp is in\
+place. This is a common pattern\'97one test can be simple if and only if another test\
+is in place and running correctly.\
+\pard\pardeftab720
+\cf2 \
+TestCaseTest\
+\pard\pardeftab720
+\cf0 def testRunning(self):\
+test= WasRun("testMethod")\
+test.run()\
+assert(test.wasRun)\
+\
+We can also simplify the tests themselves. In both cases we create an instance of\
+WasRun, exactly that fixture we were talking about earlier.We can create the Was-\
+Run in setUp, and use it in the test methods. Each test method is run in a clean\
+instance of TestCaseTest, so there is no way the two tests can be coupled (assuming\
+the objects don\'92t interact in some incredibly ugly way, like setting global variables,\
+but we wouldn\'92t do that, not with all those other readers watching.)\
+\pard\pardeftab720
+\cf2 \
+TestCaseTest\
+\pard\pardeftab720
+\cf0 def setUp(self):\
+self.test= WasRun("testMethod")\
+def testRunning(self):\
+self.test.run()\
+assert(self.test.wasRun)\
+def testSetUp(self):\
+self.test.run()\
+assert(self.test.wasSetUp)\
+\
+Next we\'92ll run tearDown() after the test method. Reviewing this chapter, we:\
+\
+\'95 Decided simplicity of test writing was more important than performance for the\
+moment\
+\'95 Tested and implemented setUp(). Used setUp() to simplify the example test case\
+\'95  Used setUp() to simplify the test cases checking the example test case}

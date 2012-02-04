@@ -1,0 +1,114 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 There are some basic strategic question we need to answer before we can talk about the details of how to test:\
+\
+What do we mean by testing?\
+When do we test?\
+How do we choose what logic to test?\
+How do we choose what data to test?\
+\
+
+\b Isolated Test
+\b0 \
+\
+How should the running of tests affect each other? Not at all. Tests should be able to ignore each other completely. If I had one test broken, I wanted one problem. If I had two tests broken, I wanted two problems.\
+\
+One convenient implication of isolated tests is that the tests are order independent. If I want to grab a subset of tests and run them, I can do so without worrying that a test will break now because prerequisite test is gone.\
+\
+Performance is the usual reason cited for having tests share data. A second implication of isolated tests is that you have to work, sometimes very hard, to break your problem into little orthogonal dimensions, so setting up the environment for each test is easy and quick. Isolating tests encourages you to compose solutions out of many highly cohesive, loosely coupled objects. I never knew exactly how to regularly achieve high cohesion and loose coupling until I started writing isolated tests.\
+\
+
+\b Test List
+\b0 \
+\
+What should you test? Before you begin, write a list of all the tests you know you will have to write.\
+\
+The first part of our strategy for dealing with programming stress is to never take a step forward unless we know where our foot is going to land. When we sit down to a programming session, what is it we intend to accomplish?\
+\
+One strategy for keeping track of what we\'92re trying to accomplish is to writing down everything. I got in the habit of writing down everything I wanted to accomplish over the next few hours on a slip of paper next to my computer. I had a similar list for weekly or monthly scope pinned on the wall. As soon as I had all that written down, I knew I wasn\'92t going to forget something. When a new item came up, I would quickly and consciously decide whether it belonged on the now list, the later list or didn\'92t really need to be done at all.\
+\
+Applied to test-driven development, what we put on the list are the tests we want to implement. First, put on the list examples of every operation that you know you need to implement. Next, for those operations that don\'92t already exist, put the null version of that operation on the list. Finally, list all the refactorings that you think you will have to do to have clean code at the end of this session.\
+\
+Instead of outlining the tests, we could just ago ahead and implement them all. There are a couple of reasons writing tests en masse hasn\'92t worked for me. First, every test you implement is a bit of inertia when you have to refactor. When you\'92ve implemented ten tests you are less likely to clean up. Second, if you have ten tests broken, you are a long way from the green bar. If you want to get to green quickly, you have to throw all ten tests away. If you want to get all the tests working, you are going to be at red state for a long time.\
+\
+The pure form of TDD where you are never more than one change away from a green bar is like the mountain climbing three out of four rule. \
+\
+As you make the tests run, the implementation will imply new tests. Write the new tests down on the list. Likewise with refactorings. Put it on the list. We\'92ll get to it before we check in.\
+\
+Items that are left on the list when the session is done need to be taken care of. If you are really half way through a piece of functionality, use the same list later. If you have discovered larger refactorings that are out of scope for the moment, move them to the later list. I can\'92t recall ever moving a test case to the later list. If I can think of a test that might not work, getting it to work is more important than releasing my code.\
+\
+
+\b Test First
+\b0 \
+\
+When should you write your tests? Before you write the code that is to be tested.\
+\
+You won\'92t test after. Your goal as a programmer is running functionality. However, you need a way to think about design, you need a method for scope control.\
+\
+When we test first, we reduce the stress, which makes us more likely to test. The immediate payoff for testing - a design and scope control tool - suggests that we will be able to start doing it and keep doing it even under moderate stress.\
+\
+
+\b Assert First
+\b0 \
+\
+When should you write the asserts? Try writing them first.\
+Where should you start building a system? With stories you want to be able to tell about the finished system.\
+Where should you start writing a bit of functionality? With the tests you want to pass with the finished code.\
+Where should you start writing a test? With the asserts that will pass when it is done.\
+\
+When I test assert-first I find it has a powerful simplifying effect. When you are writing a test, you are solving several problems at once, even if you no longer have to think about the implementation.\
+\
+Where does the functionality belong? Is it a modification of an existing method, a new method on an existing class, an existing method name implemented in a new place, or a new class?\
+What should the names be called?\
+How are you going to check for the right answer?\
+What is the right answer?\
+What other tests does this test suggest?\
+\
+The two problems from the list that can be easily separated from the rest are \'93what is the right answer?\'94 and \'93how am I going to check?\'94\
+\
+Here\'92s an example. Suppose we want to communicate with another system over a socket. When we\'92re done, the socket should be closed and we should have read the string \'93abc\'94. \
+\
+Test_complete_transaction \
+Assert(reader.closed?)\
+Assert(\'93abc\'94, reply.contents)\
+\
+Where does the reply come from? The socket, of course:\
+\'85\
+Reply = reader.contents\
+\'85\
+\
+And the socket? We create it by connecting to a server:\
+\
+Reader = Socket.new(\'93localhost\'94, DEFAULT_PORT)\
+\'85\
+\
+But before this, we need to open a server:\
+Writer = Server.new(PORT, \'93abc\'94)\
+\
+Now we may have to adjust the names based on actual usage, but we have created the outlines of the test in teensy tiny steps, informing each decision with feedback within seconds.\
+\
+
+\b Test Data
+\b0 \
+\
+What data do you use for test-first tests? Use data that makes the tests easy to read and follow.\
+\
+Don\'92t scatter data values. If there is a difference in the data, it should be meaningful. If there isn\'92t a conceptual difference between 1 and 2, use 1.\
+\
+Test data isn\'92t a license to stop short of full confidence. If your system has to handle multiple inputs, your tests should reflect multiple inputs. However, don\'92t have a list of 10 items as the input data if a list of 3 items will lead you to the same design and implementation decisions.\
+\
+One trick in test data is to try to never use the same constant to mean more than one thing. If I am testing an add method, it is tempting to test 2 + 2, since that is the classic example of addition, or 1 + 1, since that is so simple. What if we got the arguments reversed in the implementation? If we use 2 for the first argument we should use 3 for example for the second.\
+\
+The alternative to test data is realistic data, where you use data from the real world. Realistic data is useful when:\
+You are testing real-time systems using traces of external events gathered from actual execution\
+You are matching the output of the current system with the output of a previous system (Parallel Testing)\
+You are refactoring a simulation and expect precisely the same answers when you are finished, particularly if floating point accuracy may be a problem.\
+\
+
+\b Evident Data
+\b0 \
+\
+How do you represent the intent of the data? Include expected and actual results in the test itself and try to make their relationship apparent.}

@@ -1,0 +1,31 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 1. Can we write another test when we have a failing test?\
+2. Can we change the target code that is not driven by a test? Any change to the logic of the program should be driven by a failed test.\
+3. Is minimizing the time in red bar a good idea?\
+4. Can we change both the test and target code at the same time? Keep a tight feedback loop between the code and tests: don\'92t let one or the other get too far out in front.\
+5. What is the start state and end state for a refactoring step?\
+6. Do we always take very small steps in TDD? Why or Why not?\
+7. How can you verify the correctness of a test?\
+8. What should be the first test? Why?\
+9. Is the order of implementing tests important?\
+10. How to handle problems due to mocking?\
+11. How to keep Mocks and real objects in sync? Write contract tests. See Integration tests are scam video.\
+12. What does it mean when you add a new test and it passes without changing the target code? How can you ensure the correctness of a test?\
+13. When can we delete tests?\
+14. How can you verify the correctness of a test, when a test passes without modifying the target code?\
+\
+Mocking can lead to tests that does not fail when the DoC changes. Refer 022-Test-Isolation-and-Refactoring\
+\
+What happens when you change production code without changing or adding new tests?\
+\
+Page 133 - The example code has calculation in the test. Is this not duplicate logic in the test that is supposed to be in production code also?\
+\
+
+\b Clarifications
+\b0 \
+\
+Why not use record and playback testing for external APIs like credit card processing?}

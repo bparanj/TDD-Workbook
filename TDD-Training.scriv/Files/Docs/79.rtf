@@ -1,0 +1,61 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red125\green125\blue125;\red115\green115\blue115;\red27\green27\blue27;
+}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  The two subclasses, Dollar and Franc, have only their constructors. Only a constructor\
+is not enough reason to have a subclass, so we want to delete the subclasses.\
+We can replace references to the subclasses by references to the superclass without\
+changing the meaning of the code. First Franc:\
+\pard\pardeftab720
+\cf2 Franc\
+\pard\pardeftab720
+\cf3 static \cf0 Money franc(\cf3 int \cf0 amount) \{\
+\cf3 return new \cf0 Money(amount, \cf4 "CHF"\cf0 );\
+\}\
+ Then Dollar:\
+\pard\pardeftab720
+\cf2 Dollar\
+\pard\pardeftab720
+\cf3 static \cf0 Money dollar(\cf3 int \cf0 amount) \{\
+\cf3 return new \cf0 Money(amount, \cf4 "USD"\cf0 );\
+\}\
+ Now there are no references to Dollar, so we can delete it. Franc still has one reference,\
+in the test we just wrote.\
+\cf3 public void \cf0 testDifferentClassEquality() \{\
+\
+ assertTrue(\cf3 new \cf0  Money(10, \cf4 "CHF"\cf0  ).equals(\cf3 new \cf0  Franc(10, \cf4 "CHF"\cf0  )));\
+\}\
+Is equality covered elsewhere well enough that we can delete this test? Looking at\
+the other equality test:\
+\cf3 public void \cf0  testEquality() \{\
+assertTrue(Money.dollar(5).equals(Money.dollar(5)));\
+assertFalse(Money.dollar(5).equals(Money.dollar(6)));\
+assertTrue(Money.franc(5).equals(Money.franc(5)));\
+assertFalse(Money.franc(5).equals(Money.franc(6)));\
+assertFalse(Money.franc(5).equals(Money.dollar(5)));\
+\}\
+it looks like we have the cases for equality well covered, too well covered, actually.\
+We can delete the third and fourth assertions since they duplicate the exercise of the\
+first and second assertions:\
+\cf3 public void \cf0  testEquality() \{\
+assertTrue(Money.dollar(5).equals(Money.dollar(5)));\
+assertFalse(Money.dollar(5).equals(Money.dollar(6)));\
+assertFalse(Money.franc(5).equals(Money.dollar(5)));\
+\}\
+The test we wrote forcing us to compare currencies instead of classes only makes\
+sense if there are multiple classes. Since we are trying to eliminate the Franc class,\
+a test to ensure that the system works if there is a Franc class is a burden, not a help.\
+Away testDifferentClassEquality() goes, and Franc goes with it.\
+\
+Similarly, there are separate tests for dollar and franc multiplication. Looking at the\
+code, we can see there is no difference in the logic at the moment based on the currency\
+(there was a difference when there were two classes). We can delete\
+testFrancMultiplication() without losing any confidence in the behavior of the system.\
+Single class in place, we are ready to tackle addition. First, to review, we:\
+\
+\'95 Finished gutting subclasses and deleted them\
+\'95 Eliminated tests that made sense with the old code structure but were redundant\
+with the new code structure}

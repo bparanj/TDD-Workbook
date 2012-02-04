@@ -1,0 +1,270 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;\f1\fswiss\fcharset0 Helvetica;\f2\fmodern\fcharset0 Courier;
+}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;}
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+{\field{\*\fldinst{HYPERLINK "https://github.com/drhenner/ror_ecommerce/tree/master/app/controllers"}}{\fldrslt 
+\f0\fs28 \cf0 https://github.com/drhenner/ror_ecommerce/tree/master/app/controllers}}
+\f0\fs28  for examples of anti-patterns\
+\
+\pard\pardeftab720
+\cf0  A test double  is a \'93fake\'94 object used in place of a \'93real\'94 object for the purposes of automated testing. It can be used when the real object is unavailable or difficult to access from a test environment\'97a common example is an external credit-card payment system. It can also be used to easily re-create a specific application state that\
+would be otherwise difficult to trigger in a test environment, like a database or network failure. It can be used strategically to limit the scope of a test to the object and method specifically under test. \
+\
+  Setting a stub on a method says, \'93Ignore the real implementation of this method and return this value,\'94\
+while setting a mock on a method is more says, \'93This method will return this value, and you better call the method, or else !\'94\
+\
+ A stub is a replacement for all or part of an object that prevents a normal method call from happening and instead returns a value that is preset when the stub is created.\
+\
+stub_chain(project.leader.address.city).and_return("Chicago")\
+mock_model(Project, :method => value)\
+Project.stub!(:find).and_return(mock_model(Project, :save => false))\
+project.should_receive(:method).with(1)\
+obj.should_receive(:method).and_return(1)\
+obj.should_not_receive(:method)\
+project.stub!(method).and_return(1)\
+stub = stub("name", :method => value)\
+\
+Testing API using RSpec Request specs
+\f1\fs16 \
+\
+\pard\pardeftab720\sl360
+
+\f0\fs28 \cf0 \cb2 spec/requests/api_spec.rb\
+require 'spec_helper'\
+describe "api" do\
+  describe "GET /api/v1/accounts/:account_id" do\
+    it "returns a json hash with the proper data" do\
+      get "/api/v1/accounts/abc123"\
+      Yajl::Parser.parse(response.body).should == \{ "id" => "abc123", "billing_date" => "12/12/2009" \}\
+    end\
+  end\
+end\
+\
+Contract Tests\
+\
+\pard\pardeftab720
+
+\f2\fs24 \cf0 \cb1 require "observer"\
+\
+class Controller\
+  def initialize\
+    accelerometer = Accelerometer.new\
+    lander = Lander.new(accelerometer, Altimeter.new)\
+    parachute = Parachute.new(lander)\
+    detachment_system = DetachmentSystem.new(parachute)\
+    accelerometer.add_observer(detachment_system)\
+  end\
+end\
+\
+class Parachute\
+  def initialize(lander)\
+    @lander = lander\
+  end\
+\
+  def open\
+    @lander.decelerate()\
+  end\
+\
+  def detach\
+    raise "You broke the lander, idiot." unless @lander.has_landed?\
+  end\
+end\
+\
+module AccelerationObserver\
+  def update(acceleration)\
+    raise "Implementation responsibility"\
+  end\
+end\
+\
+class DetachmentSystem\
+  include AccelerationObserver\
+\
+  def initialize(parachute, altimeter)\
+    @parachute = parachute\
+    @altimeter = altimeter # Added to fix the integration problem\
+  end\
+\
+  def update(acceleration)\
+    @parachute.detach if acceleration <= -50 && @altimeter.altitude < 5\
+  end\
+end\
+\
+class Accelerometer\
+  include Observable\
+\
+  def report_acceleration(acceleration)\
+    changed\
+    notify_observers(acceleration)\
+  end\
+end\
+\
+class Altimeter\
+\
+end\
+\
+class Lander\
+  def initialize(accelerometer, altimeter)\
+    @accelerometer = accelerometer\
+    @altimeter = altimeter\
+  end\
+\
+  def decelerate\
+    @accelerometer.report_acceleration(-50)\
+  end\
+end\
+\
+\
+\
+require "rubygems"\
+require "spec"\
+require "spec/autorun"\
+\
+require "#\{File.dirname(__FILE__)\}/mars_rover"\
+\
+# What happens when we open the parachute?\
+# [1] Parachute#open decelerates the Lander\
+describe Parachute do\
+  describe "#open" do\
+    it "decelerates the lander" do\
+      parachute = Parachute.new(lander = mock(Lander))\
+      lander.should_receive(:decelerate)\
+      parachute.open\
+    end\
+\
+    # [10] What happens if decelerating the lander fails?\
+    it "handles deceleration failure" do\
+      parachute = Parachute.new(lander = mock(Lander))\
+      lander.stub(:decelerate).and_raise(StandardError)\
+\
+      lambda \{\
+        parachute.open\
+      \}.should raise_error\
+    end\
+  end\
+end\
+\
+# [2] Lander#decelerate reports the acceleration to the Accelerometer\
+describe Lander do\
+  describe "#decelerate" do\
+    it "reports the acceleration" do\
+      accelerometer = mock(Accelerometer)\
+      lander = Lander.new(accelerometer, mock(Altimeter))\
+      accelerometer.should_receive(:report_acceleration).with(-50)\
+      lander.decelerate\
+    end\
+\
+    # [9] What happens if the acceleration report fails?\
+    it "handles acceleration report failure" do\
+      accelerometer = mock(Accelerometer)\
+      lander = Lander.new(accelerometer, mock(Altimeter))\
+      accelerometer.stub(:report_acceleration).and_raise(StandardError)\
+\
+      lambda \{\
+        lander.decelerate\
+      \}.should raise_error\
+    end\
+  end\
+end\
+\
+# [3] Accelerometer#report_acceleration updates the AccelerationObservers\
+describe Accelerometer do\
+  describe "#report_acceleration" do\
+    it "can report rapid acceleration" do\
+      accelerometer = Accelerometer.new\
+      observer = mock(AccelerationObserver, :update => nil)\
+      accelerometer.add_observer(observer)\
+      observer.should_receive(:update).with(-50)\
+      accelerometer.report_acceleration(-50)\
+    end\
+\
+    # [8] Detach system doesn't handle an acceleration update failure,\
+    # so we have to\
+    it "handles an acceleration report failure" do\
+      accelerometer = Accelerometer.new\
+      observer = mock(AccelerationObserver)\
+      observer.stub(:update).and_raise(StandardError.new)\
+      accelerometer.add_observer(observer)\
+\
+      lambda \{\
+        accelerometer.report_acceleration(-50)\
+      \}.should raise_error\
+    end\
+  end\
+end\
+\
+# [4] AccelerationObservers must be able to handle an update of -50\
+# CONTRACT\
+shared_examples_for "AccelerationObserver" do\
+  before(:each) do\
+    @observer = create_acceleration_observer\
+  end\
+\
+  describe "#update" do\
+    it "can handle rapid acceleration" do\
+      lambda \{\
+        @observer.update(-50)\
+      \}.should_not raise_error\
+    end\
+  end\
+end\
+\
+# [5] The concrete AccelerationObserver DetachmentSystem detaches the parachute\
+describe DetachmentSystem do\
+  it_should_behave_like "AccelerationObserver"\
+\
+  def create_acceleration_observer\
+    DetachmentSystem.new(@parachute = mock(Parachute, :detach => nil), @altimeter = mock(Altimeter, :altitude => 0))\
+  end\
+\
+  describe "#update" do\
+    it "detaches the parachute" do\
+      @parachute.should_receive(:detach)\
+      @observer.update(-50)\
+    end\
+\
+    # [7] In response to the examples for Parachute below,\
+    # we need to be able to handle a detach failure\
+    it "handles a detach failure" do\
+      @parachute.stub(:detach).and_raise(StandardError.new)\
+      lambda \{\
+        @observer.update(-50)\
+      \}.should raise_error\
+    end\
+\
+    # [11] Don't detach when we're too high up\
+    it "doesn't detach at great altitude" do\
+      @altimeter.stub(:altitude => 5)\
+\
+      @parachute.should_not_receive(:detach)\
+      @observer.update(-50)\
+    end\
+  end\
+end\
+\
+# [6] Parachute can detach when the Lander has landed\
+describe Parachute do\
+  describe "#detach" do\
+    context "while landed" do\
+      it "detaches successfully" do\
+        # Comment by Kevin Rutherford on the original page points out that\
+        # at this point we need the contract specs for Lander#has_landed?\
+        parachute = Parachute.new(lander = mock(Lander, :has_landed? => true))\
+        lambda \{\
+          parachute.detach\
+        \}.should_not raise_error\
+      end\
+    end\
+\
+    context "while not landed" do\
+      it "breaks the lander" do\
+        parachute = Parachute.new(lander = mock(Lander, :has_landed? => false))\
+        lambda \{\
+          parachute.detach\
+        \}.should raise_error("You broke the lander, idiot.")\
+      end\
+    end\
+  end\
+end\
+\
+{\field{\*\fldinst{HYPERLINK "http://blog.patchspace.co.uk/the-mars-lander-without-integration-tests-in-0"}}{\fldrslt http://blog.patchspace.co.uk/the-mars-lander-without-integration-tests-in-0}}}

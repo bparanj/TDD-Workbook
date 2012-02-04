@@ -1,0 +1,112 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+
+\f0\fs28 \cf0 Test Driven Development : A Practical Guide\
+\
+\pard\pardeftab720\sl312\sa340
+
+\i \cf0 Strive for simplicity\
+
+\i0\b Test the simple stuff first\
+
+\b0 Some things are easier to test, or it's obvious how to write the tests. The types of things that this could include are:\
+proper handling of null (but only in cases where null would be a potential value)\
+empty collection or null object behavior\
+generally, the basis case for recursive or iterative structures and computations.\
+By tackling these easy tests first you quickly get into the test-first rhythm.
+\i \
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrt\brdrnil \trbrdrl\brdrnil \trbrdrt\brdrnil \trbrdrr\brdrnil 
+\clvertalt \clshdrawnil \clwWidth16980\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadl0 \clpadr0 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\sl312\sa340
+
+\i0\b \cf0 Test boundary conditions early\
+
+\b0 This is similar to testing null handling, but includes items such as empty strings, 0, and MAX_INT. Don't forget about domain-specific boundary conditions. These are often more restrictive than the natural ones. This is also a bootstrap or tester's block technique. These tests tend to be easy to write so if you're casting about for what to write, try these if there are any untested.
+\b \
+Keep your tests independent of each other
+\b0 \
+Try writing tests in such a way as to make them as independent as possible. Conditions that cause one test to fail shouldn't (ideally) cause other tests to fail as well.\
+
+\b Keep test methods small
+\b0 \
+Most importantly, keep the number of assertions to a minimum in each test method. Doing this will keep your tests small and focused. This leads to easy-to-understand tests. The "extreme" of this is one assertion per test.
+\b \
+Avoid testing against databases and network resources\
+
+\b0 When you are testing code that talks to a database or communications system (serial, wireless, network, etc.) use interfaces to decouple the code from the actual resources. Then you can use mocks.\
+This decoupling is a good idea in any event, regardless of whether you are using TDD.\
+
+\b Avoid printing messages to standard out and error in your tests
+\b0 \
+A few lines of output per test look fine when running a small number of tests, but when you're running a suite of 1,000-plus tests, it just becomes so much screen garbage. Worse than that it can actually slow down the tests. One approach that you can take if there are log messages being generated is to reassign the log's output stream in the setUp() and tearDown() methods.\
+If you can check something visually, try to do the same with an assertion instead. After all, these tests are supposed to be automated, with programmatic assertions to do the work.\
+
+\b Start with the assert
+\b0 \
+When you are writing a test, start by writing what you are testing: the assert. Then work backward and fill in whatever is needed to set things up for the assert.\
+
+\b Always write a to_s method
+\b0 \
+The failure reports use the to_s method of the expected and/or actual objects involved in the assertion. If meaningful implementations of to_s are provided, these failure reports will be more informative, saving time and effort.\
+
+\b Mock Objects
+\b0 \
+When we write tests we strive for :\
+focused tests: ideally one assert each\
+independent tests: the fixture is built and cleaned up for each test, allowing tests to run in any order\
+fast tests: you want to be able to run them frequently\
+There is a potential conflict here. Small, focused tests mean that you will have lots of tests, each very small and focused. To keep them independent you need to have a clean fixture for each. That means you need to rebuild (and re-cleanup) the fixture for each test, every time it is run. OK, so far so good. The last goal is the problem. We want the tests to be fast...as fast as possible...so that we can run them frequently. For trivial fixtures, that's OK. But what happens if your test fixtures get complex and time-consuming to build and cleanup?\
+You may simply have a lot of fixture to put in place, or you may be working in the context of a large, complex system. This could be a database, a workflow system, or some system for which you are developing an extension. Your fixture may involve getting the system into a specific state so that it responds the way your tests require. This may be impossible to do quickly.\
+In such problematic test resources, how do we reconcile our three goals of focus, independence, and speed? Mock objects provide one approach that has proven successful. Mock objects are used when it is difficult or impossible to create the required state for a problematic resource, or when access to that resource is limited. There are other interesting uses for mock objects. \
+Mock objects take the place of real objects for the purposes of testing some functionality that interacts with and is dependent on the real objects. \
+The basic idea behind mocks is to create lightweight, controllable replacements for objects you need in order to write your tests. Mocks also enable you to specify and test your code's interaction with the mocks themselves.\
+
+\b Uses For Mocks
+\b0 \
+Using mocks would seem to have several advantages beyond keeping test fixtures light-weight and fast to build and cleanup. There are several reasons to use mocks. \
+
+\b To help keep the design decoupled
+\b0 \
+Using mocks helps to enforce interface-centric design. Programming against a mock removes the possibility of depending on the implementation of the objects being used.\
+
+\b To check your code's usage of another object
+\b0 \
+By setting expectations in a mock, we can verify that the code we are working on properly uses the mocked interface.\
+
+\b To test-drive your code from the inside out
+\b0 \
+By setting return values in the mocks, we can provide specific information to the code under development, then test that the resulting behavior is correct.\
+
+\b To make your tests run faster
+\b0 \
+By mocking things like communications or database subsystems, we can avoid the overhead involved in setting up and tearing down connections, etc.\
+To make it easier to develop code that interacts with hardware devices, remote systems, and other problematic resources\
+If the code we are writing needs to interact with some tricky resource, we can create a proxy layer to isolate us from the real resource. Then we can use a mock of that layer. This allows us to develop code without needing access to the actual device or system.\
+
+\b To defer having to implement a class
+\b0 \
+We can use mocks for classes that we haven't written yet but that the code we are working on needs to interact with. This lets us defer implementing those classes, letting us focus on the interface between them and the code we are writing. This allows us to leave implementation decisions until we know more. If all you need for your test is to simulate the behavior, a mock will suffice.\
+
+\b To let us test-drive components in isolation from the rest of the system
+\b0 \
+By mocking the components that the code being written has to interact with, we can focus on it in isolation. This lets us go faster, because complex interactions with other components are fully under our control.\
+
+\b To promote interface-based design
+\b0 \
+Mocks are easiest to use when you adopt an interface-heavy style of programming. By using interfaces, you make it easier to decouple your classes. Reasons to use interfaces boils down to three characteristics that an interface-rich system has: flexibility, extensibility, and plug-ability. Using mocks is made easier if you freely use interfaces, because if methods expect an interface, you can easily create a mock implementation and use that in place of a real implementation. It's no coincidence that Extract Interface is a very important refactoring.\
+
+\b To encourage composition over inheritance
+\b0 \
+This is related closely to the previous point. In general, inheritance is overused. As a result, monolithic functionality builds up in an inheritance hierarchy. A class is and always will be whatever it inherits. Mocking any aspect of a class in an inheritance hierarchy is difficult because of all of the baggage that the class inherits. The desire to mock certain aspects (e.g., persistence) tends to yield smaller classes that get smart by collaborating with other classes. Then different implementations of these classes, including mocks, can be easily interchanged.\
+
+\b To refine interfaces
+\b0 \
+Using a mock for a class you will eventually need to implement gives you an early chance to think about and refine the interface. This is especially true when using test-first design. You have to think about the interface from the view of a real class that will be using it \'97 because you begin with a real test class that uses it.\
+
+\b To test unusual, unlikely, and exceptional situations
+\b0 \
+You can easily create a mock that will return values that don't usually occur, or that will throw exceptions on demand. This allows you to easily test exception handling. In general, you can write a mock to replicate any situation that might be hard (or even impossible) to arrange to happen for the purposes of a test.\cell \lastrow\row
+}

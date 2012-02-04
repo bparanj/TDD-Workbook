@@ -1,0 +1,190 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red115\green115\blue115;\red27\green27\blue27;\red125\green125\blue125;
+}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  Reduce Money with conversion\
+\
+we are thinking about a much simpler form of\
+change\'97we have 2 francs and we want a dollar. That sounds like a test case\
+already:\
+\pard\pardeftab720
+\cf2 \
+public void \cf0 testReduceMoneyDifferentCurrency() \{\
+Bank bank= \cf2 new \cf0 Bank();\
+bank.addRate(\cf3 "CHF"\cf0 , \cf3 "USD"\cf0 , 2);\
+Money result= bank.reduce(Money.franc(2), \cf3 "USD"\cf0 );\
+assertEquals(Money.dollar(1), result);\
+\}\
+\
+ When I go from francs to dollars, I divide by two (we\'92re still studiously ignoring all\
+those nasty numerical problems.) We can make the bar green in one piece of ugliness:\
+\pard\pardeftab720
+\cf4 \
+Money\
+\pard\pardeftab720
+\cf2 public \cf0 Money reduce(String to) \{\
+\cf2 int \cf0 rate = (currency.equals(\cf3 "CHF"\cf0 ) && to.equals(\cf3 "USD"\cf0 ))\
+? 2\
+: 1;\
+\cf2 return new \cf0 Money(amount / rate, to);\
+\}\
+\
+ Now, suddenly, Money knows about exchange rates. Yuck. The Bank should be the\
+only place we care about exchange rates. We\'92ll have to pass the Bank as a parameter\
+to Expression.reduce() (see, we knew  we would need it, and we were right. In\
+the words of the grandfather in The Princess Bride , \'93You\'92re very clever\'85\'94) First\
+the caller:\
+\pard\pardeftab720
+\cf4 \
+Bank\
+\pard\pardeftab720
+\cf0 Money reduce(Expression source, String to) \{\
+\pard\pardeftab720
+\cf2 return \cf0 source.reduce(\cf2 this\cf0 , to);\
+\}\
+\
+ Then the implementors:\
+\pard\pardeftab720
+\cf4 Expression\
+\pard\pardeftab720
+\cf0 Money reduce(Bank bank, String to);\
+\pard\pardeftab720
+\cf4 Sum\
+\pard\pardeftab720
+\cf2 public \cf0 Money reduce(Bank bank, String to) \{\
+\cf2 int \cf0 amount= augend.amount + addend.amount;\
+\cf2 return new \cf0 Money(amount, to);\
+\}\
+\pard\pardeftab720
+\cf4 \
+Money\
+\pard\pardeftab720
+\cf2 public \cf0 Money reduce(Bank bank, String to) \{\
+\cf2 int \cf0 rate = (currency.equals(\cf3 "CHF"\cf0 ) && to.equals(\cf3 "USD"\cf0 ))\
+? 2\
+: 1;\
+\cf2 return new \cf0 Money(amount / rate, to);\
+\}\
+\
+ The methods have to be public because methods in interfaces have to be public (for\
+some excellent reason, I\'92m sure.)\
+Now we can calculate the rate in the Bank:\
+\pard\pardeftab720
+\cf4 Bank\
+\pard\pardeftab720
+\cf2 int \cf0 rate(String from, String to) \{\
+\cf2 return \cf0 (from.equals(\cf3 "CHF"\cf0 ) && to.equals(\cf3 "USD"\cf0 ))\
+? 2\
+: 1;\
+\}\
+ And ask the bank for the right rate:\
+\
+\pard\pardeftab720
+\cf4 Money\
+\pard\pardeftab720
+\cf2 public \cf0 Money reduce(Bank bank, String to) \{\
+\cf2 int \cf0 rate = bank.rate(currency, to);\
+\cf2 return new \cf0 Money(amount / rate, to);\
+\}\
+\
+That pesky \'932\'94 still appears in both the test and the code. To get rid of it,we need to\
+keep a table of rates in the Bank and look up a rate when we need it. We could use\
+a Hashtable mapping pairs of currencies to rates. Can we use a two element array\
+containing the two currencies as the key? Does Array.equals() check to see if the\
+elements are equal?\
+\cf2 \
+public void \cf0 testArrayEquals() \{\
+assertEquals(\cf2 new \cf0 Object[] \{\cf3 "abc"\cf0 \}, \cf2 new \cf0 Object[] \{\cf3 "abc"\cf0 \});\
+\}\
+\
+Nope. The test fails, so we have to create a real object for the key:\
+\pard\pardeftab720
+\cf4 Pair\
+\pard\pardeftab720
+\cf2 private class \cf0 Pair \{\
+private String from;\
+private String to;\
+Pair(String from, String to) \{\
+\cf2 this\cf0 .from= from;\
+\cf2 this\cf0 .to= to;\
+\}\
+\}\
+\
+Because we are using Pairs as keys, we have to implement equals() and hash-\
+Code(). I\'92m not going to write tests for these, because we are writing this code in\
+the context of a refactoring. If we get to the payoff of the refactoring and all the\
+tests run, we expect the code to have been exercised. If I was programming with\
+someone who didn\'92t see exactly where we were going with this, or if the logic\
+became the least bit complex, I would begin writing separate tests.\
+\pard\pardeftab720
+\cf4 \
+Pair\
+\pard\pardeftab720
+\cf2 public boolean \cf0 equals(Object object) \{\
+Pair pair= (Pair) object;\
+\cf2 return \cf0 from.equals(pair.from) && to.equals(pair.to);\
+\}\
+\
+\cf2 public int \cf0  hashCode() \{\
+\cf2 return \cf0  0;\
+\}\
+\
+\'930\'94 is a terrible hash value, but it has the advantage that it\'92s easy to implement and\
+it will get us running quickly. Currency lookup will look like linear search. Later,\
+when we get lots of currencies, we can do a more thorough job with real usage data.\
+We need somewhere to store the rates:\
+\pard\pardeftab720
+\cf4 \
+Bank\
+\pard\pardeftab720
+\cf2 private \cf0  Hashtable rates= \cf2 new \cf0  Hashtable();\
+We need to set the rate when told:\
+\pard\pardeftab720
+\cf4 Bank\
+\pard\pardeftab720
+\cf2 void \cf0  addRate(String from, String to, \cf2 int \cf0  rate) \{\
+rates.put(\cf2 new \cf0  Pair(from, to), \cf2 new \cf0  Integer(rate));\
+\}\
+\
+And then we can look up the rate when asked:\
+\pard\pardeftab720
+\cf4 Bank\
+\pard\pardeftab720
+\cf2 int \cf0  rate(String from, String to) \{\
+Integer rate= (Integer) rates.get(\cf2 new \cf0  Pair(from, to));\
+\cf2 return \cf0  rate.intValue();\
+\}\
+\
+Wait a minute!?We got a red bar. What happened? A little snooping around tells us\
+that if we ask for the rate from USD to USD, we expect the value to be 1. Since this\
+was a surprise, let\'92s write a test to communicate what we discovered:\
+\cf2 \
+public void \cf0  testIdentityRate() \{\
+assertEquals(1, \cf2 new \cf0  Bank().rate(\cf3 "USD"\cf0  , \cf3 "USD"\cf0  ));\
+\}\
+\
+Now we have three errors, but we expect them all to be fixed with one change:\
+\pard\pardeftab720
+\cf4 Bank\
+\pard\pardeftab720
+\cf2 int \cf0  rate(String from, String to) \{\
+\cf2 if \cf0  (from.equals(to)) \cf2 return \cf0  1;\
+\
+ Integer rate= (Integer) rates.get(\cf2 new \cf0  Pair(from, to));\
+\cf2 return \cf0  rate.intValue();\
+\}\
+\
+Green bar!\
+Next we\'92ll implement our last big test, $5 + 10 CHF. Several significant techniques\
+have slipped into this chapter:\
+\
+\'95 Added a parameter, in seconds, that we expected we would need\
+\'95 Factored out the data duplication between code and tests\
+\'95 Wrote a test (testArrayEquals) to check an assumption about the operation of\
+Java\
+\'95 Introduced a private helper class without distinct tests of its own\
+\'95 Made a mistake in a refactoring and chose to forge ahead, writing another test to\
+isolate the problem}

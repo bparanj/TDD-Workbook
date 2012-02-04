@@ -1,0 +1,719 @@
+<html>
+
+<head>
+<title>TDD-Training</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+	body {background-color: #bac0c7}
+    p.binderItem {margin: 10.0px 0.0px 0.0px 05.0px; font-family:Verdana, Cochin, Times, Courier, Arial, serif; font-size:14.0px;}
+    .page {border: 1px solid #727272; background: #fff}
+    hr {
+      border-top: 1px dashed #000;
+      border-bottom: 0px solid #fff;
+      color: #fff;
+      background-color: #fff;
+      height: 0px;
+  </style>
+</head>
+
+<body>
+
+<table border="0" width="100%" cellspacing="3">
+<tr>
+<td>
+
+<table class="page" width="100%" cellspacing="10" cellpadding="2">
+<tr>
+<td valign="top">
+
+<ul>
+<li>
+<p class="binderItem"><strong>Structure</strong><br/>Structure for Presentation<br/>
+<br/>
+Learning Objective<br/>
+Concept : Explain<br/>
+Demo Example : Recorded screencast<br/>
+Q & A<br/>
+Exercise : Work as a pair and finish the exercise within given time limit.<br/>
+Review and Q & A : Where did you have difficulty?<br/>
+<br/>
+Structure for Book<br/>
+<br/>
+Objective for the chapter.<br/>
+Introduction to the concepts (if required).<br/>
+Progressive lessons for a specific objective.<br/>
+Code centric. Example of anti-patterns. Example of best practices. Before / After picture.<br/>
+Illustrate near miss when refactoring fr...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Rhythm of TDD</strong><br/>My goal is for you to see the rhythm of test-driven development:<br/>
+<br/>
+1.  Quickly add a test<br/>
+2.  Run all tests and see the new one fail<br/>
+3.  Make a little change<br/>
+4.  Run all tests and see them all succeed<br/>
+5.  Refactor to remove duplication<br/>
+<br/>
+The surprises are likely to be:<br/>
+<br/>
+1.  How each test can cover a small increment of functionality<br/>
+2.  How small and ugly the changes can be to make the new tests run<br/>
+3.  How often the tests are run<br/>
+4.  How many teensy tiny steps make up the refactorings<br/>
+</p>
+</li>
+<li>
+<p class="binderItem"><strong>Money Example</strong><br/>Let’s start with the object multi-currency money. We have a report like this:<br/>
+<br/>
+#<br/>
+To make a multi-currency report, we need to add currencies:<br/>
+<br/>
+￼<br/>
+We also need to specify exchange rates:<br/>
+￼<br/>
+What behavior do we need to produce the revised report?<br/>
+What is the set of tests which, when passed, will demonstrate the presence of code we are confident will compute the report correctly?<br/>
+<br/>
+Requirements<br/>
+<br/>
+We need to be able to add amounts in two different currencies and convert the result given a set of exchange...</p>
+</li>
+<li>
+<p class="binderItem"><strong>TDD Cyle</strong><br/>TDD Cycle<br/>
+<br/>
+The general TDD cycle is :<br/>
+<br/>
+1. Write a test. <br/>
+<br/>
+Think about how you would like the operation in your mind to appear in your code. You are writing a story. Invent the interface you wish you had. Include all the elements in the story that you imagine will be necessary to calculate the right answers.<br/>
+<br/>
+2. Make it run. <br/>
+<br/>
+Quickly getting that bar green dominates everything else. If a clean, simple solution is obvious, type it in. If the clean, simple solution is obvious but it will take you ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Equality</strong><br/>If I have an integer and I add 1 to it, I don’t expect the original integer to change. I expect to to use the new value. Objects usually don’t behave that way. We can use objects as values, as we are using our Dollar now. The pattern for this is Value Object. One of the constraints of Value Objects is that the value of the instance variables of the object never change once they have been set in the constructor.<br/>
+<br/>
+The advantage of using Value Objects is that there is no aliasing problems. Say I ha...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Private</strong><br/>Make “amount” private<br/>
+<br/>
+Now that we have defined equality, we can use it to make our tests more expressive. Conceptually the operation times should return a Dollar whose value is the value of the receiver times the multiplier. Our test doesn’t exactly say that:<br/>
+<br/>
+Test_multiplication<br/>
+Five = Dollar.new(5)<br/>
+Product = five.times(2)<br/>
+Assert(10, product.amount)<br/>
+Product = five.times(3)<br/>
+Assert(15, product.amount)<br/>
+<br/>
+We can rewrite the first assertion to compare Dollars to Dollars<br/>
+<br/>
+Test_multiplication<br/>
+Five = D...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Franc</strong><br/>$5 + 10 CHF = $10 if rate is 2:1<br/>
+5 CHF *2 = 10 CHF<br/>
+<br/>
+How are we going to approach the first test on that list? That’s the test that ’s most interesting. It still seems to be a big leap. I’m not sure I can write a test that I can implement in one little step. A pre-requisite seems to be having an object like Dollar, but to represent Francs. If we can get Francs working like Dollars work now, we’ll be closer to being able to write and run the mixed addition test.<br/>
+<br/>
+We can copy and edit the Dollar te...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Common Equals</strong><br/>We got a new test case working. However, we sinned mightily in copy/paste of code so we could do it quickly. Now it is time to clean up.<br/>
+<br/>
+One possibility is to make one of our classes extend the other. I tried it, and it hardly saves any code at all. Instead, we are going to find a common superclass for the two classes. What if we had a Money class to capture the common equals code? We can start small:<br/>
+Class Money<br/>
+<br/>
+All the tests still run (not that we could possibly have broken anything, but tha...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Compare Francs to Dollars</strong><br/>Compare Francs to Dollars<br/>
+<br/>
+The thought struck us at the end of the last chapter - what happens when we compare Francs and Dollars? We dutifully turned our dreadful thought into an item on our to-do list. Let’s see what happens:<br/>
+<br/>
+Test_equality<br/>
+AssertTrue(Dollar.new(5).equals(Dollar.new(5))<br/>
+AssertFalse(Dollar.new(5).equals(Dollar.new(6))<br/>
+AssertTrue(Franc.new(5).equals(Franc.new(5))<br/>
+AssertFalse(Franc.new(5).equals(Franc.new(6))<br/>
+AssertFalse(Franc.new(5).equals(Dollar.new(5))<br/>
+<br/>
+It fails. Dollars are F...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Making Objects</strong><br/>The two implementations of times are remarkably similar:<br/>
+<br/>
+Def times(multiplier)<br/>
+Return Franc.new(amount * multiplier)<br/>
+End<br/>
+<br/>
+Def times(multiplier)<br/>
+Return Dollar.new(amount * multiplier)<br/>
+End<br/>
+<br/>
+The two subclasses of Money aren’t doing enough work to justify their existence, so we can eliminate them. We will not do it with on big step because we want an effective demonstration of TDD.<br/>
+<br/>
+Ok, we would be one step closer to eliminating the subclasses if there were fewer references to the subclasses direct...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Eliminating Subclasses</strong><br/>What is there on our list that might help us eliminate the useless subclasses? What about currency? What would happen if we introduced the notion of currency?<br/>
+<br/>
+How do we want to implement currencies at the moment? Oops. How do we want to test for currencies at the moment?<br/>
+<br/>
+We may want to have complicated objects representing currencies, with flyweight factories to ensure we create no more objects than we really need. However, for the moment Strings will do:<br/>
+<br/>
+public void  testCurrency() {<br/>
+assertE...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Refactoring times method</strong><br/> When we are done with this chapter we will have a single class to represent Money. The two implementations of times() are close, but not identical.<br/>
+<br/>
+Franc<br/>
+Money times(int multiplier) {<br/>
+return Money.franc(amount * multiplier);<br/>
+}<br/>
+Dollar<br/>
+Money times(int multiplier) {<br/>
+return Money.dollar(amount * multiplier);<br/>
+}<br/>
+<br/>
+ There’s not an obvious way to make them identical. Sometimes you have to go backwards to go forwards, a little like a Rubik’s Cube. What happens if we inline the factory methods? <br/>
+<br/>
+Franc<br/>
+M...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Deleting Subclasses</strong><br/> The two subclasses, Dollar and Franc, have only their constructors. Only a constructor<br/>
+is not enough reason to have a subclass, so we want to delete the subclasses.<br/>
+We can replace references to the subclasses by references to the superclass without<br/>
+changing the meaning of the code. First Franc:<br/>
+Franc<br/>
+static Money franc(int amount) {<br/>
+return new Money(amount, "CHF");<br/>
+}<br/>
+ Then Dollar:<br/>
+Dollar<br/>
+static Money dollar(int amount) {<br/>
+return new Money(amount, "USD");<br/>
+}<br/>
+ Now there are no references to Dollar,...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Addition</strong><br/> I’m not sure how to write the story of the whole addition, so we’ll start with a simpler<br/>
+example—$5 + $5 = $10.<br/>
+public void testSimpleAddition() {<br/>
+Money sum= Money.dollar(5).plus(Money.dollar(5));<br/>
+assertEquals(Money.dollar(10), sum);<br/>
+}<br/>
+ We could fake the implementation by just returning “Money.dollar(10)”, but the<br/>
+implementation seems obvious. We’ll try:<br/>
+Money<br/>
+Money plus(Money addend) {<br/>
+return new Money(amount + addend.amount, currency);<br/>
+}<br/>
+<br/>
+ Where the design isn’t obvious I will still fake the ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Removing Duplication</strong><br/> We can’t mark our test for $5 + $5 done until we’ve removed all the duplication.<br/>
+We don’t have code duplication, but we do have data duplication. The $10 in the<br/>
+fake implementation:<br/>
+<br/>
+Bank<br/>
+Money reduce(Expression source, String to) {<br/>
+return Money.dollar(10);<br/>
+}<br/>
+<br/>
+ is really the same as the “$5 + $5” in the test:<br/>
+public void testSimpleAddition() {<br/>
+Money five= Money.dollar(5);<br/>
+Expression sum= five.plus(five);<br/>
+Bank bank= new Bank();<br/>
+Money reduced= bank.reduce(sum, "USD");<br/>
+assertEquals(Money.dollar(10...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Change</strong><br/> Reduce Money with conversion<br/>
+<br/>
+we are thinking about a much simpler form of<br/>
+change—we have 2 francs and we want a dollar. That sounds like a test case<br/>
+already:<br/>
+<br/>
+public void testReduceMoneyDifferentCurrency() {<br/>
+Bank bank= new Bank();<br/>
+bank.addRate("CHF", "USD", 2);<br/>
+Money result= bank.reduce(Money.franc(2), "USD");<br/>
+assertEquals(Money.dollar(1), result);<br/>
+}<br/>
+<br/>
+ When I go from francs to dollars, I divide by two (we’re still studiously ignoring all<br/>
+those nasty numerical problems.) We can make the bar gre...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Mixed Currencies</strong><br/> Now we are finally ready to add the test that started it all, $5 + 10 CHF:<br/>
+<br/>
+public void testMixedAddition() {<br/>
+Expression fiveBucks= Money.dollar(5);<br/>
+Expression tenFrancs= Money.franc(10);<br/>
+Bank bank= new Bank();<br/>
+bank.addRate("CHF", "USD", 2);<br/>
+Money result= bank.reduce(fiveBucks.plus(tenFrancs), "USD");<br/>
+assertEquals(Money.dollar(10), result);<br/>
+}<br/>
+<br/>
+ This is what we’d like to write. Unfortunately, there are a host of compile errors.<br/>
+When we were generalizing from Money to Expression, we left a lot of...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Abstraction</strong><br/> We need to implement Sum.plus() to finish Expression.plus, and then we need<br/>
+Expression.times(), and then we’re finished with the whole example. Here’s the test<br/>
+for Sum.plus():<br/>
+<br/>
+public void testSumPlusMoney() {<br/>
+Expression fiveBucks= Money.dollar(5);<br/>
+Expression tenFrancs= Money.franc(10);<br/>
+Bank bank= new Bank();<br/>
+bank.addRate("CHF", "USD", 2);<br/>
+Expression sum= new Sum(fiveBucks, tenFrancs).plus(fiveBucks);<br/>
+Money result= bank.reduce(sum, "USD");<br/>
+assertEquals(Money.dollar(15), result);<br/>
+}<br/>
+<br/>
+ We could ha...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Money Retrospective</strong><br/> Let’s take a look back at the Money example, both the process we used and the<br/>
+results. We will look at:<br/>
+<br/>
+•  What Next?<br/>
+•  Metaphor—the dramatic effect metaphor has on the structure of the design<br/>
+•  JUnit Usage—when we ran tests and how we used JUnit<br/>
+•  Code Metrics—a numerical abstract of the resulting code<br/>
+•  Process—we say red/green/refactor, but how much work goes into each step?<br/>
+•  Test Quality—how do TDD tests stack up by conventional test metrics?<br/>
+<br/>
+What Next?<br/>
+<br/>
+ Is the code finished? No. T...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Set the Table</strong><br/> When you begin writing tests, you will discover a common pattern (Bill Wake<br/>
+coined the phrase 3A for this):<br/>
+<br/>
+1.  Arrange—create some objects<br/>
+2.  Act—stimulate them<br/>
+3.  Assert—check the results<br/>
+<br/>
+The arrange step is often the same test-to-test, while the stimulation and checking<br/>
+steps are unique. I have a 7 and 9. If I add them, I expect 16. If I subtract them, I<br/>
+expect –2, if I multiply them, I expect 63. The stimulation and expected results are<br/>
+unique, the 7 and the 9 don’t change.<br/>
+<br/>
+If this pat...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Cleaning Up After</strong><br/> Tests will sometimes need to allocate external resources in setUp(). If we want the<br/>
+tests to remain independent, a test that allocates external resources should release<br/>
+them before it is done, perhaps in a tearDown() method.<br/>
+<br/>
+The simple minded way to write the test for deallocation is to introduce yet another<br/>
+flag. All those flags are starting to bug me, and they are missing an important aspect<br/>
+of the methods—setUp() is called before the test method is run, and tearDown() is<br/>
+called afterwards. ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Counting</strong><br/>I was going to implement making sure tear_down is called regardless of exceptions during the test method. However, we have to catch exception to make the test work. If we make a mistake implementing this, we won’t be able to see the mistake because the exceptions won’t be reported. In general, the order of implementing the tests is important. When I pick the next test to implement, I find a test that will teach me something but which I have confidence I can make it work. If I get that test worki...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Dealing with Failure</strong><br/>Reviewing, we:<br/>
+Made our small scale test work<br/>
+Reintroduced the larger scale test<br/>
+Made the larger test work quickly using the mechanism demonstrated by the smaller test</p>
+</li>
+<li>
+<p class="binderItem"><strong>TDD Patterns</strong><br/>There are some basic strategic question we need to answer before we can talk about the details of how to test:<br/>
+<br/>
+What do we mean by testing?<br/>
+When do we test?<br/>
+How do we choose what logic to test?<br/>
+How do we choose what data to test?<br/>
+<br/>
+Isolated Test<br/>
+<br/>
+How should the running of tests affect each other? Not at all. Tests should be able to ignore each other completely. If I had one test broken, I wanted one problem. If I had two tests broken, I wanted two problems.<br/>
+<br/>
+One convenient implication of isolated...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Red Bar Patterns</strong><br/>These patterns are about when you write tests, where you write tests and when you stop writing tests.<br/>
+<br/>
+One Step Test<br/>
+<br/>
+Which test should you pick next from the list? Pick a test that will teach you something and that you are confident you can implement.<br/>
+<br/>
+Each test should represent one step towards your overall goal. If we are looking at the following test list, which test should we pick next?<br/>
+<br/>
+Plus<br/>
+Minus<br/>
+Times<br/>
+Divide<br/>
+Plus like<br/>
+Equals<br/>
+Equals null<br/>
+Null exchange<br/>
+Exchange one currency<br/>
+Exchange two cu...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Testing Patterns</strong><br/>Child Test<br/>
+<br/>
+How do you get a test case running that turns out to be too big? Write a smaller test case that represents the broken part of the bigger test case. Get the smaller test case running. Reintroduce the larger test case.<br/>
+<br/>
+The red/green/refactor rhythm is so important for continuous success that when you are at risk of losing it, it is work extra effort to maintain it. This happens when the test accidentally requires several changes to make it work. Minimize the time in red bar.<br/>
+<br/>
+When I w...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Green Bar Patterns</strong><br/>Once you have a broken test, you need to fix it. If you treat a red bar as a condition to fixed as quickly as possible,  you will discover that you can get to green quickly. These patterns are how to make the code pass (even if the result isn’t something you want to live with for even an hour)<br/>
+<br/>
+Fake It (Till You Make It)<br/>
+<br/>
+What is your first implementation once you have a broken test? Return a constant. Once you have the test running, gradually transform the constant into an expression using vari...</p>
+</li>
+<li>
+<p class="binderItem"><strong>xUnit Patterns</strong><br/>Assertion<br/>
+<br/>
+How do you check that tests worked correctly? Write boolean expressions that automate your judgment about whether the code worked.<br/>
+<br/>
+The test should not be dependent on the implementation. It should use only public protocol. Wishing for white box testing is not a testing problem, it is a design problem. Any time I want to use a variable as a way of checking to see whether code ran correctly or not, I have an opportunity to improve the design. It is a good practice to adopt the conventi...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Refactoring</strong><br/>Reconcile Differences<br/>
+<br/>
+How do you unify two similar looking pieces of code? Gradually bring them closer. Unify them only when they are absolutely identical.<br/>
+<br/>
+Isolate Change<br/>
+<br/>
+How do you change one part of a multi-part method or object? First, isolate the part that has to change.<br/>
+<br/>
+Migrate Data<br/>
+<br/>
+How do you move from one representation? Temporarily duplicate the data.</p>
+</li>
+<li>
+<p class="binderItem"><strong>Mastering TDD</strong><br/>How large should your steps be?<br/>
+<br/>
+There are really two questions lurking here:<br/>
+How much ground should each test cover?<br/>
+How many intermediate stages should you go through as you refactor?<br/>
+<br/>
+The tendency of TDDers over time has been smaller steps. <br/>
+<br/>
+What don’t you have to test?<br/>
+<br/>
+Write tests until fear is transformed into boredom. You should test: conditionals, loops, operations, polymorphism. But only those that you write. Unless you have a reason to distrust it, don’t test code from others. <br/>
+<br/>
+Somet...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Fibonacci</strong><br/>The first test shows that fib(0) = 0. The implementation returns a constant.<br/>
+The second test shows that fib(1) = 1<br/>
+<br/>
+I just put the second assert in the same method because there didn’t seem to be any substantial communication value to writing test_fibonacci_of_one_is_one<br/>
+<br/>
+There are several ways I could go to making this run. I’ll choose to treat 0 as a special case: if n == 0 return 0; return 1;<br/>
+<br/>
+The duplication in the test case is starting to bug me. We can factor out the common structure of as...</p>
+</li>
+<li>
+<p class="binderItem"><strong>xUnit Test Patterns</strong><br/>Fundamental shift for many programmers.<br/>
+Hiring someone who has the knowledge is the most time-efficient way of learning any new practice or technology.<br/>
+I hope that by writing down a lot of these mistakes and suggesting ways to avoid them, I can save you lot of grief on your project. <br/>
+<br/>
+Some developers test the whole system as a single entity. Most developers prefer to test their software unit by unit. The units may be larger-grained components or they may be individual classes, methods or functio...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Smells</strong><br/>What to do about smells?<br/>
+<br/>
+A very effective technique for identifying the root cause is the “Five Why’s”. First, we ask why something is occurring. Once we have identified the factors that led to it, we next ask why each of those factors occurred. We repeat this process until no new information is forthcoming. In practice, asking why five times is usually enough - hence the name “Five Why’s”. This is also called root cause analysis.<br/>
+<br/>
+The root causes of fragile tests can be classified into four br...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Goals of Test Automation</strong><br/>High level objectives:<br/>
+<br/>
+Tests should help us improve quality<br/>
+Tests should help us understand the SUT<br/>
+Tests should reduce and not introduce risk<br/>
+Tests should be easy to run<br/>
+Tests should be easy to write and maintain<br/>
+Tests should require minimal maintenance as the system evolves around them<br/>
+<br/>
+The first three objectives demonstrate the value provided by the tests, whereas the last three objectives focus on the characteristics of the tests themselves. <br/>
+<br/>
+Tests Should Help Us Improve Quality<br/>
+<br/>
+Goal : Te...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Philosophy of Test Automation</strong><br/>Test after vs Test first<br/>
+Test-by-test vs Test all-at-once<br/>
+Outside-in vs Inside-out (applies independently to design and coding)<br/>
+Behavior verification vs State verification<br/>
+Fixture designed test-by-test vs Big fixture design upfront<br/>
+<br/>
+Test First or Last?<br/>
+<br/>
+When tests are written first and we write only enough code to make the tests pass, the production code tends to be more minimalist.<br/>
+<br/>
+Examples are easier for people to envision writing before code than tests. Examples are executable and reveal whe...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Principles of Test Automation</strong><br/>Write the Tests First<br/>
+<br/>
+The unit tests save us a lot of debugging effort - effort that often fully offsets the cost of automating the tests.<br/>
+Writing the tests before we write the code forces the code to be designed for testability. <br/>
+<br/>
+Design for Testability<br/>
+<br/>
+<br/>
+Use the Front Door First<br/>
+<br/>
+Objects have several kinds of interfaces. There is the public interface that clients are expected to use. There may also be a private interface. Many objects also have an outgoing interface consisting of the used par...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Automation Strategy</strong><br/>What’s Strategic?<br/>
+<br/>
+Be aware of the strategic decisions necessary and to make them just in time rather than much too late.<br/>
+<br/>
+What makes a decision strategic? A decision is strategic if it is hard to change. That is, a strategic decision affects a large number of tests, especially such that many or all the tests would need to be converted to a different approach at the same time. Put another way, any decision that could cost a large amount of effort to change is strategic.<br/>
+<br/>
+Common strategic decisio...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Transient Fixture Management</strong><br/>In Implicit Setup, all the fixture creation logic goes into setup method. This approach can make the tests more difficult to understand because we cannot see how the pre-conditions of the test (the test fixture) correlate with the expected outcome within the test method.<br/>
+<br/>
+Misuse of the setup Method<br/>
+<br/>
+The setup method is most prone to misuse when it is applied to build a general fixture with multiple distinct parts each of which is dedicated to a different test method. This can lead to slow tests....</p>
+</li>
+<li>
+<p class="binderItem"><strong>Result Verification</strong><br/>Options for verifying that the SUT has behaved correctly, including exercising the SUT and comparing the actual outcome with the expected outcome.<br/>
+<br/>
+There is a lot more to writing good tests than just calling the built-in assertion methods. We also need to learn key techniques for making tests easy to understand and for avoiding and removing test code duplication.<br/>
+<br/>
+A key challenge in coding the assertions is getting access to the information we want to compare with the expected results. This is w...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Using Test Doubles</strong><br/>For the most part we assumed that the SUT was designed such that it could be tested easily in isolation of other pieces of software. When a class does not depend on any other classes, testing it is relatively straightforward. When a class does depend on other classes, we have two choices: we can test it together with all the other classes it depends on or we can try to isolate it from the other classes so that we can test it by itself. We will now see techniques for isolating the SUT from the ot...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Organizing Tests</strong><br/>Right-Sizing Test Methods<br/>
+<br/>
+A test condition is something we need to prove the SUT really does; it can be described in terms of what the starting state of the SUT is, how we exercise the SUT, how we expect the SUT to respond, and what the ending state of the SUT is expected to be. A test method is a sequence of statements in our test DSL that exercises one or more test conditions. What should we include in a single test method?<br/>
+<br/>
+Fig 12.1 the four phases of a typical test. Each test method impleme...</p>
+</li>
+<li>
+<p class="binderItem"><strong>A Roadmap to Effective Test Automation</strong><br/>Test Automation Difficulty<br/>
+<br/>
+Some kinds of tests are harder to write than others. This difficulty arises partly because the techniques are more involved and partly because they are less well known and the tools to do this kind of test automation are less readily available. The following common kinds of tests are listed in approximate order of difficulty, from easiest to most difficult:<br/>
+<br/>
+1. Simple entity objects (domain model).<br/>
+     Simple business classes with no dependencies<br/>
+     Complex busines...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Code Smells</strong><br/>Obscure Test<br/>
+<br/>
+Long Test, Complex Test, Verbose Test<br/>
+<br/>
+It is difficult to understand the test at a glance<br/>
+<br/>
+Automated tests should serve at least two purposes. First they should act as documentation of how the SUT should behave (tests as documentation). Second, they should be a self-verifying executable specification. These two goals are often contradictory because the level of detail needed for tests to be executable may make the test so verbose as to be difficult to understand.<br/>
+<br/>
+The  first is iss...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Strategy Patterns</strong><br/>Minimal Fixture<br/>
+Minimal Context <br/>
+<br/>
+Which fixture strategy should we use?<br/>
+<br/>
+We use the smallest and simplest fixture possible for each test.<br/>
+<br/>
+Figure …<br/>
+<br/>
+Every test needs some kind of test fixture. A key part of understanding a test is understanding the test fixture and recognizing how it influences the expected outcome of the test. Tests are much easier to understand if the fixture is small and simple.<br/>
+<br/>
+A minimal fixture is important for achieving tests as documentation and for avoiding slow tests. ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>xUnit Basic Patterns</strong><br/>Test Method<br/>
+<br/>
+We organize the test logic following one of the standard test method templates to make the type of test easily recognizable. In a simple success test, we have a purely linear flow of control from fixture setup through exercising the SUT to result verification. In an expected exception test, language based structures direct us to error-handling code. If we reach that code, we pass the test; if we don’t, we fail it.<br/>
+<br/>
+We follow the standard test templates to keep test methods as simple...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Result Verification Patterns</strong><br/>State Verification<br/>
+<br/>
+State Based Testing<br/>
+<br/>
+How do we make tests self-checking when there is state to be verified?<br/>
+We inspect the state of the SUT after it has been exercised and compare it to the expected state.<br/>
+Fig goes here.<br/>
+<br/>
+We exercise the SUT by invoking the methods of interest. Then, as a separate step, we interact with the SUT to retrieve its post-exercise state and compare it with the expected end state by calling assertion methods.<br/>
+<br/>
+We should use state verification when we care about only...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Double Patterns</strong><br/>Test Double<br/>
+<br/>
+How can we verify logic independently when code it depends on is unusable? How can we avoid slow tests? We replace a component on which the SUT depends with a test specific equivalent.<br/>
+<br/>
+Fig ..<br/>
+<br/>
+Sometimes it is hard to test the SUT because it depends on other components that cannot be used in the test environment. Such a situation may arise because those components are not available, they will not return the results needed for the test, or executing them would have undesirable side e...</p>
+</li>
+<li>
+<p class="binderItem"><strong>xUnit Test Patterns Glossary</strong><br/>Direct Input<br/>
+<br/>
+A test may interact with the SUT directly via its public API or indirectly via its back door. The stimuli injected by the test into the SUT via its public API are direct inputs of the SUT. Direct inputs may consist of method calls to another component or messages sent on a message channel and the arguments or contents.<br/>
+<br/>
+Indirect Input<br/>
+<br/>
+When the behavior of the SUT is affected by the values returned by another component whose services it uses, we call those values indirect inputs of...</p>
+</li>
+<li>
+<p class="binderItem"><strong>The Art of Unit Testing</strong><br/>A unit test should have the following properties:<br/>
+<br/>
+❂ It should be automated and repeatable.<br/>
+❂ It should be easy to implement.<br/>
+❂ Once it’s written, it should remain for future use.<br/>
+❂ Anyone should be able to run it.<br/>
+❂ It should run at the push of a button.<br/>
+❂ It should run quickly.<br/>
+<br/>
+Unit test usually exercises and tests only a single unit in isolation.<br/>
+<br/>
+The technique of test-driven development is quite simple:<br/>
+<br/>
+1 Write a failing test to prove code or functionality is missing from the end product. ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Growing OO Sotware Guided by Tests</strong><br/>Testing is no longer just about keeping defects from the users; instead, it’s about helping the team to understand the features that the users need and to deliver those features reliably and predictably.<br/>
+<br/>
+What is the Point of TDD?<br/>
+<br/>
+One must learn by doing the thing; for though you think you know it, you have no certainty, until you try it.<br/>
+<br/>
+Software Development as a Learning Process<br/>
+<br/>
+Everyone involved in a software project has to learn as it progresses. For the project to succeed, the people inv...</p>
+</li>
+<li>
+<p class="binderItem"><strong>TDD with Objects</strong><br/>A Web of Objects<br/>
+<br/>
+OO design focuses more on the communication between objects than on the objects themselves. The key in making great systems is much more to design how its modules communicate rather than what their internal properties and behaviors should be.<br/>
+<br/>
+An OO system is a web of collaborating objects. A system is built by creating objects and plugging them together so that they can send messages to one another. The behavior of the system is an emergent property of the composition of the o...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Kick-Starting the Test-Driven Cycle</strong><br/>First, Test a Walking Skeleton<br/>
+<br/>
+A walking skeleton is an implementation of the thinnest possible slice of real functionality that we can automatically build, deploy and test end-to-end. It should include just enough of the automation, the major components, and communication mechanisms to allow us to start working on the first feature. We keep the skeleton’s application functionality so simple that it’s obvious and uninteresting, leaving us free to concentrate on the infrastructure. For example, ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Maintaining the Test Driven Cycle</strong><br/>Start Each Feature with an Acceptance Test<br/>
+<br/>
+Start work on a new feature by writing failing acceptance tests that demonstrate that the system does not yet have the feature we’re about to write and track our progress towards completion of the feature.<br/>
+<br/>
+Fig Each TDD cycle starts with a failing acceptance test<br/>
+<br/>
+<br/>
+We write the acceptance test using only terminology from the application’s domain, not from the underlying technologies such as databases and web servers. This helps us understand what the s...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Achieving Object Oriented Design</strong><br/>How Writing a Test First Helps the Design<br/>
+<br/>
+1. Starting with a test means that we have to describe what we want to achieve before we consider how. This focus helps us maintain the right level of abstraction for the target object. It also helps us with information hiding as we have to decide what needs to be visible from outside the object.<br/>
+<br/>
+2. To keep unit tests understandable, we have to limit their scope. Unit tests that are dozens of lines long makes the test obscure. It tells us that the comp...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Building on Third Party Code</strong><br/>The critical point about third-party code is that we don’t control it, so we cannot use our process to guide its design. Instead we must focus on the integration between our design and the external code.<br/>
+<br/>
+In integration, we have an abstraction to implement, discovered while we developed the rest of the feature. With the third-party API pushing back at our design, we must find the best balance between elegance and practical use of someone else’s ideas. We must check that we are using the third-pa...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Passing the First Test</strong><br/>The Necessary Minimum<br/>
+<br/>
+Iteration zero requires focus to get the walking skeleton working. The point is to design and validate the initial structure of the end-to-end system - where end-to-end includes deployment to a working environment - to prove that our choices of packages, libraries, and tooling will actually work. A sense of urgency will help the team to strip the functionality down to the absolute minimum sufficient to test their assumptions.<br/>
+<br/>
+Iteration zero usually brings up project chart...</p>
+</li>
+<li>
+<p class="binderItem"><strong>First Real Functionaliy</strong><br/>Outside In Development<br/>
+<br/>
+This failure defines the target for our next coding episode. It tells us, at a high level, what we’re aiming for - we just have to fill in implementation until it passes.<br/>
+<br/>
+Our approach to TDD is to start with the outside event that triggers the behavior we want to implement and work our way into the code an object at a time, until we reach a visible effect (such as a sent message or log entry) indicating that we’ve achieved our goal. The end-to-end test shows us the end p...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Second Functionality</strong><br/>Making Steady Progress<br/>
+<br/>
+We made steady progress by adding little slices of functionality. First we made the Sniper show when it’s winning, then when it has won. We used empty implementation to get us through the compiler when we weren’t ready to fill in the code, and we stayed focused on the immediate task.<br/>
+<br/>
+20/20 Hindsight<br/>
+<br/>
+Forehead slapping moments that make us wonder why we didn’t see it the first time around. Surely, if we’d spent more time on the design, we wouldn’t have to change it now? S...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Handling Failure</strong><br/>Constructing a real Chat is painful. Most of the mocking frameworks support creating a mock class, but it makes us uncomfortable because then we’re defining a relationship with an implementation, not a role - we’re being too precise about our dependencies.<br/>
+<br/>
+Our alternative approach is to attach another object to the object that implements this disconnection policy. We’re emphasizing the single responsibility principle, which means each object does just one thing well and the system behavior come...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Sustainable TDD</strong><br/>This part discusses the qualities we look for in test code that keep the development habitable. We want to make sure the tests pull their weigh by making them expressive, so that we can tell what’s important when we read them and when they fail, and by making sure they don’t become a maintenance drag themselves. We need to apply as much care and attention to the tests as we do to the production code, although the coding styles may differ. Difficulty in testing might imply that we need to change ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Readability</strong><br/>To design is to communicate clearly by whatever means you can control or master - Milton Glaser<br/>
+<br/>
+For TDD to be sustainable, the tests must do more than verify the behavior of the code; they must also express that behavior clearly - they must be readable. Otherwise the team velocity drops. <br/>
+<br/>
+Test code should describe what the production code does. That means that it tends to be concrete about the values it uses as examples of what results to expect, but abstract about how the code works. Producti...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Diagnostics</strong><br/>Design to Fail<br/>
+<br/>
+The point of a test is not to pass but to fail. We want the production code to pass its tests, but we also want the tests to detect and report any errors that do exist. A failing test has actually succeeded at the job it was designed to do. Even unexpected test failures, in an area unrelated to where we are working, can be valuable because they reveal implicit relationships in the code that we hadn’t noticed.<br/>
+<br/>
+One situation we want to avoid, however, is when we can’t diagnose a t...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Flexibility</strong><br/>Test Flexibility<br/>
+<br/>
+We can reduce the ongoing cost of tests by making them easy to read and generating helpful diagnostics on failure. We also want to make sure that each test fails only when its relevant code is broken. Otherwise, we end up with brittle tests that slow down development and inhibit refactoring. Common causes of test brittleness include:<br/>
+<br/>
+The tests are too tightly coupled to unrelated parts of the system or unrelated behavior of the objects they are testing.<br/>
+The tests over specify ...</p>
+</li>
+</ul>
+
+</td>
+<td width="8">
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

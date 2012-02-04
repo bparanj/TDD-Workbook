@@ -1,0 +1,457 @@
+<html>
+
+<head>
+<title>TDD-Workbook</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+	body {background-color: #bac0c7}
+    p.binderItem {margin: 10.0px 0.0px 0.0px 05.0px; font-family:Verdana, Cochin, Times, Courier, Arial, serif; font-size:14.0px;}
+    .page {border: 1px solid #727272; background: #fff}
+    hr {
+      border-top: 1px dashed #000;
+      border-bottom: 0px solid #fff;
+      color: #fff;
+      background-color: #fff;
+      height: 0px;
+  </style>
+</head>
+
+<body>
+
+<table border="0" width="100%" cellspacing="3">
+<tr>
+<td>
+
+<table class="page" width="100%" cellspacing="10" cellpadding="2">
+<tr>
+<td valign="top">
+
+<ul>
+<li>
+<p class="binderItem"><strong>Rhythm of TDD</strong><br/>Rhythm of TDD<br/>
+<br/>
+My goal is for you to see the rhythm of test-driven development:<br/>
+<br/>
+1.  Quickly add a test<br/>
+2.  Run all tests and see the new one fail<br/>
+3.  Make a little change<br/>
+4.  Run all tests and see them all succeed<br/>
+5.  Refactor to remove duplication<br/>
+<br/>
+The surprises are likely to be:<br/>
+<br/>
+1.  How each test can cover a small increment of functionality<br/>
+2.  How small and ugly the changes can be to make the new tests run<br/>
+3.  How often the tests are run<br/>
+4.  How many teensy tiny steps make up the refactorin...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Strategic Questions</strong><br/>What do we mean by testing?<br/>
+When do we test?<br/>
+How do we choose what logic to test?<br/>
+How do we choose what data to test?</p>
+</li>
+<li>
+<p class="binderItem"><strong>Goals of Test Automation</strong><br/>Tests should help us improve quality<br/>
+   • Executable Specification<br/>
+  • Defect Localization<br/>
+<br/>
+Tests should help us understand the SUT<br/>
+ • Tests as documentation<br/>
+ • Tests as safety net<br/>
+ • Do no harm<br/>
+<br/>
+Tests should be easy to run<br/>
+ • Repeatable test<br/>
+<br/>
+Tests should be easy to write and maintain<br/>
+ • Simple tests<br/>
+ • Expressive tests<br/>
+ • Separation of concerns<br/>
+<br/>
+Tests should require minimal maintenance as the system evolves around them<br/>
+Robust test<br/>
+</p>
+</li>
+<li>
+<p class="binderItem"><strong>Philosophy of Test Automation</strong><br/>Test First or Last?<br/>
+State or Behavior Verification?</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Automation Strategy</strong><br/>Mechanics of making software testable<br/>
+ Control Points and Observation Points<br/>
+Interaction Styles and Testability Patterns<br/>
+Humble Executable Pattern<br/>
+Divide and Test</p>
+</li>
+<li>
+<p class="binderItem"><strong>Principles of Test Automation</strong><br/>Write the tests first<br/>
+Design for testability<br/>
+Use the front door first<br/>
+Communicate intent<br/>
+Don’t modify the SUT<br/>
+Keep tests independent<br/>
+Isolate the SUT<br/>
+Minimize test overlap<br/>
+Minimize untestable code<br/>
+Keep test logic out of production code<br/>
+Verify one condition per test<br/>
+Test concerns separately<br/>
+Ensure commensurate effort and responsibility</p>
+</li>
+<li>
+<p class="binderItem"><strong>A Roadmap to Effective Test Automation</strong><br/>Test automation difficulty<br/>
+Roadmap to highly maintainable automated tests<br/>
+Exercise the happy path code<br/>
+Verify direct outputs of the happy path<br/>
+Verify alternative paths<br/>
+Controlling indirect inputs<br/>
+Making tests repeatable and robust<br/>
+Verify indirect and output behavior<br/>
+Optimize test execution and maintenance<br/>
+Make the tests run faster<br/>
+Make the tests easy to understand and maintain<br/>
+Reduce the risk of missed bugs</p>
+</li>
+<li>
+<p class="binderItem"><strong>Kick Starting the Test Driven Cycle</strong><br/>First test a walking skeleton</p>
+</li>
+<li>
+<p class="binderItem"><strong>Maintaining the Test Driven Cycle</strong><br/>Start each feature with an acceptance test<br/>
+Separate tests that measure progress from those that catch regressions<br/>
+Start testing with the simplest success case<br/>
+Write the test that you’d want to read<br/>
+Watch the test fail<br/>
+Develop from the inputs to the outputs<br/>
+Unit test behavior not methods<br/>
+Listen to the tests<br/>
+Tuning the cycle<br/>
+Designing for maintainability<br/>
+Higher levels of abstraction<br/>
+No And, Or, or But<br/>
+Composite simpler than the sum of its parts<br/>
+Context independence<br/>
+Hiding the right information</p>
+</li>
+<li>
+<p class="binderItem"><strong>Achieving object oriented design</strong><br/>How writing a test first helps the design<br/>
+Communication over classification<br/>
+Interface and Protocol<br/>
+Value Types<br/>
+Breaking Out : Splitting a large object into a group of collaborating objects<br/>
+Budding Off : Defining a new service that an object needs and adding a new object to provide it.<br/>
+Bundling Up : Hiding related objects into a containing object<br/>
+Identify relationships with interfaces<br/>
+Compose objects to describe system behavior<br/>
+Building up to a higher-level programming</p>
+</li>
+<li>
+<p class="binderItem"><strong>The Art of Unit Testing</strong><br/>Properties of a good unit test<br/>
+How to break dependency<br/>
+Techniques for breaking dependencies<br/>
+Writing our first test<br/>
+Indirect testing of state<br/>
+Problems with constructor injection<br/>
+When you should use property injection<br/>
+Interaction testing using mock objects<br/>
+The difference between mocks and stubs<br/>
+Using a mock and stub together<br/>
+One mock per test<br/>
+Stub chains: Stubs that produce mocks or other stubs<br/>
+Isolation frameworks<br/>
+Expectations on mocks and stubs<br/>
+Strict vs Non-Strict mocks<br/>
+Arrange act assert synta...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Red Bar Patterns</strong><br/>Which test should you pick next from the list?<br/>
+Which test should be the first test?<br/>
+When do you write tests for externally produced software?<br/>
+How do you keep a technical discussion from straying off topic?<br/>
+What’s the first thing you do when a defect is reported?<br/>
+What do you do when you feel tired or stuck?<br/>
+What do you do when you are feeling lost?</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Strategy Patterns</strong><br/>Minimal fixture<br/>
+Unit test rules<br/>
+Layer crossing test<br/>
+Layer test<br/>
+Subcutaneous test<br/>
+Component test<br/>
+Round trip test<br/>
+Controlling indirect inputs<br/>
+Verifying indirect outputs<br/>
+<br/>
+How do you get a test case running that turns out to be too big?<br/>
+How do you test an object that relies on expensive or complicated resource?<br/>
+How do you test that one object communicates correctly with another?<br/>
+How do you test that the sequence in which messages are called is correct?<br/>
+How do you test error code that is unlikely to ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Result Verification Patterns</strong><br/>Verify state or behavior<br/>
+State verification<br/>
+Procedural state verification<br/>
+Expected state specification<br/>
+Using built-in assertions<br/>
+Verifying behavior<br/>
+Procedural behavior verification<br/>
+Expected behavior verification<br/>
+Reducing test code duplication<br/>
+Custom assertion<br/>
+Custom equality assertion<br/>
+Domain assertion<br/>
+Diagnostic assertion<br/>
+Verification method<br/>
+Custom assertion test<br/>
+Delta assertion<br/>
+Guard assertion<br/>
+Avoiding conditional test logic<br/>
+Eliminating if statements<br/>
+Eliminating loops<br/>
+Techniques for writing eas...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Green Bar Patterns</strong><br/>What is your first implementation once you have a broken test?<br/>
+How do you most conservatively drive abstraction with tests?<br/>
+How do you implement simple operations?<br/>
+How do you implement an operation that works with collection of objects?</p>
+</li>
+<li>
+<p class="binderItem"><strong>xUnit Patterns</strong><br/>How do you check that tests worked correctly?<br/>
+How do you create common objects needed by several tests?<br/>
+How do you release external resources in the fixture?<br/>
+How do you represent a single test case?<br/>
+How do you document the contract of the class being tested?<br/>
+How do you test for expected exceptions?<br/>
+Refactoring : How do you unify two similar looking pieces of code?<br/>
+Fixture Management : Misuse of setup method<br/>
+<br/>
+Test method<br/>
+Simple success test<br/>
+Expected exception test<br/>
+Four-Phase test<br/>
+Four-Phase test ...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Mastering TDD</strong><br/>How large should your tests be?<br/>
+What don’t you have to test?<br/>
+How do you know if you have good tests?<br/>
+How much feedback do you need?<br/>
+When should you delete tests?<br/>
+What are the causes of fragile tests? [Refer: Test Smells]</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Doubles</strong><br/>What are the indirect inputs and outputs?<br/>
+Why do we care about indirect inputs?<br/>
+Why do we care about indirect outputs?<br/>
+How do we control indirect inputs?<br/>
+How do we verify indirect outputs?<br/>
+<br/>
+Testing with doubles<br/>
+Types of test doubles<br/>
+Dummy objects<br/>
+Test stubs<br/>
+Test spies<br/>
+Mock objects<br/>
+Fake objects<br/>
+Dependency injection<br/>
+Responder<br/>
+Saboteur<br/>
+Temporary test stub<br/>
+Entity chain snipping<br/>
+Hard coded test stub<br/>
+Configurable test stub<br/>
+Fake database<br/>
+In-memory database<br/>
+Fake Web-Service<br/>
+Fake Service Layer<br/>
+Building t...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Code Smells</strong><br/>Obscure test<br/>
+Eager test<br/>
+Mystery guest<br/>
+General fixture<br/>
+Irrelevant information<br/>
+Hard coded test data<br/>
+Indirect testing<br/>
+Conditional test logic<br/>
+Flexible test<br/>
+Conditional verification logic<br/>
+Production logic in test<br/>
+Multiple test conditions<br/>
+Hard to test code<br/>
+Asynchronous code<br/>
+Untestable test code<br/>
+Test logic in production<br/>
+Erratic test<br/>
+Unrepeatable test<br/>
+Nondeterministic test<br/>
+Interface sensitivity<br/>
+Behavior sensitivity<br/>
+Data sensitivity<br/>
+Context sensitivity<br/>
+Over specified software<br/>
+Frequent debugging<br/>
+Slow test...</p>
+</li>
+<li>
+<p class="binderItem"><strong>TDD with Objects</strong><br/>A web of objects<br/>
+Values and objects<br/>
+Follow the messages<br/>
+Tell, don’t ask<br/>
+Unit testing the collaborating objects<br/>
+Support for TDD with mock objects<br/>
+Test fixtures<br/>
+Expectations <br/>
+</p>
+</li>
+<li>
+<p class="binderItem"><strong>First Real Functionality</strong><br/>Outside in development<br/>
+Use nil when an argument doesn’t matter<br/>
+Discovering further work<br/>
+Finish the job<br/>
+Focus, Focus, Focus<br/>
+How should we describe expected values<br/>
+Null implementation<br/>
+The end-to-end tests pass<br/>
+Defer decisions<br/>
+Keep the code compiling<br/>
+Emergent design</p>
+</li>
+<li>
+<p class="binderItem"><strong>Second Functionality</strong><br/>Making steady progress<br/>
+20/20 hindsight<br/>
+A defect exception<br/>
+Keyhole surgery for software<br/>
+Programmer hyper sensitivity<br/>
+Celebrate changing your mind<br/>
+The end of off by one errors<br/>
+Making progress while we can<br/>
+A design moment<br/>
+TDD Confidential<br/>
+Finding a role<br/>
+Incremental architecture<br/>
+Three point contact<br/>
+Dynamic as well as static design<br/>
+Distinguishing between test setup and assertions<br/>
+Other modeling techniques still work<br/>
+Domain types are better than string</p>
+</li>
+<li>
+<p class="binderItem"><strong>Handing Failure</strong><br/>Inverse salami development<br/>
+Small methods to express intent</p>
+</li>
+<li>
+<p class="binderItem"><strong>Sustainable TDD</strong><br/>Listening to the tests<br/>
+I need to mock an object I cannot replace (without magic)<br/>
+Implicit dependencies are still dependencies<br/>
+Notification rather than logging<br/>
+Mocking concrete classes<br/>
+Break glass in case of emergency<br/>
+Don’t mock values<br/>
+Bloated constructor<br/>
+Confused object<br/>
+Too many dependencies<br/>
+Too many expectations<br/>
+Write few expectations<br/>
+What the tests will tell us</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Readability</strong><br/>Test names describe features<br/>
+Test name first or last?<br/>
+Regularly read documentation generated from tests<br/>
+Write tests backwards<br/>
+How many assertions in a test method<br/>
+Streamline the test code<br/>
+Use structure to explain<br/>
+Use structure to share<br/>
+Accentuate the positive<br/>
+Delegate to subordinate objects<br/>
+Assertions and expectations<br/>
+Literals and variables<br/>
+Test data builders<br/>
+Creating similar objects<br/>
+Combining builders<br/>
+Emphasizing the domain model with factory methods<br/>
+Removing duplication at the point of use<br/>
+Fir...</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Diagnostics</strong><br/>Design to fail<br/>
+Stay close to home<br/>
+Small, focused, well named tests<br/>
+Explanatory assertion messages<br/>
+Highlight detail with matchers<br/>
+Self describing value<br/>
+Obviously canned value<br/>
+Tracer object<br/>
+Explicitly assert that expectations were satisfied<br/>
+Diagnostics are a first class feature</p>
+</li>
+<li>
+<p class="binderItem"><strong>Test Flexibility</strong><br/>Specify precisely what should happen and no more<br/>
+Test for information not representation<br/>
+Precise assertions<br/>
+Precise expectations<br/>
+Precise parameter matching<br/>
+Allowances and expectations<br/>
+Allow queries; expect commands<br/>
+Ignoring irrelevant objects<br/>
+Invocation order<br/>
+Only enforce invocation order when it matters<br/>
+The power of mock states</p>
+</li>
+<li>
+<p class="binderItem"><strong>Building on Third Party Code</strong><br/>Only mock types that you own. Don’t mock types you can’t change.<br/>
+Write an adapter layer<br/>
+Mock application objects in integration tests</p>
+</li>
+<li>
+<p class="binderItem"><strong>xUnit Test Patterns Glossary</strong><br/>Direct input<br/>
+Indirect input<br/>
+Direct output<br/>
+Indirect output<br/>
+Back door<br/>
+Front door<br/>
+User acceptance test<br/>
+Customer test<br/>
+Need driven development<br/>
+Behavior driven development<br/>
+Example driven development<br/>
+Component<br/>
+Depended on component<br/>
+Control point<br/>
+Interaction point<br/>
+Observation point<br/>
+Outgoing interface<br/>
+Retrospective<br/>
+Roundtrip test<br/>
+Layer crossing test<br/>
+Substitutable dependency<br/>
+Design for testability<br/>
+System under test<br/>
+Test condition<br/>
+Equivalence class<br/>
+Assertion<br/>
+Test fixture<br/>
+Fixture setup<br/>
+Test context<br/>
+Exercise...</p>
+</li>
+</ul>
+
+</td>
+<td width="8">
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

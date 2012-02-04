@@ -1,0 +1,102 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 A Web of Objects\
+
+\b0 \
+OO design focuses more on the communication between objects than on the objects themselves. The key in making great systems is much more to design how its modules communicate rather than what their internal properties and behaviors should be.\
+\
+An OO system is a web of collaborating objects. A system is built by creating objects and plugging them together so that they can send messages to one another. The behavior of the system is an emergent property of the composition of the objects - the choice of objects and how they are connected. \
+\
+This lets us change the behavior of the system by changing the composition of its objects - adding and removing instances, plugging different combinations together rather than writing procedural code. The code we write to manage this composition is a 
+\i declarative
+\i0  definition of the how the web of objects will behave. It\'92s easier to change the system\'92s behavior because we can focus on 
+\i what
+\i0  we want it to do, not 
+\i how.\
+\
+
+\i0\b Values and Objects\
+
+\b0 \
+Values model unchanging quantities and measurements. They are immutable instances that model fixed quantities. They have no individual identity, so two value instances are effectively the same if they have the same state.\
+\
+Objects have an identity, might change state over time and model computational processes. They use mutable state to model their behavior over time. Two objects of the same type have separate identities even if they have exactly the same state now, because their states can diverge if they receive different messages in the future.\
+\
+Values are treated functionally and objects implement the stateful behavior of the system.\
+\
+
+\b Follow the Messages\
+
+\b0 \
+We can benefit from the high-level, declarative approach only if our objects are designed to be easily pluggable. In practice, this means that they follow common communication patterns and that the dependencies between them are made explicit. A communication pattern is a set of rules that govern how a group of objects talk to each other: the roles they play, what messages they can send and when, and so on. \
+\
+The domain model is in these communication patterns because they give meaning to the universe of possible relationships between the objects. \
+\
+An object is an implementation of one or more roles; a role is a set of related responsibilities; and a responsibility is an obligation to perform a task or know information. A collaboration is an interaction of objects or roles (or both). \
+\
+
+\b Tell, Don\'92t Ask\
+
+\b0 \
+The calling object should describe what it want 
+\i in terms of the role 
+\i0 that its neighbor plays, and let the called object decide how to make that happen. Objects make their decisions based only on the information they hold internally or that which case with the triggering message; they avoid navigating to other objects to make things happen. This style produces more flexible code because it\'92s easy to swap objects that play the same role. The caller sees nothing of their internal structure or the structure of the rest of the system behind the role interface. This wraps all the implementation detail up behind a single call. This reduces the risk that a design change might cause ripples in remote parts of the codebase.\
+\
+
+\b Unit-Testing the Collaborating Objects\
+
+\b0 \
+How can we test when we don\'92t expose any internal state of an object?\
+\
+Fig 2.4 Unit-Testing an object in isolation \
+\
+We can replace the target object\'92s neighbors in a test with mock objects. We can specify how we expect the target object to communicate with its mock neighbors for a triggering event; we call these specifications expectations. During the test, the mock objects assert that they have been called as expected; they also implement any stubbed behavior needed to make the rest of the test work.\
+\
+Fig 2.5 Testing an object with mock objects\
+\
+This implies that we\'92re just testing the target object and that we already know what its neighbors look like. In practice, those collaborators don\'92t need to exist when we\'92re writing a unit test. We can use the test to help us tease out the supporting roles our object needs and fill in real implementations as we develop the rest of the system. We call this interface discovery.\
+\
+
+\b Support for TDD with Mock Objects\
+
+\b0 \
+To support this style of TDD we need to create mock instances of the neighboring objects, define expectations on how they\'92re called and then check them, and implement any stub behavior we need to get through the test. In practice, the runtime structure of a test with mock objects looks like fig 2.6\
+\
+Fig 2.6 Testing an object with mock objects\
+\
+We use the term mockery for the object that holds the context of a test, creates mock objects, and manages expectations and stubbing for the test. The essential structure of a test is:\
+\
+Create any required mock objects\
+Create any real objects, including the target object\
+Specify how you expect the mock objects to be called by the target object\
+Call the triggering methods on the target object\
+Assert that any resulting values are valid and that all the expected calls have been made\
+\
+The unit test makes explicit the relationship between the target object and its environment. It creates all the objects in the cluster and makes assertions about the interactions between the target object and its collaborators. The important point is to make clear the intention of every test, distinguishing between the tested functionality, the supporting infrastructure and the object structure.\
+\
+
+\b Test Fixtures\
+
+\b0 \
+A test fixture is the fixed state that exists at the start of a test. A test fixture ensures that a test is repeatable - every time a test is run it starts in the same state so it should produce the same results. A fixture may be 
+\i set up
+\i0  before the test runs and 
+\i torn down
+\i0  after it has finished. \
+\
+
+\b Expectations
+\b0 \
+\
+An expectation block is designed to stand out from the test code that surrounds it, making an obvious separation between the code that 
+\i describes
+\i0  how neighboring objects should be invoked and the code that actually 
+\i invokes
+\i0  objects and test the results. The code within an expectation block acts as a little declarative language that describes the expectations.\
+\
+ \
+\
+}

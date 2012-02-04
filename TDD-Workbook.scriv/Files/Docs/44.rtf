@@ -1,0 +1,205 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue154;\red102\green26\blue51;\red26\green102\blue51;
+}
+\deftab720
+\pard\pardeftab720
+
+\f0\b\fs28 \cf0 The Five Characteristics of Good Tests\
+
+\b0 \
+Tests are code that don\'92t have tests. Your code is verified by your tests, but your tests are verified by nothing. So, having\
+your tests be as clear and manageable as possible is the only way to keep your tests honest and keep them going.\
+\
+A successful test has the following five charteristics:\
+\
+\'95 Independent\
+\'95 Repeatable\
+\'95 Clarity\
+\'95 Concise\
+\'95 Robust\
+\
+
+\b Independent\
+
+\b0 \
+A test is independent if the test does not depend on any external tests or data to run. An independent test suite gives the same results no matter\
+what order the tests are run and also tends to limit the scope of test failures to only those tests that cover the buggy method. In contrast, a\
+change in one part of an application with a very dependent test suite could trigger failures throughout your tests. A clear sign that your tests\
+are not independent is if you have test failures that happen only when the test suite is run in a particular order\'97in fully independent tests,\
+the order in which they are run should not matter.\
+\
+The biggest impediment to independence is the use of global data. If the application is poorly designed, it will be difficult\
+or impossible to make the tests fully independent of one another. Rails fixtures are not the only possible cause of global data in a Rails test suite, but they are a really common cause. Somewhat less common in a Rails context is using a tool or third-party library in a setup and not tearing it down.\
+\
+For example, the FlexMock mock object tool needs to be explicitly torn down between tests, as does the Timecop time-freezing gem.\
+Other than the use of fixtures, most Rails developers know to steer clear of global data in general, not just in a test suite and for the same\
+reason\'97code that has strange, hard-to-trace dependencies. One reason factory tools are preferable to fixtures is that they result in tests\
+that have better independence.\
+\
+
+\b Repeatable\
+
+\b0 \
+A test is repeatable if running the same test multiple times gives the same result. The hallmark of a test suite that lacks repeatability is intermittent test failure.\
+\
+Two classic causes of repeatability problems are time and date testing and random numbers. In both cases, the issue is that your test data\
+changes from test to test. The date and time have a nasty habit of continuing to get higher, while random data tends to stubbornly insist\
+on being random.\
+\
+ The problems with the two types of data are slightly different. Dates and times tend to lead to intermittent failures when certain magic time\
+boundaries are crossed. Random numbers, in contrast, make it somewhat difficult to test both the randomness of the number and that the\
+randomly generated number is used properly in whatever calculation requires it.\
+\
+The basic approach to solving this problem is similar for both cases and applies to any constantly changing dataset. The goal is a combination of encapsulation and mocking. Encapsulation generally involves creating a service object that wraps the changing functionality. By wrapping the functionality, you make it easier to stub or mock the output values, providing the consistency you need for testing. You might, for example, create a RandomService  class that wraps Ruby\'92s rand ( ) method and, critically, provides a way for you to preset a stream of output values either by using an existing mock package or by giving the service object a way to use a predefined value stream. Once you have verified that the random service class is random with its own unit tests, the service class can be stubbed in any other test to provide oxymoronic consistent random behavior.\
+\
+The exact mix of encapsulation and mocking varies. Timecop, for example, stubs the time and date classes with no encapsulation. Creating a time service is a superior solution.\
+\
+
+\b Clarity
+\b0 \
+\
+ A test is clear if its purpose is immediately understandable. Clarity in testing has two components. The first is the readability that applies to tests as it applies to any code. The second is the kind of clarity that describes how the test fits into the larger test suite. Every test should have a point, meaning it should test something different from the other tests, and that purpose should be easy to discern from reading the test.\
+\
+Fixtures are a test-specific issue that can lead to poor clarity, specifically, the way fixtures tend to create to \'93magic\'94 results. To wit:\
+\pard\pardeftab720
+\cf2 \
+test "the sum should be 37" \cf3 do\
+\cf2   assert_equal(37, User.all_total_points)\
+\pard\pardeftab720
+\cf3 end\
+\
+\pard\pardeftab720
+\cf0  Where does the 37 come from? Well, if you were to peek into the user fixture file of this fake example, you\'92d see that somehow the totals of\
+the total points of all the users in that file add up to 37. The test passes.Yay?\
+\
+The two most relevant problems for the current discussion are the magic literal, 37 , which comes from nowhere, and the fact that the name\
+of the test is utterly opaque about whether this is a test for the mainline case, a test for a common error condition or for some other reason. Combine these problems, and it quickly becomes next to impossible to fix the test a few months later when a change to the User  class or the fixture file breaks it.\
+\
+Naming obviously helps with the latter problem. Factory tools have their place solving clarity issues, as well. Since the defaults for a factory definition are preset, the definition of an object created in the test can be limited to only the attributes that are actually important to test behaving as expected. Showing those attributes in the test is an important clue toward the programmer intent. Rewriting the test with a little more clarity might result in this:\
+\pard\pardeftab720
+\cf2 \
+test "total points should round to the nearest integer" \cf3 do\
+\cf2   User.make(:points => 32.1)\
+  User.make(:points => 5.3)\
+  assert_equal(37, User.all_total_points)\
+\pard\pardeftab720
+\cf3 end\
+\pard\pardeftab720
+\cf0 \
+ Reader now knows where 37 comes from and where the test fits in the grand scheme of things. The reader might then have a better chance of fixing the test if something breaks. The test is also more independent, since it no longer relies on global fixtures\'97making it less likely to break.\
+Long tests make it hard to identify the critical parts of the test. Basically, the guideline is that tests are code, and the same principles that would guide refactoring and cleaning up code apply. This is especially true of the rule that states \'93A method should only do one thing,\'94 which here means splitting up test setups into semantically meaningful parts, as well as keeping each test focused on one particular goal.\
+\
+On the other hand, if you can\'92t write clean tests, consider the possibility that it is the code\'92s fault, and you need to do some redesign. If it\'92s hard to set up a clean test, that often indicates the code has too many internal dependencies.\
+\
+There\'92s an old programming aphorism that since debugging is more complicated than coding, if you\'92ve written code that is as complicated\
+as you can make it, then you are by definition not skilled enough to debug it. Because tests don\'92t have their own tests and need to be correct,\
+this aphorism suggests that you should keep your tests simple, so as to give yourself some cognitive room to understand them. In particular,\
+this guideline argues against clever tricks to reduce duplication among multiple tests that share a similar structure. If you find yourself\
+starting to metaprogram to generate multiple tests in your suite, you\'92re probably going to find that complexity working against you at some\
+point. You never want to be in a position to have to decide whether a bug is in your test or in the code. Well, you\'92ll be in that position at some\
+point, but it\'92s an easier place to be if the test side is relatively simple.\
+\
+
+\b Concise
+\b0 \
+\
+ A test is concise if it uses the minimum amount of code and objects to achieve its goal. Concise and clear are sometimes in conflict, as in the\
+previous example, where the clear version is a couple of lines longer than the original version. Clear beats concise. Conciseness is useful only to the extent that it makes writing and maintaining the test suite easier.\
+\
+Conciseness often involves writing the minimal amount of tests or creating the minimal amount of objects to test a feature. In addition to\
+being clearer, concise tests will run faster. A slow test suite is a pain in the neck and one of the best ways to prevent a slow suite is not to write slow tests. To put this another way, how many objects do you need to create to test a sort? A simple sort can be tested with two objects, though I often use three because the difference between the initial input and the sorted input is easier to see in the test. Creating any more\
+objects is unnecessary and makes the test slower to write and run.\
+\
+To look at the issue of conciseness in another way, let\'92s say you have a feature in which a user is given a different title based on some kind of\
+point count; a user with less than 500 points is a novice, 501\'961000 is an apprentice, 1001\'962000 is a journeyman, 2001\'965000 is a guru, and\
+5001 and up is a super Jedi rock star. How many assertions do you need to test that functionality?\
+\
+In this case, there\'92s a legitimate possibility of difference of opinion. I\'92d test the following cases, in practice I\'92d probably do separate single assertion tests. Also, in practice I\'92d be writing code after each new assertion.\
+\pard\pardeftab720
+\cf3 \
+def \cf2 assert_user_level(points, level)\
+  User.make(:points => points)\
+  assert_equal(level, user.level)\
+\cf3 end\
+\
+def \cf2 test_user_point_level\
+  assert_user_level(1, "novice")\
+  assert_user_level(501, "apprentice")\
+  assert_user_level(1001, "journeyman")\
+  assert_user_level(2001, "guru")\
+  assert_user_level(5001, "super jedi rock star")\
+  assert_user_level(0, "novice")\
+  assert_user_level(500, "novice")\
+  assert_user_level(\cf3 nil\cf2 , "novice")\
+\cf3 end\
+\
+\pard\pardeftab720
+\cf0  That works out to one assertion for the start of each new level, plus an assertion for the special cases 0 and nil, and an assertion at the end of a level to assure that I don\'92t have an off-by-one bug. That\'92s a total of eight assertions. Given the way this code would probably be implemented, as a case  statement with the while  clauses using ranges, I don\'92t feel the need to test the end condition of more than one field, nor do I feel the\
+need to test every point value in a range. \
+\
+
+\b Robust
+\b0 \
+\
+ A test is robust if it actually tests the logic as intended. That is, the test passes when the underlying code is correct and fails when the underlying code is wrong. \
+\
+A frequent cause of brittle tests is targeting the assertions of the test at surface features that might change even if the underlying logic stays\
+the same. The classic example along these lines is view testing, in which you base the assertion on the actual creative text on the page that will\
+frequently change, even though the basic logic stays the same. Like so:\
+\pard\pardeftab720
+\cf2 \
+test "the view should show the project section" \cf3 do\
+\cf2   get :dashboard\
+  assert_select("h2", :text => "My Projects")\
+\pard\pardeftab720
+\cf3 end\
+\pard\pardeftab720
+\cf0 \
+ It seems a perfectly valid test \'97right up until somebody decides that \'93My Projects\'94 is a lame header and decides to go with \'93My Happy Fun-Time Projects.\'94 And breaks your test. You are often better served by testing something that slightly insulated from surface changes, like a DOM ID.\
+\pard\pardeftab720
+\cf2 \
+test "the view should show the project section" \cf3 do\
+\cf2   get :dashboard\
+  assert_select("h2#projects")\
+\pard\pardeftab720
+\cf3 end\
+\pard\pardeftab720
+\cf0 \
+ The basic issue here is not limited to view testing. There are areas of model testing in which testing to a surface feature might be brittle in\
+the face of trivial changes to the model (as opposed to tests that are brittle in the face of changes to the test data itself, which we\'92ve already\
+discussed). For example, the test in the previous section with the novice levels is actually dependent on the specific values of the level boundaries. You might want to make the test more robust with something like this:\
+\pard\pardeftab720
+\cf3 \
+def \cf2 assert_user_level(points, level)\
+  User.make(:points => points)\
+  assert_equal(level, user.level)\
+\cf3 end\
+\
+def \cf2 test_user_point_level\
+  assert_user_level(User::NOVICE_BOUND + 1, "novice")\
+  assert_user_level(User::APPRENTICE_BOUND + 1, "apprentice")\
+\pard\pardeftab720
+\cf4   # And so on...\
+\pard\pardeftab720
+\cf3 end\
+\pard\pardeftab720
+\cf0 \
+ You must be cautious at this point, because the other side of robustness is not just a test that brittlely fails when the logic is good but a test\
+that stubbornly passes even if the underlying code is bad\'97a tautology, in other words. The previous test isn\'92t a tautology, but you can see how\
+it might easily get there.\
+\
+Speaking of tautologies, mock objects have their own special robustness issues. It\'92s easy to create a tautology by using a mock object. It\'92s also easy to create a brittle test by virtue of the fact that a mock object often creates a hard expectation of exactly what methods will be called on the mock object. If you add an unexpected method call to the code being tested, then you can get mock object failures simply because an unexpected method has been called. I\'92ve had changes to a login filter cause hundreds of test failures because mock users going through the login filter bounced off the new call. One workaround, depending on your mock package, is to use something like Mocha\'92s mock_everything ( ) method, which automatically returns nil  for any unexpected method call without triggering an error.\
+\
+
+\b Find the Seam
+\b0 \
+\
+Mock objects are a specific version of a more general technique for working with legacy code, which involves finding seams in the code and exploiting them to make testing the legacy functionality possible. A seam is a place where we can change the behavior of our application\
+without changing the actual code. A mock object package acts as a seam because adding the mock object, which happens in the test, changes the behavior of the code by mandating a specific response to a method call without actually executing the method. Again, the behavior of the method under test changes in the test environment without affecting behavior in the production and without changing the existing development code.\
+\
+It sounds magical, but the basic idea is simple, and Ruby makes it easy to execute. Essentially, redirect a method call from its intended target\
+to some other code that we want to run during tests. A mock object does this by replacing the entire method call with a return value, but\
+the generic form lets us do anything we want instead of the method call. We might do this if we wanted a side effect that a mock package\
+wouldn\'92t normally provide, such as diagnostic logging. Alternately, we might want a more elaborate processing of arguments or state than a\
+mock can easily provide, to re-create the output of a web service our application depends on, for example.}

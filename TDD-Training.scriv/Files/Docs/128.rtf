@@ -1,0 +1,204 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 To design is to communicate clearly by whatever means you can control or master - Milton Glaser\
+\
+For TDD to be sustainable, the tests must do more than verify the behavior of the code; they must also express that behavior clearly - they must be readable. Otherwise the team velocity drops. \
+\
+Test code should describe 
+\i what 
+\i0 the production code does. That means that it tends to be concrete about the values it uses as examples of what results to expect, but abstract about how the code works. Production code, on the other hand, tends to be abstract about the values it operates on but concrete about how it gets the job done. Similarly, when writing production code, we have to consider how we will compose our objects to make up a working system, and manage their dependencies carefully. Test code, on the other hand, is at the end of the dependency chain, so it\'92s more important for it to express the intention of its target code than to plug into a web of other objects. We want our test code to read like a declarative description of what is being tested. \
+\
+ Keep tests readable and expressive. The readability problems we watch out for :\
+\
+Test names that do not clearly describe the point of each test case and its differences from the other test cases.\
+Single test cases that seem to be exercising multiple features.\
+Tests with different structure, so the reader cannot skim-read them to understand their intention.\
+Tests with lots of code for setting up and handling exceptions, which buries their essential logic.\
+Tests that use literal values but are not clear about what, if anything, is significant about those values.\
+\
+
+\b Test Names Describe Features
+\b0 \
+\
+The name of the test should be the first clue for a developer to understand what is being tested and how the target object is supposed to behave. We don\'92t need to know that TargetObject has a choose method - we need to know what the object does in different situations, what the method is for.\
+\
+A better alternative is to name tests in terms of the features that the target object provides. We use a TestDox convention where each test name reads like a sentence, with the target class as the implicit subject. For example:\
+A List holds items in the order they were added.\
+A List can hold multiple references to the same item.\
+A List throws an exception when removing an item it doesn\'92t hold.\
+\
+We can translate these directly to method names:\
+\
+ListTests#holds_items_in_the_order_they_were_added\
+ListTests#can_hold_multiple_references_to_the_same_item\
+ListTests#throws_an_exception_when_removing_an_item_it_doesnt_hold\
+\
+The point of the convention is to encourage the developer to think in terms of what the target object 
+\i does, 
+\i0 not what it 
+\i is. 
+\i0 It\'92s also very compatible with our incremental approach of adding a feature at a time to an existing codebase. It gives us a consistent style of naming all the way from user stories, through tasks and acceptance tests, to unit tests.\
+\
+As a matter of style, the test name should say something about the expected result, the action on the object, and the motivation for the scenario. For example, if we were testing a ConnectionMonitor class then polls_the_servers_monitoring_port doesn\'92t tell us enough: why does it poll? What happens when it gets a result? notifies_listeners_that_server_is_unavailable_when_cannot_connect_to_monitoring_port explains both the scenario and the expected behavior.\
+\
+
+\b Test Name First or Last?
+\b0 \
+\
+Test name must clarify intentions, make sure that the test is, in the end, consistent and expressive.\
+ The TestDox format fulfills the early promise of TDD - that the tests should act as documentation for the code.\
+\
+
+\b Regularly Read Documentation Generated from Tests
+\b0 \
+\
+You find that such generated documentation gives us afresh perspective on the test names, highlighting the problems we\'92re too close to the code to see. We make an effort to at least skim-read the documentation regularly during development.\
+\
+
+\b Canonical Test Structure
+\b0 \
+\
+If we write tests in a standard form, they\'92re easier to understand. We can skim-read to find expectations and assertions quickly and see how they related to the code under test. If we\'92re finding it difficult to write a test in a standard form, that\'92s often a hint that the code is too complicated or that we haven\'92t quite clarified our ideas.\
+\
+The most common form for a test is:\
+\
+1. Setup: Prepare the context of the test, the environment in which the target code will run.\
+2. Execute: Call the target code, triggering the tested behavior.\
+3. Verify: Check for a visible effect that we expect from the behavior\
+4. Teardown: Clean up any leftover state that might corrupt other tests.\
+\
+There are other versions of this form, such as Arrange, Act, Assert, which collapse some of the stages.\
+For example, no teardown. Tests that set expectations on mock objects use a variant of this structure where some of the assertions are declared before the execute stage and are implicitly checked afterwards (setup, expect, assert, teardown)\
+\
+
+\b Write Tests Backwards
+\b0 \
+\
+Write the test name, which helps us decide what we want to achieve; write the call to the target code, which is the entry point for the feature; write the expectations and assertions, so we know what effects the feature should have; and, write the setup and teardown to define the context for the test. Of course, there may be some blurring of these steps to help the compiler, but this sequence reflects how we tend to think through a new unit test. Then we run it and watch it fail.\
+\
+
+\b How Many Assertions in a Test Method
+\b0 \
+\
+Some TDD practitioners suggest that each test should only contain one expectation or assertion. This is useful as a training rule when learning TDD, to avoid asserting everything the developer can think of, but we don\'92t find it practical. A better rule is to think of one coherent feature per test, which might be represented by up to a handful of assertions. If a single test seems to be making assertions about different features of a target object, it might be worth splitting up. Once again, expressiveness is the key: as a reader of this test, can I figure out what\'92s significant?\
+\
+
+\b Streamline the Test Code
+\b0 \
+\
+All code should emphasize 
+\i what 
+\i0 it does over 
+\i how
+\i0 , including test code; the more implementation detail is included in a test method, the harder it is for the reader to understand what\'92 important. Move everything out of the test method that doesn\'92t contribute to the description, in domain terms, of the feature being exercised. Sometimes that involves restructuring the code, sometimes just ignoring the syntax noise.\
+\
+
+\b Use Structure to Explain
+\b0 \
+\
+Use small methods to express intent. The assertion line must express our intent. This may create more program text in the end but we\'92re prioritizing expressiveness over minimizing the source lines.\
+\
+
+\b Use Structure to Share
+\b0 \
+\
+Extract common features into methods that can be shared between tests for setting up values, tearing down state, making assertions, and occasionally triggering the event. Write method that wraps up repeated behavior behind a descriptive name.\
+\
+The only caution with factoring out test structure is that, we have to be careful not to make a test so abstract that we cannot see what it does any more. Our highest concern is making the test describe what the target code does, so we refactor enough to be able to see its flow, but we don\'92t always refactor as hard as we would for production code.\
+\
+
+\b Accentuate the Positive
+\b0 \
+\
+We only catch exceptions in a test if we want to assert something about them. Test tells us just what is supposed to happen and ignore everything else.\
+\
+
+\b Delegate to Subordinate Objects
+\b0 \
+\
+Sometimes helper methods aren\'92t enough and we need helper objects to support the tests. So we can write tests in domain terminology and not in technical terms. Write test data builders to build up complex data structures with just the appropriate values for a test. Again, the point is to include in the test just the values that are relevant, so that the reader can understand the intent; everything else can be defaulted.\
+\
+There are two approaches to writing subordinate objects. We start by writing a test we want to see and then filling in the supporting objects: start from a statement of the problem and see where it goes. The alternative is to write the code directly in the tests, and then refactor out any clusters of behavior.\
+\
+
+\b Assertions and Expectations
+\b0 \
+\
+The assertions and expectations of a test should communicate precisely what matters in the behavior of the target code. Tests that assert too much detail makes them difficult to read and brittle when things change.\
+\
+For the expectations and assertions we write, we try to keep them as narrowly defined as possible. We check only the strike price and ignore the rest of the values as irrelevant in that test. In other cases, we\'92re not interested in all of the arguments to a method, so we ignore them in the expectation. We define an expectation that says that we care about the Sniper identifier and message, but that any RunTimeException object will do for the third argument:\
+\
+
+\b Literals and Variables
+\b0 \
+\
+Test code tends to be more concrete than production code, which means it has more literal values. Literal values without explanation can be difficult to understand because the programmer has to interpret whether a particular value is significant (eg., just outside allowed range) or just an arbitrary place holder to trace behavior (e.g., should be doubled and passed on to a peer). A literal value does not describe its role, although there are some techniques for doing so.\
+\
+One solution is to allocate literal values to variables and constants with names that describe their function. For example: UNUSED_CHAT = nil to show that we are using null to represent an argument that was unused in the target code. We weren\'92t expecting the code to receive null in production, but it turns out that we don\'92t care and it makes testing easier. Similarly, a team might develop conventions for naming common values, such as INVALID_ID = 007 \
+\
+We name variables to show the roles these values or objects play in the test and their relationships to the target object.\
+\
+
+\b Test Data Builders
+\b0 \
+\
+Use builder pattern to build instances in tests, most often for values. For a class that requires complex setup, we create a test data builder that has a field for each constructor parameter, initialized to a safe value. Tests that just need an Order object and are not concerned with its contents can create one in a single line. Tests that need particular values within an object can specify just those values that are relevant and use defaults for the rest. This makes the test more expressive because it includes only the values that are relevant to the expected results. Test data builders help keep tests expressive and resilient to change. They make the default case simple and special cases easy. They protect the test against changes in the structure of its objects. If we add an argument to a constructor, then all we have to change is the relevant builder and those tests that drove the need for the new argument.\
+\
+A final benefit is that we can write test code that\'92s easier to read and spot errors, because each builder method identifies the purpose of its parameter.\
+\
+
+\b Creating Similar Objects
+\b0 \
+\
+Initialize each builder with the common state and then, for each object to be built, define the differing values and call its build method. This produces a more focused test with less code. We can name the builder after the features that are common, and the domain objects after their differences.\
+\
+
+\b Combining Builders
+\b0 \
+\
+Where a test data builder for an object uses other built objects, we can pass in those builders as arguments rather than their objects. This will simplify the test code by removing the build methods. The result is easier to read because it emphasizes the important information - 
+\i what 
+\i0 is being built, rather than the mechanics of building it.\
+\
+
+\b Emphasizing the Domain Model with Factory Methods
+\b0 \
+\
+We can further reduce the noise in the test code by wrapping up the construction of the builders in factory methods.\
+\
+
+\b Removing Duplication at the Point of Use
+\b0 \
+\
+We\'92ve made the process of assembling complex objects for tests simpler and more expressive by using test data builders. How can we structure our tests to make the best use of these builders in context? We often find ourselves writing tests with similar code to create supporting objects and pass them to the code under test, so we want to clean up this duplication.\
+\
+
+\b First Remove Duplication
+\b0 \
+\
+Think a bit harder about what varies between tests and what is common, and realize that a better alternative is to pass the builder through, not its arguments; it\'92s similar to when we started combining builders. The helper method can use the builder to add any supporting detail to the order before feeding it into the system.\
+\
+
+\b Then Raise the Game
+\b0 \
+\
+The test code is looking better, but it still reads like a script. We can change its emphasis to 
+\i what 
+\i0 behavior is expected, rather than 
+\i how 
+\i0 the test is implemented, by rewording some of the names. We started with a test that looked procedural, extracted some behavior into builder objects, and ended up with a declarative description of what the feature does. We\'92re nudging the test code towards the sort of language we could use when discussing the feature with someone else, even someone non-technical; we push everything else into supporting code.\
+\
+
+\b Communication First
+\b0 \
+\
+We use test data builders to reduce duplication and make the test code more expressive. It\'92s another technique that reflects our obsession with the language of code, driven by the principle that code is there to be read. Combined with factory methods and test scaffolding, test data builders help us write more literate, declarative test that describe the 
+\i intention
+\i0  of a feature, not just a sequence of steps to drive it.\
+\
+Using these techniques, we can even use higher-level tests to communicate directly with non-technical stakeholders. We can use the tests to help us narrow down exactly what a feature should do and why.\
+\
+}

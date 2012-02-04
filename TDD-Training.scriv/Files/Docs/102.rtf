@@ -1,0 +1,36 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 What to do about smells?
+\b0 \
+\
+A very effective technique for identifying the root cause is the \'93Five Why\'92s\'94. First, we ask 
+\i why
+\i0  something is occurring. Once we have identified the factors that led to it, we next ask 
+\i why
+\i0  each of those factors occurred. We repeat this process until no new information is forthcoming. In practice, asking 
+\i why 
+\i0 five times is usually enough - hence the name \'93Five Why\'92s\'94. This is also called root cause analysis.\
+\
+The root causes of fragile tests can be classified into four broad categories:\
+\
+
+\i Interface Sensitivity
+\i0  occurs when tests are broken by changes to the test programming API or the user interface used to automate the tests. Record and Playback Test tools typically interact with the system via the UI. Even minor changes to the interface can cause tests to fail.\
+\
+
+\i Behavior Sensitivity 
+\i0 occurs when tests are broken by changes to the behavior of the SUT. Of course, the test should break if we change the SUT. But the issue is that only a few tests should be broken by any one change. If many tests break we have a problem.\
+\
+
+\i Data Sensitivity 
+\i0 occurs when tests are broken by changes to the data already in the SUT. This issue is particularly a problem for applications that use databases. \
+\
+
+\i Context Sensitivity 
+\i0 occurs when test are broken by differences in the environment surrounding the SUT. The most common example is when tests depend on the time but this problem can also arise when tests rely on the state of devices such as server, printers, monitors etc.\
+\
+Tests should be simple, linear sequences of statements. When tests have multiple execution paths, we cannot be sure exactly how the test will execute in a specific case.
+\i  }

@@ -1,0 +1,256 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Direct Input
+\b0 \
+\
+A test may interact with the SUT directly via its public API or indirectly via its back door. The stimuli injected by the test into the SUT via its public API are direct inputs of the SUT. Direct inputs may consist of method calls to another component or messages sent on a message channel and the arguments or contents.\
+\
+
+\b Indirect Input
+\b0 \
+\
+When the behavior of the SUT is affected by the values returned by another component whose services it uses, we call those values indirect inputs of the SUT. Indirect inputs may consist of return values of functions and any errors or exceptions raised by the DoC. Testing of the SUT behavior with indirect inputs requires the appropriate control point on the back side of the SUT. We often use a test stub to inject the indirect inputs into the SUT.\
+\
+
+\b Direct Output
+\b0 \
+\
+A test may interact with the SUT directly via its public API or indirectly via its back door. The responses received by the test from the SUT via its public API are direct outputs of the SUT. Direct outputs may consist of the return values of method calls, updated arguments passed by reference, exceptions raised by the SUT or messages received on a message channel from the SUT.\
+\
+
+\b Indirect Output
+\b0 \
+\
+When the behavior of the SUT includes actions that cannot be observed through the public API of the SUT but that are seen or experienced by other systems or application components, we call those actions the indirect outputs of the SUT. Indirect outputs may consist of calls to another component, messages sent on a message channel and records inserted into a database or written to a file. Verification of the indirect output behaviors of the SUT requires the use of appropriate observation points on the back side of SUT. Mock objects are often used to implement the observation point by intercepting the indirect outputs of the SUT and comparing them to the expected values.\
+\
+
+\b Back Door
+\b0 \
+\
+An alternative interface to a SUT that test software can use to inject indirect inputs into the SUT. A database is a common example of a back door, but it could also be any component that can be either manipulated to return test-specific values or replaced by a test double. \
+\
+
+\b Front Door
+\b0 \
+\
+Public API.\
+\
+
+\b User Acceptance Test
+\b0 \
+\
+A customer test that the customer of the software plans to run to help the customer decide whether he or she will accept the software system. Acceptance tests are usually run manually after all automated customer tests have passed. They exercise all layers of the system - from the user interface back to the database. And should include any integration with other systems on which the application depends.\
+\
+
+\b Customer Test
+\b0 \
+\
+A test that verifies the behavior of a slice of the visible functionality of the overall system. The SUT may consist of the entire system or a fully functional top-to-bottom slice of the system. A customer test should be independent of the design decisions made while building the SUT. That is, we should require the same set of customer tests regardless of how we choose to build the SUT. Of course, how the customer tests interact with the SUT may be affected by high-level software architecture decisions.\
+\
+
+\b Need-Driven Development
+\b0 \
+\
+A variation of TDD process where code is written from the outside in and all depended-on code is replaced by mock objects that verify the expected indirect outputs of the code being written. This approach ensures that the responsibilities of each software unit are well understood before they are coded, by virtue of having unit tests inspired by examples of real usage. The outermost layer of software is written using storytest-driven development. It should have examples of usage by real clients (eg., a user interface driving the service facade) in addition to customer tests.\
+\
+A refinement of endoscopic testing in which the dependencies of the SUT are defined as the tests are written. This outside-in approach to writing and testing software combines the conceptual elegance of the traditional top-down approach to writing code with modern TDD techniques supported by mock objects. It allows us to build and test the software layer by layer, starting at the outermost layer before we have implemented the lower layers.\
+\
+Need driven development combines the benefits of TDD (specifying all software with tests before we build them) with a highly incremental approach to design that removes the need for any speculation about how a depended-on class might be used.\
+\
+
+\b Behavior Driven Development
+\b0 \
+\
+A variation of the TDD process wherein the focus of the tests is to clearly describe the expected behavior of the SUT. The emphasis is on tests as documentation rather than merely using tests for verification.\
+\
+
+\b Example Driven Development
+\b0 \
+\
+A reframing of the TDD process to focus on the executable specification aspect of the tests. The act of providing examples is more intuitive to many people. It doesn\'92t carry the baggage of testing software that doesn\'92t yet exist.\
+\
+
+\b Component
+\b0 \
+\
+A larger part of the overall system that is often separately deployable. Component based development involves decomposing the overall functionality into a series of individual components that can be built and deployed separately. This allows sharing of the components between applications that need the same functionality. A service-oriented architecture uses Web Services as its large-grained components. A component is verified using component tests before the overall application is tested using customer tests.\
+\
+
+\b Depended on Component
+\b0 \
+\
+And individual class or a large-grained component on which the SUT depends. The dependency is usually one of delegation via method calls. In test automation, the DoC is primarily of interest in that we need to be able to observe and control the interactions with the SUT to get complete test coverage.\
+\
+
+\b Control Point
+\b0 \
+\
+How the test asks the SUT to do something to it. A control point could be created for the purpose of setting up or tearing down the fixture or it could be used during the exercise SUT phase of the test. It is a kind of interaction point. Some control points are provided strictly for testing purposes; they should not be used by the production code because they bypass input validation or short-circuit the normal life cycle of the SUT or some object on which it depends.\
+\
+
+\b Interaction Point
+\b0 \
+\
+A point at which a test interacts with the SUT. An interaction point can either be a control point or an observation point.\
+\
+
+\b Observation Point
+\b0 \
+\
+The means by which the test observes the behavior of the SUT. This kind of interaction point can be used to inspect the post-exercise state of the SUT or to monitor interactions between the SUT and its depended-on components. Some observation points are provided strictly from the tests; they should not be used by the production code because they may expose private implementation details of the SUT that cannot be depended on not to change.\
+\
+
+\b Outgoing Interface
+\b0 \
+\
+A component (eg., a class or a collection of classes) often depends on other components to implement its behavior. The interfaces it uses to access these components are known as outgoing interfaces, and the inputs and outputs transmitted via test interfaces are called indirect inputs and indirect outputs. Outgoing interfaces may consist of calls to another component, messages sent on a message channel or records inserted into a database or written to a file. Testing the behavior of the SUT with outgoing interfaces requires special techniques such as mock objects to intercept and verify the usage of outgoing interfaces.\
+\
+
+\b Retrospective
+\b0 \
+\
+A process whereby a team reviews its processes and performance for the purpose of identifying better ways of working. Retrospectives are often conducted at the end of a project (called a project retrospective) to collect data and make recommendations for future projects. They have more impact if they are done regularly during the project. Agile projects tend to do retrospectives after at least every release (called a release retrospective) and often after every iteration (called an iteration retrospective).\
+\
+
+\b Round Trip Test
+\b0 \
+\
+A test that interacts only via the public interface of the SUT.\
+\
+
+\b Layer Crossing Test
+\b0 \
+\
+A test that either sets up the fixture or verifies the outcome using a back door of the SUT such as the database. Contrast this with round-trip test.\
+\
+
+\b Substitutable Dependency
+\b0 \
+\
+A software component my depend on any number of other components. If we are to test this component by itself, we must be able to replace the other components with test doubles - that is, each component must be a substitutable dependency. We can turn something into a substitutable dependency in several ways including dependency injection, test specific subclass etc.\
+\
+
+\b Design for Testability
+\b0  \
+\
+A way of ensuring that code is easily tested by making sure that testing requirements are considered as the code is designed. When doing TDD, design for testability occurs as a natural side effect of development.\
+\
+
+\b System Under Test
+\b0 \
+\
+Whatever thing we are testing. The SUT is always defined from the perspective of the test. When we are writing unit tests, the SUT is whatever class, object or method we are testing. When we are writing customer tests, the SUT is the entire application or at least a major subsystem of it. The parts of the application we are not verifying in this particular test may still be involved as a depended-on component.\
+\
+
+\b Test Condition
+\b0 \
+\
+A particular behavior of the SUT that we need to verify. It can be described as the following collection of points:\
+If the SUT is in some state S1 and\
+We exercise the SUT in some way X, then\
+The SUT should respond with R and \
+The SUT should be in state S2\
+\
+
+\b Equivalence Class
+\b0 \
+\
+A test condition identification technique that reduces the number of tests required by grouping together inputs that should result in the same output or that should exercise the same logic of the system. This organization allows us to focus our tests on key boundary values at which the expected output changes.\
+\
+
+\b Assertion 
+\b0 \
+\
+A statement that something should be true. It fails when the actual outcome passed to it does not match the expected outcome.\
+\
+
+\b Test Fixture
+\b0 \
+\
+All the things we need to have in place to run a test and expect a particular outcome. The test fixture comprises the pre-conditions of the test. It is the before picture of the SUT and its context.\
+\
+
+\b Fixture Setup
+\b0 \
+\
+Before the desired logic of the SUT can be exercised, the pre-conditions of the test need to be set up. Collectively, all objects (and their states) are called the test fixture (or test context), and the phase of the test that sets up the test fixture is called fixture setup.\
+\
+
+\b Test Context
+\b0 \
+\
+Everything a SUT needs to have in place so that we can exercise the SUT for the purpose of verifying its behavior. For this reason, RSpec calls the test fixture a context.\
+Context: A set of fruits with contents = \{apple, orange, pear\}\
+Exercise: Remove orange from the fruits set\
+Verify: Fruits set contents = \{apple, pear\}\
+\
+In this test the fixture consists of a single set and is created directly in the test.\
+\
+
+\b Exercise SUT
+\b0 \
+\
+After the fixture setup phase of testing, the test stimulates the SUT logic that is to be tested. This phase of the testing process is called exercise SUT.\
+\
+
+\b Expectation 
+\b0 \
+\
+What a test expects the SUT to have done. When we are using mock objects to verify the indirect outputs of the SUT, we load each mock object with the expected method calls (including the expected arguments); these are called the expectations.\
+\
+
+\b Expected Outcome
+\b0 \
+\
+The outcome that we verify after exercising the SUT. A self checking test verifies the expected outcome using calls to assertion methods.\
+\
+
+\b Result Verification
+\b0 \
+\
+After the exercise of SUT phase of the 4-phase test, the test verifies that the expected (correct) outcome has actually occurred. This phase of the test is called result verification.\
+\
+
+\b Verify Outcome
+\b0 \
+\
+After the exercise SUT phase of the test, the test compares the actual outcome - including returned values, indirect outputs and the post-test state of the SUT - with the expected outcome. This phase of the test is called the verify outcome phase.\
+\
+
+\b Fixture Teardown
+\b0 \
+\
+After a test is run, the test fixture that was built by the test should be destroyed. This phase of the test is called fixture teardown.\
+\
+
+\b Test Driven Bug Fixing
+\b0 \
+\
+A way of fixing bugs that entails writing and automating unit tests that reproduce each bug before we begin debugging the code and fixing the bug.\
+\
+
+\b Emergent Design
+\b0 \
+\
+The opposite of big design up front. It involves letting the right design be discovered as the software slowly evolves to pass one test at a time during TDD.\
+\
+
+\b False Negative
+\b0 \
+\
+A situation in which a test passes even though the SUT is not working properly.\
+\
+
+\b False Positive
+\b0 \
+\
+A situation in which a test fails even though the SUT is working properly.\
+\
+
+\b Fault Insertion Test
+\b0 \
+\
+A kind of test in which a deliberate fault is introduced in one part of the system to verify that another part reacts to the error appropriately. Replacing a DoC with a Saboteur that throws an exception is an example of a software fault insertion test.}

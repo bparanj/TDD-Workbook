@@ -1,0 +1,75 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 Once you have a broken test, you need to fix it. If you treat a red bar as a condition to fixed as quickly as possible,  you will discover that you can get to green quickly. These patterns are how to make the code pass (even if the result isn\'92t something you want to live with for even an hour)\
+\
+
+\b Fake It (Till You Make It)
+\b0 \
+\
+What is your first implementation once you have a broken test? Return a constant. Once you have the test running, gradually transform the constant into an expression using variables.\
+\
+You haven\'92t really gotten there yet (the test is there but the code structure is wrong). However when you do get there, you know you will be safe (the test will still run).\
+\
+Why would you do something that you know you have to rip out? Because having something running is better than not having something running, especially if you have the tests to prove it. Sometimes fake implementation can teach you that the written test is wrong and you don\'92t have to invest in the real solution to find out.\
+\
+There are couple of effects that make Fake It powerful:\
+\
+Psychological - Having a green bar feels completely different than having a red bar. When the bar is green, you know where you stand. You can refactor from there with confidence.\
+\
+Scope control - Programmers are good at imagining all sorts of future problems. Starting with one concrete example and generalizing from there prevents you from prematurely confusing yourself with extraneous concerns. You can do a better job of solving the immediate problem because you are focused. When you go to implement the next test case, you can focus on that one, too, knowing that the previous test is guaranteed to work.\
+\
+Does Fake It violate the rule that says you don\'92t write any code that isn\'92t needed? No, because in the refactoring step you are eliminating duplication of data between the test case and the code.\
+\
+
+\b Triangulate
+\b0 \
+\
+How do you most conservatively drive abstraction with tests? Only abstract when you have two or more examples.\
+\
+Here\'92s an example. Suppose you want to write a function that will return the sum of two integers. We write:\
+\
+Assert(4, plus(3,1))\
+\
+Plus \
+Return 4\
+\
+If we are triangulating to the right design, we have to write:\
+\
+Assert(4, plus(3,1))\
+Assert(7, plus(3,4))\
+\
+When we have the second example, we can abstract the implementation of plus:\
+\
+Plus(augend, addend)\
+Augend + addend\
+\
+Triangulation is attractive because the rules for it seem so clear. The rules for Fake It, where we are relying on our sense of duplication between the test case and the fake implementation to drive abstraction, seem a bit vague and subject to interpretation. While they seem simple, the rules for triangulation create an infinite loop. Once we have the two assertions and we have abstracted the correct implementation for plus, we can delete on of the assertions on the grounds that it is completely redundant with the other. If we do that, however, we can simplify the implementation of plus to just return a constant, which requires us to add an assertion.\
+\
+I only use triangulation when I\'92m unsure about the correct abstraction for the calculation. Otherwise I rely on either Obvious Implementation or Fake It.\
+\
+
+\b Obvious Implementation
+\b0 \
+\
+How do you implement simple operations? Just implement them.\
+\
+Fake It and Triangulation are teensy-weensy tiny steps. Sometimes you are sure you know how to implement an operation. Go ahead. For example, would I really use Fake It to implement something as simple as plus? Not usually. I would just type in the obvious implementation. If I noticed I was getting surprised by red bars, I would go to smaller steps.\
+\
+There\'92s no particular virtue in the halfway nature of Fake It and Triangulate. If you know what to type, and you can do it quickly, do it. However, by using only Obvious Implementation, you are demanding perfection of yourself. This is not a good move. What if the code you write isn\'92t really the simplest change that could get the test to pass? What if your partner shows you an even simpler one? You\'92re a failure!\
+\
+Solving \'93clean code\'94 at the same time you solve \'93that works\'94 can be too much to do at once. As soon as it is, go back to solving \'93that works\'94, then \'93clean code\'94 at leisure.\
+\
+Keep track of how often you get surprised by red bars using Obvious Implementation. I\'92ll get stuck in these cycles where I\'92ll type in an Obvious Implementation. It won\'92t work. But now I\'92m sure I know what I should type, so I type that. It doesn\'92t work. So now\'85This especially happens with off by one errors and positive/negative errors.\
+\
+You want to maintain that red/green/refactor rhythm. Obvious Implementation is second gear. Be prepared to downshift if your brain starts writing checks your fingers can\'92t cash.\
+\
+
+\b One to Many
+\b0 \
+\
+How do you implement an operation that works with collections of objects? Implement it without the collections first, then make it work with collections.\
+\
+}

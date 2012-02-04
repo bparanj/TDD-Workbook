@@ -1,0 +1,447 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+
+\f0\fs28 \cf0 Good tests are:\
+\
+Compact\
+Responsible for testing one concern only\
+Fast\
+DRY\
+\
+should respond_to\
+should be_nil\
+should be_valid\
+\
+should_not *\
+\
+expect \{\}.to change(object, :method).by(difference)\
+expect \{\}.to change(object, :method).from(initial).to(final)\
+\
+should eql == a\
+\
+
+\b Setup\
+
+\b0 \
+before, before(:each), before(:all)\
+after, after(:each), after(:all)\
+describe\
+it\
+\
+expect \{\}.to change(Person.count).by(1)\
+\
+RSpec ==, eql, equal\
+\
+o.should == 5        5 == 5\
+o.should eql(5)      5.eql 5\
+o.should equal(5)    5.equal 5\
+\
+
+\b Object Equality vs Identity
+\b0 \
+\
+eql, == compare values\
+equal, === compare objects, classes\
+\
+
+\b Testing validation
+\b0 \
+\
+Create the object\
+o.should_not be_valid\
+o.errors.on(:first_name).should_not be_nil\
+\
+
+\b Testing Models
+\b0 \
+\
+Validation\
+Side-effects before/after saving\
+Associations\
+Association proxy methods\
+Named Scopes, custom finders\
+Nested Attributes\
+Observers\
+Custom Methods\
+\
+context "Validations" do\
+  \
+  it "must have some field" do\
+    p "Instantiate object with invalid property"\
+    p "Check for not valid? : o.should_not be_valid?"\
+    p "Check for error on right attribute : a.errors.on(:field).should_not be_nil"\
+  end\
+\
+  it "should not use looping to get rid of the duplication for validation of fields" do\
+    p "You can use domain specific custom assertions (shouda_matchers is a good choice)"\
+  end\
+  \
+end\
+\
+context "Model Callbacks : Check for side effects"\
+\
+  it "should default a value before saving" do\
+    p "Instantiate object with valid attributes"\
+    p "Check the field is not populated before save"\
+    p "Save"\
+    p "Verify the field is populated"\
+  end\
+  \
+  it "should send an email after saving" \
+  it "should post to a URL on delete"\
+  it "has callbacks: before_save, after_save, after_destroy etc that has a corresponding trigger event such create, save etc"\
+  \
+  it "can test callbacks" do\
+    p "Set up object in state before callback"\
+    p "Trigger callback"\
+    p "Check for side effect"\
+  end\
+\
+end\
+\
+Factories should create valid objects.\
+ \
+
+\b How to test Custom Finders
+\b0 \
+\
+Create the smallest non-trivial dataset\
+Check dataset is non-trivial\
+Run finder\
+Check results include a subset of dataset\
+\
+it "should find records that match a given term" do\
+ objs = [Factory(), Factory(), ...]\
+ Person.all.should == objs\
+ r = Person.find_custom("Foo")\
+ r.should == []\
+ p "Why do you need to care about the order of the returned results? It is not necessary"\
+ p "We could use result.should include(obj) twice"\
+end\
+\
+
+\b Named Scope
+\b0 \
+\
+Composable\
+Testable with proxy_options\
+\
+
+\b How to test for Associations?\
+
+\b0 \
+Are the association methods present?\
+Checking for one is enough.\
+No need to test Rails unless using associations with options\
+Check that method runs, if options used\
+\
+it "has many addresses" do\
+  p = Person.new\
+  p.should respond_to(:addresses)\
+end\
+\
+
+\b Association Options\
+
+\b0 \
+Ordering\
+Class name\
+Foreign key\
+Conditions\
+\
+
+\b How to test Associations with Options?\
+
+\b0 \
+Setup a non-trivial data set\
+Verify that it is non-trivial.\
+Run association method having options\
+Verify result\
+\
+it "sorts addresses by zip" do\
+  p = Factory(:person)\
+  # Factory for addrs with zip 23456, 12345\
+  Address.all.should == [addr1, addr2]\
+  \
+  p.addresses.should == [addr2, addr1]\
+end\
+\
+it "requires state to be of length 2"\
+  subject.state = 'cal'\
+  subject.should_not be_valid                   <- Declarative\
+  subject.errors.on(:state).should_not be_nil   <- Implementation details\
+end\
+\
+This contains implementation details. Specify behavior. Restrict to declarative statements.\
+Use shoulda matcher macros. If the implementation of custom assertion is tied to the framework,\
+then tests will break during upgrade. It may have to create objects to be independent of framework API \
+but it will be slower.\
+\
+Add another test whenever you provide options to the Rails macros\
+\
+Declarative test for active record association macros respond_to(:items) will become redundant test when it is\
+ exercised indirectly by another test and can be deleted.\
+\
+
+\b Mock, Stub, Double
+\b0 \
+\
+m = mock("Car")\
+m.stub(:stop)\
+m.stop => nil\
+\
+m.stub(:stop).and_return(true)\
+m.stop => true\
+\
+m = mock("Car", :stop => true)\
+\
+
+\b Message Expectations
+\b0 \
+\
+m = mock("Car")\
+m.should_receive(:stop)\
+m.should_receive(:stop).and_return(true)\
+\
+m.should_receive(:stop).twice\
+m.should_receive(:foo).exactly(5).times\
+\
+m.should_receive(:stop).with(/slip/) Regex - Argument that matches slip\
+with(hash_including\{:name => "Foo"\})\
+\
+
+\b Partial Mocks\
+
+\b0 \
+Replace a method on an existing class\
+\
+jan1 = Time.civil(2010)\
+Time.stub!(:now).and_return(jan1) \
+\
+Add a method to an existing class\
+\
+Time.stub!(:jan1).and_return(jan1)\
+\
+Mocks allow isolation by removing dependencies.\
+Mocks go stale when it is not updated after the real implementation of the mocked methods. Tedious to keep them\
+in synch. \
+\
+
+\b Uses of Mocks
+\b0 \
+\
+External Services\
+System Services (Time, I/O, Files)\
+Mature Internal API - Slow queries, Queries with complicated data setup\
+\
+
+\b Controllers
+\b0 \
+\
+Pass-through entities\
+Mostly boiler plate - biz logic in the model\
+Dumb and skinny\
+\
+
+\b RESTful Actions
+\b0 \
+Display methods (Read)\
+GET : index, show, new, edit\
+Update\
+PUT\
+Create\
+POST\
+Delete\
+DELETE\
+\
+
+\b REST
+\b0 \
+Representational State Transfer\
+\
+All resource-based applications & API's need to do similar things : create, read, update, delete\
+\
+It's a convention. No configuration, no ceremony. Simpler inter-process communication.\
+\
+
+\b Read Test Pattern
+\b0 \
+\
+Make request (with id of record if a single record)\
+Check Rendering : correct template, redirect, status code, content type (html, json, xml)\
+Verify variable assignments required by view\
+\
+
+\b Read Formula
+\b0 \
+\
+Find data based on parameters\
+Assign variables\
+Render\
+\
+
+\b Create / Update Test Pattern
+\b0 \
+\
+Make request with form fields to be created / updated\
+Verify Variable Assignments\
+Verify Check Success - Rendering\
+Verify Failure / Error Case - Rendering, Variables\
+Verify HTTP Verb Protection\
+\
+Update : Find record from parameters\
+Create : Instantiate new model object\
+Assign form fields parameters to model object\
+ - This should be a single line\
+ - It is a pattern, the "Controller Formula"\
+Save\
+Handle success - typically a redirect\
+Handle failure - typically a render\
+\
+To find the parameters, look at the log file or do a view source in the browser.\
+\
+assigns[:person].should be_kind_of(Person)\
+\
+HTTP verb protection\
+controller.should_not_receive(:create)\
+get :create\
+\
+What is the Rails 3.2 way of :\
+\
+verify method: :post, only: :create\
+\
+Emphasize behavior over display\
+Check that the application handles errors correctly\
+Test views only for things that could go wrong badly - incorrect form URL, incorrect names on complicated forms, because\
+they impact parameter representation\
+\
+
+\b View Testing\
+
+\b0 \
+render view\
+response.should have_tag("form")\
+\
+Check JSON from controllers and use Selenium test JS.\
+\
+Nested Attributes\
+\
+it "should create an address record from attributes" do\
+  expect do\
+  expect do\
+	    Person.create(name: 'Joe', addresses_attributes => [\{city: 'SF', state: 'CA'\}])\
+  end.to_change (Person, count).by(1)\
+	end.to_change (Address, count).by(1)\
+End\
+\
+
+\b Value Driven Outside In BDD
+\b0 \
+\
+Write controller tests first\
+Make them pending while fleshing out model\
+Implement model logic with nested_scopes, associations, with rich options and proxy methods, accepts_nested_attributes_for\
+Resume controller test\
+Add views\
+Exploratory Cucumber/Selenium test to avoid test gap between view and controller\
+\
+
+\b Selenium
+\b0 \
+\
+Problems:\
+Very low level\
+ - hard to see what's being checked\
+ - hard to reuse\
+ - prone to copy & paste\
+\
+Next step\
+ - pull out common methods\
+ - but common file quickly gets cluttered\
+ - most tests only use a small fraction of common methods\
+\
+
+\b Page Objects\
+
+\b0 \
+Each Page represented by an Object\
+Methods are\
+ - things you can do\
+ - things you can see\
+ - apply to this page only\
+Each method returns a page object\
+ - itself\
+ - another page object\
+\
+
+\b How to build Page Objects?\
+
+\b0 \
+Model the UI in Page Objects\
+entire pages\
+parts of a page\
+\
+
+\b Advantages\
+
+\b0 \
+Reuse is easy\
+Documentation\
+Maintainability\
+ - Changes to the UI or page require only one change of the test code, in only one place\
+Method chaining\
+ - Development of new tests is easy and fast\
+ - Easy reuse of existing "library of things to do" on a page\
+\
+
+\b When to Wait?
+\b0 \
+\
+An Event Trigger\
+Click, Mouse over/out\
+Form submit\
+\
+Waiting For\
+\
+Page load, AJAX load, Javascript action (e.g., hide/show)\
+\
+Waiting for Page\
+\
+open "/" (will automatically wait for page)\
+clicking on a link (wait_for :page)\
+\
+Wait for Element\
+\
+click "locator", :wait_for => :element, :element => 'locator'\
+\
+Wait for Visibility\
+\
+Something appearing or disappearing dynamically\
+click "locator", :wait_for => :visible, :element => 'locator'\
+\
+Note: The element must be present (see wait for element) or visibility check will fail with a "no element\
+found error"\
+\
+
+\b Custom Matchers
+\b0 \
+\
+[1,2,3] == [2,3,1]\
+\
+([1,2,3]-[2,3,4]).should be_empty\
+[1,2,3].should be_commutative_with([2,3,1])\
+\
+1. Create a new file custom_matchers.rb\
+2. Define module CustomMatchers \
+3. Define a class CommutationMatcher class\
+4. Implement the methods: matches?, failure_message_for_should, initialize.\
+5. be_commutative_with method is defined outside the class within the module\
+\
+
+\b Access Control\
+
+\b0 \
+Controller Access : Disallowed action should be blocked via before_filters.\
+View Access : Disallowed pages/actions should not be linked to. Purely cosmetic}

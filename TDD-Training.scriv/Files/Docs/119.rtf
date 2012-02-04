@@ -1,0 +1,309 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Test Double
+\b0 \
+\
+How can we verify logic independently when code it depends on is unusable? How can we avoid slow tests? We replace a component on which the SUT depends with a test specific equivalent.\
+\
+Fig ..\
+\
+Sometimes it is hard to test the SUT because it depends on other components that cannot be used in the test environment. Such a situation may arise because those components are not available, they will not return the results needed for the test, or executing them would have undesirable side effects. In other cases, our test strategy requires us to have more control over or visibility of the internal behavior of the SUT.\
+\
+When we are writing a test in which we cannot (or choose not to) use a real DoC, we can replace it with a test double. The test double does not have to behave exactly like the real DoC; it merely has to provide the same API as the real DoC so that the SUT thinks it is the real one.\
+\
+During the fixture setup phase of our Four-Phase Test, we replace the real DoC with our test double. Depending on the kind of test we are executing, we may hard-code the behavior of the test double or we may configure it during the setup phase. When the SUT interacts with the test double, it won\'92t be aware that it isn\'92t taking to the real object, but we will have achieved our goal of making impossible tests possible. \
+\
+Regardless of which variation of test double we choose to use, we must keep in mind that we don\'92t need to implement the entire interface of the DoC. Instead, we provide only the functionality needed for our particular test. We can even build different test doubles for different tests that involve the same DoC.\
+\
+We can use test double in the following cases:\
+\
+If we have an untested requirement because neither the SUT nor its DoCs provide an observation point for the SUT\'92s indirect output that we need to verify using behavior verification.\
+If we have untested code and a DoC does not provide the control point to allow us to exercise the SUT with the necessary indirect inputs.\
+If we have slow tests and we want to be able to run our tests more quickly and hence more often.\
+\
+We have to be careful when using test doubles because we are testing the SUT in a different configuration from the one that will be used in production. For this reason, we really should have at least one test that verifies the SUT works without a test double. We need to be careful that we don\'92t replace the parts of the SUT that we are trying to verify. Also excessive use of test doubles can result in fragile tests as a result of over specified software.\
+\
+Test Double   - Verify \
+------------------------------------\
+Test Stub       - Indirect Inputs\
+Test Spy        - Indirect Outputs\
+Mock Object  - Indirect Outputs \
+Fake Object   - Alternative Implementation\
+\
+
+\b Test Stub
+\b0 \
+\
+We use a test stub to replace a real object on which the SUT depends so that the test has a control point for the indirect inputs of the SUT. Its inclusion allows the test to force the SUT down paths it might not otherwise execute. We can further classify test stubs by the kind of indirect inputs they are used to inject into the SUT. A responder injects valid values, while a saboteur injects error or exceptions.\
+\
+
+\b Test Spy
+\b0 \
+\
+A more capable version of test stub. It is an observation point for the indirect outputs of the SUT. Like a test stub it may need to provide values to the SUT in response to method calls, it also captures the indirect outputs of the SUT as it is exercised and saves them for later verification by the test. It is just a test stub with some recording capability. It is used for the same purpose as a mock object, the style of test we writing using a test spy looks much more like a test written with a test stub.\
+\
+
+\b Mock Object
+\b0 \
+\
+We can use a mock object as an observation point to verify the indirect outputs of the SUT as it is exercised. Typically, the mock object also includes the functionality of a test stub in that it must return values to the SUT if it hasn\'92t already failed the tests but the emphasis is on the verification of the indirect outputs. Therefore, a mock object is a lot more than just a test stub plus assertions.\
+\
+
+\b Fake Object
+\b0 \
+\
+We use a fake object to replace the functionality of a real DoC in a test for reasons other than verification of indirect inputs and outputs of the SUT. Typically, a fake object implements the same functionality as the real DoC but in a simpler way. While a fake object is typically built specifically for testing, the test does not use it as either a control point or an observation point.\
+\
+The most common reason for using a fake object is that the real DoC is not available yet, is too slow, or cannot be used in the test environment because of side effects.\
+\
+Considerations when building a test double:\
+Whether it should be specific to a single test or reusable \
+Whether it should exist in code or generated on-the-fly\
+How we tell the SUT to use the test double (installation)\
+\
+Fig 23.2 Types of test doubles with implementation choices. Only test stubs, test spies and mock objects need to be hard-coded or configured by the test. Dummy objects have no implementation; Fake objects are installed but not controlled by the test.\
+\
+
+\b Unconfigurable Test Doubles
+\b0 \
+\
+Neither dummy objects nor fake objects need to be configured, each for their own reason. Dummies should never be used by the receiver so they need no real implementation. Fake objects need a real implementation but one that is simpler than the object that they replace. Therefore, neither the test nor the developer will need to configure canned responses or expectations; we just install the test double and let the SUT use it as if it were real.\
+\
+
+\b Test Stub
+\b0 \
+\
+How can we verify logic independently when it depends on indirect inputs from other software components? We replace a real object with a test specific object that feeds the desired indirect inputs into the SUT.\
+\
+Fig..\
+\
+In many cases, the environment or context in which the SUT operates very much influences the behavior of the SUT. To get adequate control over the indirect inputs of the SUT, we may have to replace some of the context with something we can control - namely, a test stub.\
+\
+First, we define a test specific implementation of an interface on which SUT depends. This implementation is configured to respond to calls from the SUT with the values (or exceptions) that will exercise the untested code within the SUT. Before exercising the SUT, we install the test stub so that the SUT uses it instead of the real implementation. When called by the SUT during test execution, the test stub returns previously defined values. The test can then verify the expected outcome in the normal way.\
+\
+A key indication for using a test stub is having untested code caused by our inability to control the indirect inputs of the SUT. We can use a test stub as a control point that allows us to control the behavior of the SUT with various indirect inputs and we have no need to verify the indirect outputs. We can also use test stub to inject values that allow us to get past a particular point in the software where the SUT calls software that is unavailable in our test environment.\
+\
+If we do need an observation point that allows us to verify the indirect outputs of the SUT, we should consider using a mock object or a test spy.\
+\
+
+\b Responder
+\b0 \
+\
+A test stub that is used to inject valid indirect inputs into the SUT so that it can go about its business is called a responder. They are commonly used in happy path testing when the real component is uncontrollable, is not yet available, or is unusable in the development environment. The tests will invariably be simple success tests.\
+\
+
+\b Saboteur
+\b0 \
+\
+A test stub that is used to inject invalid indirect inputs into the SUT is called a saboteur because its purpose is to derails whatever the SUT is trying to do so that we can see how the SUT copes under these circumstances. The derailment might be caused by returning unexpected values or objects or it might result from raising an exception or causing a runtime error. Each test may be either a simple success test or an expected exception test depending on how the SUT is expected to behave in response to the indirect input.\
+\
+
+\b Temporary Test Stub
+\b0 \
+\
+A temporary test stub stands in for a DoC that is not yet available. This kind of test stub typically consists of an empty shell of a real class with hard-coded return statements. As soon as the real DoC is available, it replaces the temporary test stub. TDD often requires us to create temporary test stubs as we write code from outside in; these shells evolve into the real classes as we add code to them. In need-driven development, we tend to use mock objects because we want to verify that the SUT calls the right methods on the temporary test stub; in addition, we typically continue using the mock object even after the real DoC becomes available.\
+\
+
+\b Entity Chain Snipping
+\b0 \
+\
+This is a special case of a responder that is used to replace a complex network of objects with a single test stub that pretends to be the network of objects. Its inclusion can make fixture setup go much more quickly (especially when the objects would normally have to be persisted into a database) and can make the tests much easier to understand.\
+\
+We must be careful when using test stubs because we are testing the SUT in a different configuration from the one that will be used in production. We really should have at least one test that verifies the SUT works without a test stub. A common mistake made by developers who are new to stubs is to replace a part of the SUT that they are trying to test. For this reason, it is important to be really clear about what it playing the role of SUT and what is playing the role of test fixture. Also note that excessive use of test stubs can result in over specified software.\
+\
+
+\b Hard Coded Test Stub
+\b0 \
+\
+A hard coded test stub has its responses hard-coded within its program logic. These test stubs tend to be purpose built for a single test or a very small number of tests.\
+\
+
+\b Configurable Test Stub
+\b0 \
+\
+A test configures the configurable as part of its fixture setup phase. We avoid building a different hard coded test stub for each test.\
+\
+We can achieve proper verification of the indirect inputs by getting control of the time. To do so, we can use the replace dependency with test double refactoring to replace the real system clock with a virtual clock. We then implement it as a test stub that is configured by the test with the time we want to use as the indirect input to the SUT.\
+\
+Responder example: The following test verifies one of the happy path test conditions using a responder to get control over the indirect inputs of the SUT. Based on the time injected into the SUT, the expected result can be hard-coded safely.\
+\
+Entity Chain Snipping example: In this example, we are testing the invoice but require a customer to instantiate the invoice. The customer requires an address, which in turn requires a city. Thus we find ourselves creating numerous additional objects just to set up the fixture. Suppose the behavior of the invoice depends on some attribute of the customer that is calculated from the address by calling the method get_zone on the customer:\
+\
+Code\'85\
+\
+In this test, we want to verify only the behavior of the invoice logic that depends on this zone attribute - not the way this attribute is calculated from the customer\'92s address. (There are separate customer unit tests to verify the zone is calculated correctly). All of the setup of the address, city and other crap merely distracts the reader.\
+\
+Here\'92s the same test using a test stub instead of the customer. Note how much simpler the fixture setup has become as a result of entity chain snipping:\
+\
+Code. ..\
+\
+We have used mock to stub out the customer with a customer_stub that returns ZONE_3 when get_zone is called. This is all we need to verify the invoice behavior, and we have manage to get rid of all that distracting extra object construction. It is also much clearer from reading this test that invoicing behavior depends only on the value returned by get_zone and not any other attributes of the customer or address.\
+\
+
+\b Test Spy
+\b0 \
+\
+How do we implement behavior verification? How can we verify logic independently when it has indirect outputs to other software components?\
+We use a test double to capture the indirect output calls made to another component by the SUT for later verification by the test.\
+\
+Fig\
+\
+In many cases, the environment or context in which the SUT operates very much influences the behavior of the SUT. To get adequate visibility of the indirect outputs of the SUT, we may have to replace some of the context with something we can use to capture these outputs of the SUT. Use of a test spy is a simple and intuitive way to implement behavior verification via an observation point that exposes the indirect outputs of the SUT so they can be verified.\
+\
+Before we exercise the SUT, we install a test spy as a stand-in for a DoC used by the SUT. The test spy is designed to act as an observation point by recording the method calls made to it by the SUT as it is exercised. During the result verification phase, the test compares the actual values passed to the test spy by the SUT with the values expected by the test.\
+\
+A key indication for using a test spy is having an untested requirement caused by an inability to observe the side effects of invoking methods on the SUT. Test spies are a natural and intuitive way to extend the existing tests to cover these indirect outputs because the calls to the assertion methods are invoked by the test after the SUT has been exercised just like in normal tests. The test spy merely acts as the observation point that gives the test method access to the values recorded during the SUT execution. \
+\
+We should use a test spy in the following cases:\
+\
+We are verifying the indirect outputs of the SUT and we cannot predict the values of all attributes of the interactions with the SUT ahead of time. \
+We want the assertions to be visible in the test and we don\'92t think the way in which the mock object expectations are established is sufficiently intent-revealing\
+Out test requires test specific equality and tools do not give us control over the assertion methods being called.\
+We would like to have access to all the outgoing calls of the SUT before making any assertions on them.\
+\
+If none of these criteria apply, we may want to consider using a mock object. If we are trying to address untested code by controlling the indirect inputs of the SUT, a simple test stub may be all we need.\
+\
+Unlike a mock object, a test spy does not fail the test at the first deviation from the expected behavior. Thus our tests will be able to include more detailed diagnostic information in the assertion message based on information gathered after a mock object would have failed the test. \
+\
+The key characteristic in how a test uses a test spy relates to the fact that assertions are made from within the test method.\
+\
+
+\b Mock Object
+\b0 \
+\
+How do we implement behavior verification for indirect outputs of the SUT? How can we verify logic independently when it depends on indirect inputs from other software components?\
+\
+We replace an object on which the SUT depends on with a test specific object that verifies it is being used correctly by the SUT.\
+\
+Fig\
+\
+In many cases, the environment or context in which the SUT operates very much influences the behavior of the SUT. In other cases, we must peer inside the SUT to determine whether the expected behavior has occurred.\
+\
+Technically, the SUT is whatever software we are testing and doesn\'92t include anything it depends on; thus inside is somewhat of a misnomer. It is better to think of the DoC that is the destination of the indirect outputs as behind the SUT and part of the fixture.\
+\
+A mock object is a powerful way to implement behavior verification while avoiding test code duplication between similar tests. It works by delegating the job of verifying the indirect outputs of the SUT entirely to a test double.\
+\
+First we define a mock object that implements the same interface as an object on which the SUT depends. Then, during the test, we configure the mock object with the values with which it should respond to the SUT and the method calls (complete with expected arguments) it should expect from the SUT. Before exercising the SUT, we install the mock object so that the SUT uses it instead of the real implementation. When called during SUT execution, the mock object compares the actual arguments received with the expected arguments using equality assertions and fails the test if they don\'92t match. The test need not make any assertions at all.\
+\
+We can use a mock object as an observation point when we need to do behavior verification to avoid having an untested requirement caused by our inability to observe the side effects of invoking methods on the SUT. This pattern is commonly used during endoscopic testing or need driven development. Although we don\'92t need to use a mock object when we are doing state verification, we might use a test stub or fake object. \
+\
+To use a mock object, we must be able to predict the values of most or all arguments of the method calls before we exercise the SUT.\
+\
+The standard Four-Phase Test is altered when we use mock objects. The fixture setup phase of the test is broken down into three specific activities and the result verification phase more or less disappears, except for the possible presence of a call to the final verification method at the end of the test.\
+\
+Fixture setup:\
+Test constructs mock object\
+Test configures mock object. \
+Test installs mock object into sut\
+Exercise SUT:\
+SUT calls mock object; Mock object does assertions\
+Result Verification:\
+Test calls final verification method\
+Fixture teardown:\
+No impact\
+\
+Construction\
+As part of the fixture setup phase of our Four-Phase Test, we must construct the mock object that we will use to replace the substitutable dependency.\
+Configuration with Expected Values\
+We need to configure the mock object with the expected method calls (and their parameters) as well as the values to be returned by any functions.\
+Installation\
+Dependency inject via a constructor.\
+Usage\
+When the SUT calls the methods of the mock object, these methods compare the method call with the expectations. If the method call is unexpected or the arguments are incorrect, the assertion fails the test immediately.\
+Final verification\
+Most of the result verification occurs inside the mock object as it is called by the SUT.\
+\
+
+\b Fake Object
+\b0 \
+\
+How can we verify logic independently when depended on objects cannot be used? How can we avoid slow tests?\
+We replace the component that the SUT depends on with a much lighter-weight implementation\
+\
+Fig\'85\
+\
+The SUT often depends on other components or systems. Although the interactions with these other components may be necessary, the side effects of these interactions as implemented by the real DoC may be unnecessary or even detrimental. \
+\
+A fake object is a much simpler and light-weigh implementation of the functionality provided by the DoC without the side effects we choose to do without.\
+\
+We acquire or build a very lightweight implementation of the same functionality as provided by a component on which the SUT depends and instruct the SUT to use it instead of the real DoC. This implementation need not have any of the \'93ilities\'94 that the real DoC needs to have (such as scalability); it need s to provide only the equivalent services to the SUT so that the SUT remains unaware it isn\'92t using the real DoC.\
+\
+A fake object is a kind of test double that is similar to a test stub in many ways, including the need to install into the SUT a substitutable dependency. Whereas a test stub acts as a control point to inject indirect inputs into the SUT, however the fake object does not: IT merely provides a way for the interactions to occur in a self-consistent manner. These interactions (i.e., between the SUT and the fake object) will typically be many, and the values passed in as arguments of earlier method calls will often be returned as results of later method calls. Contrast this behavior with that of test stubs and mock objects where the responses are either hard-coded or configured by the test. There is less fear of over specified software if you depend only on interface between the SUT and DoC.\
+\
+We should use a fake object whenever the SUT depends on other components that are unavailable or that make testing difficult or slow and the tests need more complex sequences of behavior than are worth implementing in a test stub or mock object. It must also be easier to create a lightweight implementation than to build and program suitable mock objects at least in the long run, if building a fake object is to be worthwhile.\
+\
+Using a fake object helps us avoid over specified software because we do not encode the exact calling sequences expected of the DoC within the test. The SUT can vary how many times the methods of the DoC are called without causing tests to fail. \
+\
+If we need to control the indirect inputs or verify the indirect outputs of the SUT, we should probably use a mock object or test stub instead.\
+\
+
+\b Fake Database
+\b0 \
+\
+Replace the database with a set of in-memory hash tables.\
+\
+
+\b In-Memory Database
+\b0 \
+\
+
+\b Fake Web Service
+\b0 \
+\
+When testing software that depends on other components that are accessed via Web services, we can build a small hard-coded or data driven implementation that can be used instead of the real Web service to make our tests more robust and to avoid having to create a test instance of the real Web service in our development environment.\
+\
+
+\b Fake Service Layer
+\b0 \
+\
+When testing user interfaces, we can avoid data sensitivity and behavior sensitivity of the tests by replacing the component that implements the service layer (including the domain layer) of our application with a fake object that returns remembered or data-driven results. This approach allows us to focus on testing the user interface without having to worry about the data being returned changing over time.\
+\
+Introducing a fake object involves two basic concerns:\
+Building the fake object implementation\
+Installing the fake object\
+\
+
+\b Building the Fake Object
+\b0 \
+\
+Often, the fake object is used to replace a real implementation that suffers from latency issues owing to real messaging or disk I/O with a much lighter in-memory implementation.\
+\
+A popular strategy is to start by building a fake object to support a specific set of test where the SUT requires only a subset of the DoC\'92s services. If this proves successful, we may consider expanding the fake object to handle additional tests. Over time, we may find that we can run all of our tests using the fake object.\
+\
+One notable difference is that we do not need to configure the fake object with expectations or return values.\
+\
+
+\b Hard Coded Test Double
+\b0 \
+\
+How do we tell a test double what to return or expect? We build the test double by hard coding the return values and / or expected results.\
+\
+Fig\'85\
+\
+When the test double is very simple or very specific to a single test, the simplest solution is often to hard code the behavior into the test double.\
+\
+The developer hard codes all of the test double\'92s behavior into the test double. For example, if the test double needs to return a value for a method call, the value is hard coded into the return statement. If it needs to verify that a certain parameter had a specific value, the assertion is hard-coded with the value that is expected.\
+\
+We typically use a hard coded test double when the behavior of the test double is very simple or is very specific to a single test or test case class. In ruby using hard-coded test doubles can actually make the tests easier to read.\
+\
+
+\b Test Double Subclass
+\b0 \
+\
+We can also implement the hard coded test double by subclassing a real DoC and over riding the behavior of the methods we expect the SUT to call as we exercise it. Unfortunately, this approach can have unpredictable consequences if the SUT calls other DoC methods that we have not over ridden. It also ties our test code very closely to the implementation of the DoC and can result in over specified software. Using a test double subclass may be a reasonable option in very specific cases (while doing a spike or when it is the only option available to us), but this strategy isn\'92t recommended on a routine basis.\
+\
+
+\b Self Shunt
+\b0 \
+\
+
+\b Test Specific Subclass
+\b0 \
+\
+How can we make code testable when we need to access private state of the SUT?\
+\
+\
+}

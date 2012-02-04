@@ -1,0 +1,834 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;\f1\fnil\fcharset77 ZapfDingbatsITC;}
+{\colortbl;\red255\green255\blue255;\red18\green139\blue255;\red102\green102\blue102;}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0 A unit test should have the following properties:\
+\
+\pard\pardeftab720
+
+\f1 \cf0 \uc0\u10050 
+\f0  It should be automated and repeatable.\
+
+\f1 \uc0\u10050 
+\f0  It should be easy to implement.\
+
+\f1 \uc0\u10050 
+\f0  Once it\'92s written, it should remain for future use.\
+
+\f1 \uc0\u10050 
+\f0  Anyone should be able to run it.\
+
+\f1 \uc0\u10050 
+\f0  It should run at the push of a button.\
+
+\f1 \uc0\u10050 
+\f0  It should run quickly.\
+\
+Unit test usually exercises and tests only a single unit in isolation.\
+\
+The technique of test-driven development is quite simple:\
+\
+1 Write a failing test to prove code or functionality is missing from the end product. The test is written as if the production code were already working, so the test failing means there\'92s a bug in the production code. For example, if I wanted to add a new feature to a calculator class that remembers the \cf2 LastSum \cf0 value, I would write a test that verifies that \cf2 LastSum \cf0 is indeed a number. The test will fail because we haven\'92t implemented that functionality yet.\
+\
+2 Make the test pass by writing production code that meets the expectations of your test. It should be written as simply as possible.\
+\
+3 Refactor your code. When the test passes, you\'92re free to move on to the next unit test or to refactor your code to make it more readable, to remove code duplication, and so on.\
+\
+Refactoring can be done after writing several tests or after writing each test. It\'92s an important practice, because it ensures your code gets easier to read and maintain, while still passing all of the previously written tests.\
+\
+\pard\pardeftab720
+
+\b \cf0 Writing our first test
+\b0 \
+\
+How do we test our code? A unit test usually comprises three main actions:\
+\
+\pard\pardeftab720
+
+\f1 \cf0 \uc0\u10050 
+\f0  Arrange objects, creating and setting them up as necessary.\
+
+\f1 \uc0\u10050 
+\f0  Act on an object.\
+
+\f1 \uc0\u10050 
+\f0  Assert that something is as expected.\
+\
+\pard\pardeftab720
+
+\b \cf0 \'93Red-Green-Refactor,\'94 meaning that you start with a failing test, then pass it, and then make your code readable and more maintainable.\
+\
+S
+\b0 tate-based testing 
+\b (also called 
+\b0 state verification
+\b ) determines whether the exercised method worked correctly by examining the state of the system under test and its collaborators (dependencies) after the method is exercised.\
+\
+Indirect Testing of State\
+\
+\pard\pardeftab720
+
+\b0 \cf0 The \cf2 Calculator \cf0 class works a lot like the pocket calculator you know and love. You can click a number, then click Add, then click another number, then click Add again, and so on. When you\'92re done, you can click Equals and you\'92ll get the total so far.\
+\
+Where do you start testing the \cf2 Sum() \cf0 function? You should always consider the simplest test to begin with, such as testing that \cf2 Sum() \cf0 returns 0 by default.\
+\
+what happens when we aren\'92t facing a simple method with a return value, and we need to test the end state of\
+an object.\
+\
+Name your tests clearly using the following model: [MethodUnderTest]_[Scenario]_[ExpectedBehavior].\
+\
+Use the 
+\b \cf2 [SetUp] 
+\b0 \cf0 and 
+\b \cf2 [TearDown] 
+\b0 \cf0 attributes to reuse code in your tests, such as code for creating and initializing objects all your tests use.\
+\
+\pard\pardeftab720
+
+\f1 \cf0 \uc0\u10050 
+\f0  Don\'92t use 
+\b \cf2 [SetUp] 
+\b0 \cf0 and 
+\b \cf2 [TearDown] 
+\b0 \cf0 to initialize or destroy objects that aren\'92t shared throughout the test class in all the tests, because it makes the tests less understandable. Someone reading your code won\'92t\
+know which tests use the logic inside the setup method and which don\'92t.\
+\
+we\'92ll take a look at more realistic examples where the object under test relies on another object over which we have no control (or which doesn\'92t work yet). That object could be a web service, the time of day, threading, or many other things. The important point is that our test can\'92t control what that dependency returns to our code under test or how it behaves (if we wanted to simulate an exception, for example).\
+That\'92s when we use stubs.\
+\
+An external dependency is an object in your system that your code under test interacts with, and over which you have no control. (Common examples are filesystems, threads, memory, time, and so on.)\
+\
+In programming, we use stubs to get around the problem of external dependencies.\
+\
+A stub is a controllable replacement for an existing dependency (or collaborator) in the system. By using a stub, you can test your code without dealing with the dependency directly.\
+\
+integration tests are slower to run, they need configuration, they test multiple things, and so on.\
+\
+You can\'92t test something? Add a layer that wraps up the calls to that something, and then mimic that layer in your tests. Or make that something replaceable (so that it is itself a layer of indirection). The art also involves figuring out when a layer of indirection already exists instead of having to invent it, or knowing when not to use it because it complicates things too much. But let\'92s take it one step at a time. There\'92s a definite pattern for breaking the dependency:\
+\
+Find the interface or API that the object under test works against.\
+Replace the underlying implementation of that interface with something that you have control over.\
+\
+1 Find the interface that the method under test works against. (In this case, \'93interface\'94 isn\'92t used in the pure object-oriented sense; it refers to the defined method or class being collaborated with.)\
+\
+If the interface is directly connected to our method under test (as in this case\'97we\'92re calling directly into the filesystem), make the code testable by adding a level of indirection to the interface. In our example, moving the direct call to the filesystem to a separate class (such as \cf2 FileExtensionManager\cf0 ) would be one way to add a level of indirection. We\'92ll also look at others. (Figure 3.3 shows how the design might look after this step.)\
+\
+3 Replace the underlying implementation of that interactive interface with something that you have control over. In our case, we\'92ll replace the instance of the class that our method calls (\cf2 FileExtensionManager\cf0 ) with a stub class that we can control (\cf2 StubExtensionManager\cf0 ), giving our test code control over external dependencies.\
+\
+Our replacement instance will not talk to the filesystem at all, which breaks the dependency on the filesystem. Because we aren\'92t testing the class that talks to the filesystem, but the code that calls this class, it\'92s OK if that stub class doesn\'92t do anything\
+\
+ Refactoring is the act of changing the code\'92s design without breaking existing functionality.\
+\
+ Seams are places in your code where you can plug in different functionality, such as stub classes.\
+\
+If we want to break the dependency between our code under test and the filesystem, we can use common design patterns, refactorings, and techniques, and introduce one or more seams into the code. We just\
+need to make sure that the resulting code does exactly the same thing.\
+\
+Here are some techniques for breaking dependencies:\
+\
+
+\f1 \uc0\u10050 
+\f0  Extract an interface to allow replacing underlying implementation.\
+
+\f1 \uc0\u10050 
+\f0  Inject stub implementation into a class under test.\
+
+\f1 \uc0\u10050 
+\f0  Receive an interface at the constructor level.\
+
+\f1 \uc0\u10050 
+\f0  Receive an interface as a property get or set.\
+
+\f1 \uc0\u10050 
+\f0  Get a stub just before a method call.\
+\
+We can use it in our tests to make sure that no test will ever have a dependency on the filesystem, but also so we can create new and bizarre scenarios where we can simulate serious system errors like making the stub manager throw an \cf2 OutOfMemoryException \cf0 and seeing how the system deals with it. Later in this chapter, we\'92ll add configurability to the stub class so it can emulate many things and be used by multiple tests.\
+\
+Now we have an interface and two classes implementing it, but our method under test still calls the real implementation directly:\
+\
+We somehow have to tell our method to talk to our implementation rather than the original implementation of \cf2 IExtensionManager\cf0 . We need to introduce a seam into the code, where we can plug in our stub.\
+\
+ Inject stub implementation into a class under test. There are several proven ways to create interface-based seams in our code\'97places where we can inject an implementation of an interface into a class to be used in its methods. Here are some of the most notable ways:\
+
+\f1 \
+\uc0\u10050 
+\f0  Receive an interface at the constructor level and save it in a field for later use.\
+
+\f1 \uc0\u10050 
+\f0  Receive an interface as a property get or set and save it in a field for later use.\
+
+\f1 \uc0\u10050 
+\f0  Receive an interface just before the call in the method under test\
+\
+Using\
+\
+\'95 a parameter to the method (parameter injection).\
+\'95 a factory class.\
+\'95 a local factory method.\
+\'95 variations on the preceding techniques.\
+\
+The parameter injection method is trivial: you send in an instance of a (fake) dependency to the method in question by adding a parameter to the method signature.\
+\
+Let\'92s go through the rest of the possible solutions one by one and see why you\'92d want to use each.\
+\
+ Receive an interface at the constructor level (constructor injection) In this scenario, we add a new constructor (or a new parameter to an existing constructor) that will accept an object of the interface type we extracted earlier (\cf2 IExtensionManager\cf0 ). The constructor then sets a local field of the interface type in the class for later use by our method or any other.\
+\
+The stub analyzer is located in the same file as the test code because currently the stub is used only from within this test class. It\'92s far easier to locate, read, and maintain a stub in the same file than in a different\
+one. If, later on, I have an additional class that needs to use this stub, I can move it to another file easily.\
+\
+\pard\pardeftab720
+
+\b \cf3 Problems with constructor injection
+\b0 \
+\pard\pardeftab720
+\cf0 \
+Problems can arise from using constructors to inject implementations. If your code under test requires more than one stub to work correctly without dependencies, adding more and more constructors (or more and more constructor parameters) becomes a hassle, and it can even make the code less readable and less maintainable.\
+\
+ Receive an interface as a property get or set\
+\
+In this scenario, we add a property get and set for each dependency we\'92d like to inject. We then use this dependency when we need it in our code under test.\
+\
+\pard\pardeftab720
+
+\b \cf3 When you should use property injection
+\b0 \
+\pard\pardeftab720
+\cf0 \
+Use this technique when you want to signify that a dependency of the class under test is optional, or if the dependency has a default instance created that doesn\'92t create any problems during the test.\
+\
+\pard\pardeftab720
+
+\b \cf0 Interaction Testing using Mock Objects
+\b0 \
+\
+How to test whether an object calls other objects correctly? The object being called may not return any result or save any state, but it has complex logic that needs to result in correct calls to other objects. Using stubs is not appropriate here, because there\'92s no externalized API that we can use to check if something has changed in the object under test. How do you test that your object interacts with other objects correctly? That\'92s where mock objects come in.\
+\
+What is interaction testing? How is it different from state-based testing that we have done so far?\
+\
+Interaction testing is testing how an object sends input to or receives input from other objects - how that object interacts with other objects. You can also think of interaction testing as being \'93action-driven testing\'94 and state-based testing as being \'93result-driven testing\'94. Action driven means that you test a particular action on object takes (such as sending a message to another object). Result-driven means you test that some end result is now true (that a property value has changed for example). It\'92s usually preferable to check the end results of objects, not their particular actions. But sometimes interactions between objects are the end result. That\'92s when we need to test the interaction itself (where the end result of calling a method on the object under test is that the object then calls another object such as a web service).\
+\
+Sometimes state-based testing is the best way to go because interaction testing is too difficult.\
+\
+A mock object is a fake object in the system that decides whether the unit test has passed or failed. It does so by verifying whether the object under test interacted as expected with the fake object. There\'92s usually no more than one mock per test.\
+\
+
+\b The Difference Between Mocks and Stubs\
+\
+\pard\pardeftab720
+
+\b0 \cf0 When using a stub, the assert is performed on the class under test. The stub aids in making sure the test runs smoothly. Stubs cannot fail tests and mocks can.\
+\
+Stubs replace an object so that we can test another object without problems. The easiest way to tell we\'92re dealing with a stub is to notice that the stub can never fail the test. The asserts the test uses are always agains the class under test.\
+\
+On the other hand, the test will use a mock object to verify whether the test failed or not. In this case the assert is performed on the mock. Again, the mock object is the object we use to see if the test failed or not.\
+\
+The class under test communicates with the mock object and all communication is recorded in the mock. The test uses the mock object to verify that the test passes.\
+\
+Creating and using a mock object is much like using a stub, except that a mock will do a little more than a stub: it will save the history of communication, which will later be verified.\
+\
+Example 4.3 Mock is used for a Webservice. Is it not true that Mock should be used only for things that we can control?\
+\
+In your tests you might find that you need to replace more than one object. We\'92ll look at combining mocks and stubs next.\
+\
+\pard\pardeftab720
+
+\b \cf0 Using a Mock and a Stub Together\
+\
+\pard\pardeftab720
+
+\b0 \cf0 LogAnalyzer not only needs to talk to a web service but if the web service throws an error, LogAnalyzer has to log the error to a different external dependency, sending it by email to an administrator.\
+\
+Notice that there\'92s logic here that only applies to interacting with external objects; there\'92s no end result returned to the caller. How do you test that LogAnalyzer calls the email service correctly when the web service throws an exception?\
+\
+We need to answer:\
+\
+How can we replace the web service?\
+How can we simulate an exception from the web service so that we can test the call to the email service?\
+How will we know that the email service was called correctly or at all?\
+\
+We can deal with the first two questions by using a stub for the web service. To solve the third problem, we can use a mock object for the email service.\
+\
+A fake is a generic term that can be used to describe a stub or a mock object because they both look like the real object. Whether a fake is a stub or a mock depends on how it\'92s used in the current test. If it\'92s used to check an interaction (asserted against), it\'92s a mock object. Otherwise, it\'92s a stub.\
+\
+In our test we\'92ll have two fakes. One will be the email service mock which we\'92ll use to verify that the correct parameters were sent to the email service. The other will be a stub that we\'92ll use to simulate an exception thrown from the web service. It\'92s a stub because we won\'92t be using the web service fake to verify the test result, only to make sure the test runs correctly. The email service is a mock because we\'92ll assert against it that it was called correctly. \
+\
+The whole test will be about how LogAnalyzer interacts with other objects.\
+\
+\pard\pardeftab720
+
+\b \cf0 One Mock Per Test\
+\
+\pard\pardeftab720
+
+\b0 \cf0 In a test where you test only one thing (which is a good practice) there should be no more than one mock object. All other fake objects will act as stubs. Having more than one mock per test usually means you\'92re testing more than one thing, and this can lead to complicated or brittle tests.\
+\
+If you follow this guideline, when you get to more complicated tests, you can always ask yourself, \'93Which one is my mock object?\'94 Once you\'92ve identified it, you can leave the others as stubs and not worry about assertions against them.\
+\
+Next, we\'92ll deal with a more complex scenario: using a stub to return a stub or a mock that will be used by the application.\
+\
+\pard\pardeftab720
+
+\b \cf0 Stub Chains : Stubs that Produce Mocks or Other Stubs\
+\
+\pard\pardeftab720
+
+\b0 \cf0 Sometimes we want to have a fake component return another fake component, producing our own little chain of stubs in our tests, so that we can end up collecting some data during our test. A stub leads to a mock object that records data.\
+\
+The design of many systems under test allows for complex object chains to be created. \
+\
+\pard\pardeftab720
+
+\b \cf0 Summary
+\b0 \
+\
+A mock object is like a stub, but it also helps you to assert something in your test. A stub, on the other hand, can never fail your test and is strictly there to simulate various situations. \
+\
+Combining stubs and mocks in the same test is a powerful technique, but you must take care to have no more than one mock in each test. The rest of the fake objects should be stubs that can\'92t break your test. Following this practice can lead to more maintainable tests that break less often when internal code changes.\
+\
+Stubs that produce other stubs or mocks can be a powerful way to inject fake dependencies into code that uses other objects to get its data. It\'92s a great technique to use with factory classes and methods. You can even have stubs that return other stubs that return other stubs and so on but at some point you\'92ll wonder if it\'92s all worth it. \
+\
+One of the most common problems encountered by people who write tests is using mocks too much in their tests. You should rarely verify calls to fake objects that are used both as mocks and as stubs in the same test. (This is quite a narrow corner case. You verify a function was called. Because it\'92s still a function, it must return some value, and because you\'92re faking that method, you\'92ll need to tell the test what that value will be. This value is the part in the test that\'92s a stub, because it has nothing to do with asserting whether the test passes or fails.) If you see \'93verify\'94 and \'93stub\'94 on the same variable in the same test, you most likely are over-specifying your test, which will make it more brittle.\
+\
+You can have multiple stubs in a test, because a class may have multiple dependencies. Just make sure your test remains readable. Structure your code nicely for readability.\
+\
+
+\b Isolation Frameworks
+\b0 \
+\
+An isolation framework is a set of programmable APIs that make creating mock and stub objects much easier. Isolation frameworks save the developer from the need to write repetitive code to test or simulate object interactions.\
+\
+
+\b Expectations on Mocks and Stubs
+\b0 \
+\
+An expectation on a fake object is an ad hoc rule that\'92s set on the object.\
+\
+Expectations on Mocks - The rule will usually tell the object that a specific method call on that object is expected to happen later. It may also define how many times it should be called, whether or not the object should throw an exception when that call arrives, or perhaps that the call to this method should never be expected. Expectations are usually set on mock objects during the recording phase of the object and they\'92re verified at the end of the test where the mock object lives.\
+\
+Expectations on stubs - This wording may feel unintuitive at first but the rule can tell the stub what the value to return based on expected method calls, whether to throw exceptions and so on. These expectations aren\'92t to be verified at the end of the test. They\'92re there so that you can run the test and simulate some alternative reality for your code under test.\
+\
+
+\b Strict vs Non-strict Mocks
+\b0 \
+\
+A strict mock object can only be called by methods that were explicitly set via expectations. Any call that differs either by parameter values defined or by the method name will usually be handled by throwing an exception. The test will fail on the first unexpected method call to a strict mock object. I say usually because whether or not the mock throws an exception depends on the implementation of the isolation framework. \
+\
+This means that a strict mock can fail in two ways: when an unexpected method is called on it, or when expected methods aren\'92t called on it.\
+\
+Non strict mocks make for less brittle tests. A non strict mock object will allow any call to be made to it, even if it was not expected. As long as the call doesn\'92t require a return value, it will do what\'92s necessary for everything in the test to work out.\
+\
+A non strict mock can only fail a test if an expected method was not called. \
+\
+
+\b Arrange Act Assert Syntax for Isolation
+\b0 \
+\
+The record and replay model for setting expectations on stubs and mocks has been cumbersome for some people. It also makes tests less readable if you have lots of stubs and expectations in a single test.\
+\
+A simplified and concise syntax for setting expectations is based on the way we structure our unit tests. We arrange objects, act on them and assert that something is true or false (arrange-act-assert or AAA). It would be nice if we could use isolation frameworks similarly - to arrange mocks and stubs, set their default behavior and only at the end of the test, verify whether a call to the mock object took place. \
+\
+
+\b Traps to Avoid when using Isolation Frameworks
+\b0 \
+\
+Some examples are over using an isolation framework when a manual mock object would suffice, making tests unreadable because of overusing mocks in a test, or not separating tests well enough.\
+\
+Here\'92s a simple list of things to watch out for:\
+\
+Unreadable test code\
+Verifying the wrong things\
+Having more than one mock per test\
+Over specifying the tests\
+\
+
+\b Unreadable Test Code
+\b0 \
+\
+Having many mocks or many expectations in a single test can ruin the readability of the test so it\'92s hard to maintain or even to understand what\'92s being tested.\
+\
+If you find that your test becomes unreadable or hard to follow, consider removing some mocks or some mock expectations or separating the test into several smaller tests that are more readable.\
+\
+
+\b Verifying the wrong things
+\b0 \
+\
+Mock objects allow us to verify that methods were called on our interfaces, but that doesn\'92t necessarily mean that we\'92re testing the right thing. Testing that an object subscribed to an event doesn\'92t tell us anything about the functionality of that object. Testing that when the event is raised something meaningful happens is a better way to test that object.\
+\
+
+\b Having more than one mock per test
+\b0 \
+\
+It\'92s considered good practice to only test one thing per test. Testing more than one thing can lead to confusion and problems maintaining the test. Having two mocks in a test is the same as testing several things. If you can\'92t name your test because it does too many things, it\'92s time to separate it into more than one test.\
+\
+
+\b Over specifying the tests
+\b0 \
+\
+If your test has too many expectations, you may create a test that breaks down with even the smallest of code changes, even though the overall functionality still works. Consider this a more technical way of not verifying the right things. Testing interactions is a double-edged sword: test it too much and you start to lose sight of the big picture - the overall functionality; test it too little, and you\'92ll miss the important interactions between objects.\
+\
+Here are some ways to balance this effect:\
+\
+Use non strict mocks when you can\
+The test will break less often because of unexpected method calls. This helps when the private methods in the production code keep changing.\
+\
+
+\b Use stubs instead of mocks when you can
+\b0 \
+\
+You only need to test one scenario at a time. The more mocks you have, the more verifications will take place at the end of the test, but only one of them will usually be the important one. The rest will be noise against the current test scenario.\
+\
+
+\b Avoid using stubs as mocks
+\b0 \
+\
+Use a stub only for faking return values into the program under test, or to throw exceptions. Don\'92t verify that methods were called on stubs. Use a mock only for verifying that some method was called on it, but don\'92t use it to return values into your program under test. If you can\'92t avoid this situation, you should probably be using a stub and testing something other than what the mock object receives.\
+\
+
+\b Don\'92t repeat logic in your tests
+\b0 \
+\
+If you\'92re asserting that some calculation is correct in your code, make sure your test doesn\'92t repeat the calculation in the test code, or the bug might be duplicated and the test will magically pass.\
+\
+
+\b Don\'92t use magic values
+\b0 \
+\
+Use hardcoded, known return values to assert against production code and don\'92t create expected values dynamically. That would significantly increase the chances for an unreadable test or a bug in the test.\
+\
+Over specification is a common form of test abuse. Make sure you keep an eye on this by doing frequent test reviews with your peers.\
+\
+
+\b Summary
+\b0 \
+\
+Lean toward state-based testing as opposed to interaction testing whenever you can. Your tests assume as little as possible about internal implementation details. Mocks should be used only when there\'92s no other way to test the implementation, because they eventually lead to tests that are harder to maintain if you\'92re not careful.\
+\
+Over specified tests lead to brittle tests. Change your test to test a different result that proves your point but is easier to test.\
+\
+
+\b The Pillars of Good Tests
+\b0 \
+\
+The good tests should have three properties: Trustworthiness, maintainability, readability. \
+\
+Developers will want to run trustworthy tests and they\'92ll accept the test results with confidence. Trustworthy tests don\'92t have bugs and they test the right things.\
+Developers will simply stop maintaining and fixing tests that take too long to change.\
+Readability means not just being able to read a test but also figuring out the problem if the test seems to be wrong. Without readability the other two pillars fall pretty quickly. Maintaining tests becomes harder, and you can\'92t trust them anymore.\
+\
+
+\b Writing trustworthy tests
+\b0 \
+\
+There are several indications that a test is trustworthy. If it passes, you don\'92t say, \'93I\'92ll step through the code in the debugger to make sure\'94. You trust that it passes and that the code it tests works for that specific scenario. If the test fails, you don\'92t say, \'93Oh, it\'92s supposed to fail\'94, or \'93That doesn\'92t mean the code isn\'92t working\'94. You believe that there\'92s a problem in your code and not in your test. In short, a trustworthy test is one that makes you fee you know what\'92s going on and that you can do something about it.\
+\
+We will now see guidelines and techniques to help you do the following:\
+\
+Decide when to remove or change tests\
+Avoid test logic\
+Test only one thing\
+Make tests easy to run\
+Assure code coverage\
+\
+Tests that follow these guidelines can be trusted and will continue to find errors in code.\
+\
+Deciding when to remove or change tests\
+\
+Once you have tests in place, you should generally not change or remove them. They are there as your safety net, to let you know if anything breaks when you change your code. \
+\
+The main reason for removing a test is when it fails. A test can \'93suddenly\'94 fail for several reasons:\
+Production bugs - There\'92s a bug in the production code under test\
+Test bugs - There\'92s a bug in the test.\
+Semantics or API changes - The semantics of the code under test changed, but not the functionality.\
+Conflicting or invalid tests - The production code was changed to reflect a conflicting requirement.\
+\
+There are also reasons for changing or removing tests when nothing is wrong with the tests or code:\
+\
+To rename or refactor the test\
+To eliminate duplicate tests.\
+\
+
+\b Production bugs
+\b0 \
+\
+A production bug occurs when you change the production code and an existing test breaks. If indeed this is a bug in the code under test your test is fine and you shouldn\'92t need to touch the test. This is the best and most desired outcome of having tests.\
+Because the occurrence of production bugs is one of the main reasons we have unit tests in the first place, the only thing left to do is to fix the bug in the production code. Don\'92t touch the test.\
+\
+
+\b Test bugs\
+\pard\pardeftab720
+
+\b0 \cf0 \
+If there\'92s a bug in the test, you need to change the test. Bugs in tests are hard to detect because the test is assumed to be correct. There are several stages developers go through when a test bug is encountered:\
+Denial - the developer will keep looking for a problem in the code itself, changing it, causing all the other tests to start failing. The developer introduces new bugs into production code while hunting for the bug that\'92s actually in the test.\
+\
+Amusement - The developer will call another developer and they will hunt for the non-existent bug together\
+\
+Debugging - The developer will patiently debug the test and discover that there\'92s a problem in the test. This can take from an hour to a few days.\
+\
+Acceptance - The developer will eventually realize where the bug is and will slap himself on the forehead.\
+\
+When you finally find the bug, it\'92s important to make sure that the bug gets fixed, and that the test doesn\'92t magically pass by testing the wrong thing. You need to do the following:\
+\
+1. Fix the bug in your test\
+2. Make sure the test fails when it should\
+3. Make sure the test passes when it should\
+\
+The first step, fixing the test is straightforward. The next two steps make sure you\'92re still testing the correct thing and that you test can still be trusted.\
+\
+Once you have fixed your test, change the production code under test so that that it manifests the bug that the test is supposed to catch. Then run the test. If the test fails, that means it\'92s half working. The other half will be completed in step 3. If the test doesn\'92t fail you\'92re most likely testing the wrong thing. \
+\
+Once you see the test fail, change your production code so that the bug no longer exists. The test should now pass. If it doesn\'92t, you either still have a bug in your test or you\'92re testing the wrong thing. You want to see the test fail and then pass again after you fix it so that you can be sure that it fails and passes when it should.\
+\
+\pard\pardeftab720
+
+\b \cf0 Semantics or API changes
+\b0 \
+\
+A test can fail when the production code under test changes so that an object being tested now needs to be used differently, even though it may still have the same functionality.\
+\
+
+\b Conflicting or invalid tests
+\b0 \
+\
+A conflict problem arises when the production code introduces a new feature that\'92s in direct conflict with a test. This means that instead of the test discovering a bug, it discovers conflicting requirements.\
+\
+This either-or scenario where only one of two tests can pass serves as a warning that these may be conflicting tests. In this case, you first need to make sure that the tests are in conflict. Once that\'92s confirmed you need to decide which requirement to keep. You should then remove the invalid requirement and its tests.\
+\
+Renaming or refactoring tests\
+An unreadable test hinders understanding of any problem it finds. Change the test code to make it more maintainable. \
+\
+
+\b Eliminating duplicate tests
+\b0 \
+\
+ In big projects it\'92s common to come across multiple tests written by different developers for the same functionality. \
+The more good tests you have the more certain you are to catch bugs.\
+You can read the tests and see different ways or semantics of testing the same thing.\
+Some tests may be more expressive that others so more tests may improve the chances of test readability.\
+Tests may have little differences and could be testing the same things slightly differently. They may make for a larger and better picture of the object being tested.\
+\
+It may be harder to maintain.\
+You need to review all of them for correctness.\
+Multiple tests may break when a single thing doesn\'92t work.\
+Similar tests may be named differently or the tests can be spread across different classes.\
+\
+
+\b Avoiding logic in tests
+\b0 \
+\
+The chances of having bugs in your tests increase exponentially as you include more and more logic in them. If you have any of the following inside a test method you test contains logic that should not be there:\
+Switch, if, else and other statements. For, each, or while loops\
+\
+A test that contains logic is usually testing more than one thing at a time which isn\'92t recommended because the test is less readable and fragile. But test logic also adds complexity that may contain a hidden bug.\
+Tests should as a general rule, be a series of method calls with no control flows, not even a rescue clause and with assert calls. Anything more complex causes the following problems:\
+\
+The test is harder to read and understand.\
+The test is hard to re-create.\
+The test is more likely to have a bug or to test the wrong thing.\
+Naming the test may be harder because it does multiple things.\
+\
+Generally monster tests replace original simpler tests and that makes it harder to find bug in the production code.\
+\
+
+\b Testing only one thing
+\b0 \
+\
+If your test contains more than a single assert, it may be testing more than one thing. That doesn\'92t sound so bad until you name your test or consider what happens if the first assert fails.\
+\
+Naming a test may seem like a simple task but if you\'92re testing more than one thing, giving the test a good name that indicates what is being tested becomes almost impossible. When you test just one thing naming the test is easy.\
+\
+If the first assert fails it will throw an exception and the subsequent asserts will never run. Failures must clearly indicate the reason for failure.\
+\
+Making tests easy to run\
+\
+Refactor tests so that they\'92re easy to run and provide consistent results. \
+\
+
+\b Assuring code coverage
+\b0 \
+\
+Use tools to make sure you have good coverage. During test reviews you can also do a manual check, which is a great for ad hoc testing of a test: try commenting out a line or a constraint check. If all tests still pass, you might be missing some tests or the current tests may not be testing the right thing.\
+\
+When you add a new test that was missing, check whether you\'92ve added the correct test with these steps:\
+\
+1. Comment out the production code you think isn\'92t being covered.\
+2. Run all the tests.\
+3. If all the tests pass, you\'92re missing a test or are testing the wrong thing. Otherwise there would have been a test somewhere that was expecting that line to be called or some resulting consequence of that line of code to be true and that missing test would now fail.\
+4. Once you\'92ve found a missing test, you\'92ll need to add it. Keep the code commented out and write a new test that fails, proving that the code you\'92ve commented is missing.\
+5. Uncomment the code you commented before.\
+6. The test you wrote should now pass. You\'92ve detected and added a missing test.\
+7. If the test still fails, it means the test may have a bug or is testing the wrong thing. Modify the test until it passes. Now you\'92ll want to see that the test is OK, making sure it fails when it should and doesn\'92t just pass when it should. To make sure the test fails when it should reintroduce the bug into your code (commenting out the line of production code) and see if the test fails.\
+\
+As an added confidence booster you might also replace various parameters or internal variables in your method under test with constants (making a boolean always true to see what happens, for example).\
+\
+
+\b Writing Maintainable Tests
+\b0 \
+\
+Maintainability is one of the core issues most developers face when writing unit tests. Eventually the tests seem to become harder and harder to maintain and understand and every little change to the system seems to break one test or another even if bugs don\'92t exist. With all pieces of code time adds a layer of indirection between what you think the code does and what it really does.\
+\
+Some techniques in writing maintainable tests are testing only against public contracts, removing duplication in tests and enforcing test isolation.\
+\
+
+\b Testing private or protected methods
+\b0 \
+\
+Encapsulation hides implementation details so that the implementation can change without changing functionality. It could also be for security related or IP-related reasons (obfuscation, for example).\
+\
+When you test a private method you\'92re testing the internal implementation of the system. This test will fail when the internals change even though the overall functionality of the system remains the same. \
+\
+For testing purposes, the public contract (the overall functionality) is all that you need to care about. With test-driven development we write tests against methods that are public and those public methods are later refactored into calling smaller private methods. All the while the tests against the public methods continue to pass.\
+\
+
+\b Making methods public
+\b0 \
+\
+If the private method has a known behavior or contract against the calling code you can make it public. \
+\
+
+\b Extracting methods to new classes
+\b0 \
+\
+If your method contains a lot of logic that can stand on its own or it uses state in the class that\'92s only relevant to the method in question it may be a good idea to extract the method into a new class with a specific role in the system. You can then test that class separately.\
+\
+
+\b Making methods class method
+\b0 \
+\
+If your method doesn\'92t use any of its class\'92s variables, you could refactor the method to make it a class method. It means that it is now a utility method that has a known public contract specified by its name.\
+\
+
+\b Removing Duplication
+\b0 \
+\
+Duplication means more code to change when one aspect we test against changes. \
+\
+You can remove duplication using a Factory helper method. You can also remove duplication using setup method.\
+\
+
+\b Using setup Methods in a Maintainable Manner
+\b0 \
+\
+The setup method used for thing it was not meant for can make tests less readable and maintainable.\
+\
+Setup method must be used only to initialize things.\
+Setup methods cannot have parameters or return values.\
+Setup methods should only contain code that applies to all the tests in the current test class or the method will be harder to read and understand.\
+\
+Developers abuse setup methods in several ways:\
+Initializing objects that are only used in some of the tests in the class.\
+Having setup code that\'92s long and hard to understand.\
+Setting up mocks and face objects\
+\
+Initializing objects that are only used by some of the tests\
+\
+It becomes difficult to read and maintain the tests because the setup method quickly becomes loaded with objects that are specific only to some of the tests. \
+\
+To read the tests for the first time and understand why they break you need to do the following:\
+\
+1. Go through the setup method to understand what is being initialized.\
+2. Assume that objects in the setup method are used in all tests.\
+3. Find out later you were wrong and read the tests again more carefully to see which test uses the objects that may be causing the problems.\
+4. Dive deeper into the test code for no good reason, taking more time and effort to understand what the code does.\
+\
+Always consider the readers of your test when writing the tests. Imagine this is the first time they read them. Make sure it is easy to read.\
+\
+Having setup code that\'92s long and hard to understand\
+\
+Refactor calls to initialize specific things into helper methods that are called from the setup method.\
+\
+Setting up mocks and fakes in the setup method\
+\
+It\'92s ok to create mocks and fake objects if they are used in all the tests in the class. I prefer to have each test create its own mocks and stubs by calling helper methods within the test, so that the reader of the test knows exactly what\'92s going on without needing to jump from test to setup to understand the full picture.\
+\
+
+\b Enforcing test isolation
+\b0 \
+\
+The lack of test isolation is the biggest single cause of test blockage. The basic concept is that a test should always run in its own little world, isolated from even the knowledge that other tests out there may do similar or different things. \
+\
+When tests aren\'92t isolated well, they can step on each other\'92s toes to make life miserable. We don\'92t bother looking for problems in the tests, so when there\'92s a problem with the tests, it can take a lot of time to find it.\
+\
+There are several test \'93smells\'94 that can hint at broken test isolation:\
+\
+Constrained test order - Tests expecting to be run in a specific order or expecting information from other test results\
+Hidden test call - Tests calling other tests\
+Shared state corruption - Tests sharing in-memory state without rolling back\
+External state corruption - Integration tests with shared resources and no rollback\
+\
+\pard\pardeftab720
+
+\i \cf0 Constrained test order
+\i0 \
+\
+This problem arises when tests are coded to expect a specific state in memory, in an external resource, or in the current test class - a state that was created by running other tests in the same class before the current test. \
+\
+A myriad of problems can occur when tests don\'92t enforce isolation.\
+\
+A test may suddenly start breaking when a new version of the test framework is introduced that runs the tests in a different order.\
+Running a subset of the tests may produce different results than running all the tests or a different subset of the tests.\
+Maintaining the tests is more cumbersome, because you need to worry about how other tests relate to particular tests and how each one affects state.\
+Your tests may fail or pass for the wrong reasons; for example, a different test may have failed or passed before it, leaving the resources in an unknown state.\
+Removing or changing some tests may affect the outcomes of other tests.\
+It\'92s difficult to name your tests appropriately because they test more than a single thing.\
+\
+There a couple of common patterns that lead to poor test isolation:\
+Flow testing - A developer writes tests that must run in a specific order so that they can test flow execution, a big use case composed of many actions or full integration test where each test is one step in that full test.\
+Laziness in cleanup - A developer is lazy and doesn\'92t return any state her test may have changed back to its original form and other developers write tests that depend on this symptom knowingly or unknowingly.\
+\
+These problems can be solved:\
+\
+Flow testing - Remove flow-related tests in unit test and use integration testing.\
+Laziness in cleanup - Cleanup your database, filesystem, memory-based objects etc after testing.\
+\
+
+\i Hidden test call
+\i0 \
+\
+In this anti-pattern, tests contain one or more direct calls to other tests in the same class or other test classes which causes tests to depend on one another. \
+\
+This type of dependency can cause several problems:\
+\
+Running a subset of the tests may produce different results than running all the tests or a different subset of the tests.\
+Maintaining the tests is cumbersome because you need to worry about how other tests relate to particular tests and how and when they call each other.\
+Tests may fail or pass for the wrong reasons. For example, a different test may have failed thus failing your test or not calling it at all. Or a different test may have left some shared variables in an unknown state.\
+Changing some tests may affect the outcome of other tests.\
+It\'92s difficult to clearly name test that call other tests.\
+\
+Here are a few causes for this problem:\
+Flow testing\
+Trying to remove duplication - A developer tries to remove duplication in the tests by calling other tests.\
+Laziness in separating the tests - Doesn\'92t take the time to create a separate test and refactor the code appropriately, instead taking a shortcut and calling a different test.\
+\
+\pard\pardeftab720
+
+\b \cf0 Avoiding multiple asserts
+\b0 \
+\
+Once an assert clause throws an exception, no other line executes in the test method. There are several ways to achieve the same goal:\
+Create a separate test for each assert\
+Use parametrized tests\
+Wrap the assert call with rescue clause\
+\
+
+\b Refactoring into multiple tests
+\b0 \
+\
+Multiple asserts are really multiple tests without the benefit of test isolation; a failing test causes the other asserts not to execute. Instead, we can create separate test methods with meaningful names that represent each test case. \
+\
+
+\b Using parametrized tests
+\b0 \
+\
+Parametrize the method and pass different data sets to test them individually. This gives us a declarative way of creating a single test with different inputs. \
+The best thing about this is that if one of the test fails the other tests are still executed by the test runner so we see the full picture of pass/fail states in all tests.\
+\
+Wrapping with rescue clause\
+ Parametrized tests are better than this approach.\
+\
+Avoiding testing multiple aspects of the same object\
+\
+A test can have multiple asserts that is not acting as multiple tests in one test but to check multiple aspects of the same state. If even one aspect fails we need to know about it. \
+\
+
+\b Overriding to_s
+\b0 \
+\
+Override to_s to get meaningful error messages. The test output will be clear and we can understand that the test fails and makes it easy to maintain. \
+\
+Another way tests can become hard to maintain is when we make them too fragile by over specification.\
+\
+
+\b Avoiding over specification in tests
+\b0 \
+\
+An over specified test is one that contains assumptions about how a specific unit under test should implement its behavior, instead of only checking that the end behavior is correct.\
+\
+Here are some ways unit tests are often over specified:\
+\
+A test specifies purely internal behavior for an object under test.\
+A test uses mocks when using stubs would be enough.\
+A test assumes specific order or exact string matches when it isn\'92t required.\
+\
+
+\b Specifying purely internal behavior
+\b0 \
+\
+A test that tests internal state and no outside functionality. This test is over specified because it only test the internal state of the object. Because this state is internal, it could change later on.\
+\
+Unit tests should be testing the public contract and public functionality of an object.\
+\
+
+\b Using mocks instead of stubs
+\b0 \
+\
+This is a common mistake. The test should let the method under test run its own internal algorithms and test the results. By doing that we make the test less brittle. The important thing is the test must assert the end result and it doesn\'92t care about the internal algorithm. \
+\
+We also use a stub that doesn\'92t care how many times it gets called and it always returns the same result. The test becomes less fragile and tests the right thing.\
+\
+
+\b Assuming an order or exact match when it\'92s not needed
+\b0 \
+\
+Ask yourself \'93Can I use string contains rather than string equals?\'94. The same goes for collections. It\'92s much better to make sure it contains an expected item than to assert that the item is in a specific place in a collection (unless that\'92s specifically what is expected).\
+\
+
+\b Writing readable tests
+\b0 \
+\
+Naming unit tests\
+The test name has three parts:\
+\
+The name of the method being tested - This is essential so that you can easily see where the tested logic resides.\
+\
+The scenario under which it\'92s being tested - This gives us the \'93with\'94 part of the name: \'93When I call method X 
+\i with a null value, 
+\i0 then it should do Y\'94. \
+\
+The expected behavior when the scenario is invoked - This part specifies in plain English what the method should do or return or how it should behave, based on the current scenario (then it should do Y).\
+\
+Method-under-test_scenario_behavior\
+\
+
+\b Naming variables
+\b0 \
+\
+Tests also serve as a form of API documentation. Good naming of variables helps people reading our tests understand what we\'92re trying to 
+\i prove 
+\i0 as quickly as possible (as opposed to understanding what we\'92re trying to 
+\i accomplish
+\i0  when writing production code).\
+\
+
+\b Asserting yourself with meaning
+\b0 \
+\
+Writing a good assert message is like writing a good exception message. There are several things to remember when writing a message for an assert clause:\
+\
+Don\'92t repeat what the test framework outputs to the console.\
+Don\'92t repeat what the test name explains.\
+If you don\'92t have anything good to say, don\'92t say anything.\
+Write what should have happened or what failed to happen, and possibly mention when it should have happened.\
+\
+
+\b Separating asserts from actions
+\b0 \
+\
+Avoid writing the assert line and the method call in the same statement.\
+\
+Setting up and tearing down\
+\
+If you have mocks and stubs being set up in a setup method, that means they don\'92t get set up in the actual test. That means anyone reading your test may not even realize that there are mock objects in use or what the expectations are from them in the test.\
+\
+It\'92s much more readable to initialize mock objects directly in the test itself with all their expectations. If you\'92re worried about readability you can refactor the creation of the mocks into a helper method, which each test calls. That way anyone reading the test will know exactly what is being setup instead of having to look in multiple places.\
+\
+
+\b Summary
+\b0 \
+\
+Tests grow and change with the system under tests.\
+\
+\
+}

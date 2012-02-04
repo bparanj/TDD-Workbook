@@ -1,0 +1,135 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 Fundamental shift for many programmers.\
+Hiring someone who has the knowledge is the most time-efficient way of learning any new practice or technology.\
+I hope that by writing down a lot of these mistakes and suggesting ways to avoid them, I can save you lot of grief on your project. \
+\
+Some developers test the whole system as a single entity. Most developers prefer to test their software unit by unit. The units may be larger-grained components or they may be individual classes, methods or functions. The key thing that distinguishes these tests from the ones that the testers write is that the units being tested are a consequence of the design of the software, rather than being a direct translation of the requirements.\
+\
+A small percentage of the unit tests may correspond directly to the business logic described in the requirements and the customer tests, but a large majority tests the code that surrounds the business logic.\
+\
+The pitfalls associated with record-and-playback automated testing are: behavior sensitivity, interface sensitivity, data sensitivity and context sensitivity.\
+\
+
+\b Behavior Sensitivity
+\b0 \
+\
+If the behavior of the system is changed (due to requirements change), any tests that exercise the modified functionality will most likely fail when replayed.\
+\
+
+\b Interface Sensitivity
+\b0 \
+\
+Testing the business logic inside the SUT via the user interface is a bad idea. Even minor changes to the interface can cause tests to fail.\
+\
+
+\b Data Sensitivity
+\b0 \
+\
+All tests assume some starting point, called the test fixture; this test context is sometimes called the \'93pre-conditions\'94 or \'93before picture\'94 of the test. Mostly this test fixture is defined in terms of data that is already in the system. If the data changes, the tests may fail.\
+\
+
+\b Context Sensitivity
+\b0 \
+\
+The behavior of the system may be affected by the state of things outside the system. These external factors could include the states of the devices, other applications, system clock etc. Any tests that are affected by this context will be difficult to repeat deterministically without getting control over the context.\
+\
+
+\b Overcoming the Four Sensitivities
+\b0 \
+\
+The xUnit family of test automation frameworks gives us a large degree of control; we just have to learn how to use it effectively.\
+\
+
+\b\fs32 Uses of Automated Tests
+\b0\fs28 \
+\
+
+\b Executable Specification
+\b0 \
+\
+TDD is more about specification of the behavior of the software yet to be written than it is about regression testing. The effectiveness of TDD comes from the way it lets us separate our thinking about software into two separate phases: what it should do, and how it should do it. We do \'93continuous design\'94. \
+\
+Taking this to the extreme results in \'93emergent design\'94, where very little design is done upfront. But development does not have to be done that way. We can combine high-level design (or architecture) upfront with detailed design on a feature-by-feature basis. Either way, it can be useful to delay thinking about how to achieve the behavior of a specific class or method for a few minutes while we capture what that behavior should be in the form of an executable specification. We focus on one thing at a time.\
+\
+Once we have finished writing the tests and verifying that they fail as expected, we can switch our perspective and focus on making them pass. The tests are now acting as a progress measurement. If we implement the functionality incrementally, we can see each test pass one by one as we write more code. As we work, we keep running all of the previously written tests as regression tests to make sure our changes have not had any unexpected side effects. This is where the true value of automated unit testing lies: in its ability to \'91pin down\'92 the functionality of the SUT so that the functionality is not changed accidentally. \
+\
+
+\b\fs32 Refactoring
+\b0\fs28 \
+\
+Refactoring is a highly disciplined approach to changing the design without changing the behavior of the code. It goes hand-in-hand with automated testing because it is very difficult to do refactoring without having the safety net of automated tests to prove that you have not broken anything during redesign.\
+\
+
+\b Refactoring a Test
+\b0 \
+\
+Why Refactor Tests?\
+\
+Tests can quickly become a bottleneck in an agile development process. There is a difference between simple, easily understood tests and complex, obtuse, hard-to-maintain tests. \
+\
+
+\b Minimal Test Strategy
+\b0 \
+\
+This consists of five parts:\
+\
+Development Process: How the process we use to develop the code affects our tests.\
+Customer Tests: The first tests written to define \'93what done looks like\'94\
+Unit Tests: The tests that help our design emerge incrementally and ensure that all our code is tested.\
+Design for Testability: The patterns that make our design easier to test, thereby reducing the cost of test automation.\
+Test Organization: How we can organize our Test Methods and Testcase classes.\
+\
+
+\b Development Process
+\b0 \
+\
+Writing test first gives us an agreed-upon definition of what success looks like. We do story test-driven development by first automating a suite of customer tests that verify the functionality provided by the application. To ensure that all of our software is tested, we augment these tests with a suite of unit tests that verify all code paths or at a minimum all the code paths that are not covered by the customer tests. We can use code coverage tools to discover which code is not being exercised and then retrofit unit tests to accommodate the untested code.\
+\
+We will find fewer missing unit tests when we practice TDD. There is still value in running the code coverage tools with TDD. By organizing the unit tests and customer tests into separate test suites we can run them separately.\
+\
+The unit tests should pass before we check-in. This is what we mean by \'93keep the bar green\'94.  Although many of the customer tests will fail until the corresponding functionality is built, it is nevertheless useful to run all the passing customer tests as part of the integration build phase - but only if this step does not slow the build down too much. In that case, we can leave them out of the check-in build and simply run them every night.\
+\
+Keep the dependency on the database to a minimum in the unit tests for the business logic.\
+\
+
+\b Customer Tests
+\b0 \
+\
+The customer tests should capture the essence of what the customer wants the system to do. We can also use well-written tests as documentation to identify how the system is supposed to work. If our application interacts with other applications, we can isolate it from any applications that we do not have in our development environment by using Test Double for the objects that act as interfaces to the other applications.\
+\
+If the tests run slowly because of dependencies we can replace them with functionally equivalent fake objects to speed up our tests. \
+\
+
+\b Unit Tests
+\b0 \
+\
+Each unit test should be fully automated test that does a round-trip test against a class through its public interface. We can strive for defect localization by ensuring that each test is a single condition test that exercises a single method or object in a single scenario. We should also write our test so that each part of the four phases of a test is easily recognizable which enables us to use the tests as documentation. If several tests are expected to result in the same outcome, we can factor out the verification logic into an outcome-describing verification method (custom assertion) that the reader easily recognize.\
+\
+If we have untested code because we cannot find a way to execute the path through the code, we can use a test stub to gain control of the indirect inputs of the SUT.\
+\
+If there are untested requirements because not all the system\'92s behavior is observable via its public interface, we can use a mock object to intercept and verify the indirect outputs of the SUT.\
+\
+
+\b Design for Testability
+\b0 \
+\
+Automated testing is simpler if we adopt a Layered Architecture. At a minimum we should separate our business logic from the database and the user interface, thereby enabling us to test it easily using either Subcutaneous Test or Service Layer Tests (see Layer Test). We can minimize any dependence on a database by doing most of our testing using in-memory objects. This also helps us to avoid slow tests by reducing disk I/O. \
+\
+Keep the UI logic out of the visual classes. It allows us to write unit tests for the UI logic without having to instantiate UI objects or framework they depend on.\
+\
+If we build components that will be reused by other projects, we can augment the unit tests with component tests that verify the behavior of each component in isolation. We may need to use Test Doubles to replace any components on which our component depends. We can use dependency injection to install the Test Doubles at run time.\
+\
+
+\b Test Organization
+\b0 \
+\
+If we end up with too many test methods on our test case class, we can split the class based on either the methods (or features) verified by the tests or their fixture needs. \
+\
+\
+\
+\
+}

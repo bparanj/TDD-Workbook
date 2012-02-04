@@ -1,0 +1,126 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Test Automation Difficulty
+\b0 \
+\
+Some kinds of tests are harder to write than others. This difficulty arises partly because the techniques are more involved and partly because they are less well known and the tools to do this kind of test automation are less readily available. The following common kinds of tests are listed in approximate order of difficulty, from easiest to most difficult:\
+\
+1. Simple entity objects (domain model).\
+     Simple business classes with no dependencies\
+     Complex business classes with dependencies\
+2. Stateless service objects\
+     Individual components via component tests\
+     The entire business logic layer via layer tests\
+3. Stateful service objects\
+     Customer tests via a service facade using subcutaneous tests\
+     Stateful components via component tests\
+4. Hard to test code\
+      UI logic exposed via Humble Dialog\
+      Database logic\
+      Multi-threaded software\
+5. Object-oriented legacy software (software without any tests)\
+6. Non-object oriented legacy software\
+\
+
+\b Roadmap to Highly Maintainable Automated Tests
+\b0 \
+\
+Focus on learning to write the easier tests first before you move on to the more difficult kinds of tests. The techniques are introduced in the following sequence:\
+\
+1. Exercise the happy path code\
+      Set up a simple pre-test state of the SUT\
+      Exercise the SUT by calling the method being tested\
+2. Verify direct outputs of the happy path\
+      Call assertion methods on the SUT\'92s responses\
+      Call assertion methods on the post-test state\
+3. Verify alternative paths\
+      Vary the SUT method arguments\
+      Vary the pre-test state of the SUT\
+      Control indirect inputs of the SUT via a test stub\
+4. Verify indirect output behavior\
+      Use mock objects or test spies to intercept and verify outgoing method calls\
+5. Optimize test execution and maintainability\
+      Make the tests run faster\
+      Make the tests easy to understand and maintain \
+      Design the SUT for testability\
+      Reduce the risk of missed bugs\
+\
+This is the likely order in which a project team might reasonably expect to learn about the techniques of test automation.\
+\
+
+\b Exercise the Happy Path Code
+\b0 \
+\
+To run the happy path through the SUT, we must automate one simple success test as a simple round-trip test through the SUT\'92s API. To get this test to pass, we might simply hard-code some of the logic in the SUT, especially where it might call other components to retrieve information it needs to make decisions that would drive the test down the happy path. Before exercising the SUT, we need to set up the test fixture by initializing the SUT to the pre-test state. As long as the SUT executes without raising any errors, we consider the test as having passed; at this level of maturity we don\'92t check the actual results against the expected results.\
+\
+
+\b Verity Direct Outputs of the Happy Path
+\b0 \
+\
+Once the happy path is executing successfully we can add result verification logic to turn our test into a self-checking test. This involves adding calls to assertion methods to compare the expected results with what actually occurred. We can easily make this change for any objects or values returned to the test by the SUT. We can also call other methods on the SUT or use public fields to access the post-test state of the SUT; we can then call assertion methods on these values as well.\
+\
+
+\b Verify Alternative Paths
+\b0 \
+\
+At this point the happy path through the code is reasonably well tested. The alternative paths through the code are still untested code. So the next step is to write test for these paths. The question to ask here is : What causes the alternative paths to be exercised? The most common causes are as follows:\
+\
+Different values passed in by the client as arguments.\
+Different prior state of the SUT itself\
+Different results of invoking methods on components on which the SUT depends.\
+\
+The first case can be tested by varying the logic in our tests that calls the SUT methods we are exercising and passing in different values as arguments. The second case involves initializing the SUT with a different starting state. \
+\
+
+\b Controlling Indirect Inputs
+\b0 \
+\
+Because the responses from other components are supposed to cause the SUT to exercise the alternative paths through the code, we need to get control over these indirect inputs. We can do so by using a test stub that returns the value that should drive the SUT into the desired code path. As part of the fixture setup, we must force the SUT to use the stub instead of the real component. \
+\
+Many of these alternative paths result in successful outputs from the SUT; these tests are considered simple success tests and use a style of test stub called a Responder. Other paths are expected to raise errors or exceptions; they are considered expected exception tests and use a style of stub called a Saboteur.\
+\
+
+\b Making Tests Repeatable and Robust
+\b0 \
+\
+The act of replacing a real DoC with a test stub has a desirable side effect: It makes our tests robust and repeatable. By using a test stub we replace a possibly nondeterministic component with one that is completely deterministic and under test control. This is a good example of the isolate the SUT principle.\
+\
+
+\b Verify Indirect Output Behavior
+\b0 \
+\
+Thus far we have focused on getting control of the indirect inputs of the SUT and verifying readily visible direct outputs by inspecting the post-state test of the SUT. This kind of result verification is known as state verification. Sometimes, however, we cannot confirm that the SUT has 
+\i behaved 
+\i0 correctly simply by looking at the post-test state. That is, we may still have some untested requirements that can only be verified by doing behavior verification.\
+\
+We can build on what we already know how to do by using one of the close relatives of the test stub to intercept the outgoing method calls from SUT. A test spy remembers how it was called so that the test can later retrieve the usage information and use assertion method calls to compare it to the expected usage. A mock object can be loaded with expectations during fixture setup, which it subsequently compares with the actual calls as they occur while the SUT is being exercised.\
+	
+\b Optimize Test Execution and Maintenance
+\b0 \
+\
+At this point we should have automated tests for all the paths through our code. We may have less than optimal tests:\
+We may have slow tests\
+The tests may contain test code duplication that makes them hard to understand\
+We may have obscure tests that are hard to understand and maintain\
+We may have buggy tests that are caused by unreliable test utility methods or conditional test logic\
+\
+
+\b Make the Tests Run Faster
+\b0 \
+\
+Replace a DoC with a fake object that is functionally equivalent but executes much faster. Use of a fake object builds on the techniques we learned for verifying indirect inputs and outputs.	\
+
+\b Make the Tests Easy to Understand and Maintain
+\b0 \
+\
+We can make obscure tests easier to understand and reduce test code duplication by refactoring out test methods to call test utility methods that contain any frequently used logic instead of doing everything on an in-line basis. \
+\
+
+\b Reduce the Risk of Missed Bugs
+\b0 \
+\
+To reduce buggy tests or production bugs we can reduce the risk of false negatives (tests that pass when they shouldn\'92t) by encapsulating test logic. Use intent-revealing names for test utility methods. Verify the behavior of non trivial test utility methods using test utility tests.\
+}

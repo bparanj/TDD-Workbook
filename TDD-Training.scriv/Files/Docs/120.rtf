@@ -1,0 +1,134 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Start Each Feature with an Acceptance Test
+\b0 \
+\
+Start work on a new feature by writing failing acceptance tests that demonstrate that the system does not yet have the feature we\'92re about to write and track our progress towards completion of the feature.\
+\
+Fig Each TDD cycle starts with a failing acceptance test\
+\
+\
+We write the acceptance test using only terminology from the application\'92s domain, not from the underlying technologies such as databases and web servers. This helps us understand what the system should do, without tying us to any of our initial assumptions about the implementation or complicating the test with technological details. This also shields our acceptance test suite from changes to the technical infrastructure. \
+\
+Unit tests exercise objects or small clusters of objects in isolation. They\'92re important to help us design classes and give us confidence that they work, but they don\'92t say anything about whether they work together with the rest of the system. Acceptance tests test the integration of unit tested objects and push the project forwards.\
+\
+
+\b Separate Tests that Measure Progress from Those That Catch Regressions
+\b0 \
+\
+When we write acceptance tests to describe a new feature, we expect them to fail until that feature has been implemented. Once passing, the acceptance tests now represent completed features and should not fail again.\
+\
+We organize our test suites to reflect the different roles that the tests fulfill. Unit and integration tests support the development team, should run quickly and should always pass. Acceptance tests might take longer to run. \
+\
+If requirements change, we must move any affected acceptance tests out of the regression suite back into the in-progress suite, edit them to reflect the new requirements, and change the system to make them pass again.\
+\
+
+\b Start Testing with the Simplest Success Case
+\b0 \
+\
+Where do we start when we have to write a new class or feature? Degenerate cases don\'92t add value to the system and don\'92t give us enough feedback about the validity of our ideas. \
+\
+Start by testing the simplest success case. Once that\'92s working, we\'92ll have a better idea of the real structure of the solution and can prioritize failure and success cases. \
+\
+
+\b Write the Test That You\'92d Want to Read
+\b0 \
+\
+We want each test to be clear as possible an expression of the behavior to be performed by the system or object. While writing the test, we ignore the fact that test won\'92t run, or even compile, and just concentrate on its text; we act as if the supporting code to let us run the test already exists.\
+\
+When the test reads well, we then build up the infrastructure to support the test. We know we\'92ve implemented enough of the supporting code when the test fails in the way we\'92d expect, with a clear error message describing what needs to be done. Only then do we start writing the code to make the test pass. \
+\
+
+\b Watch the Test Fail
+\b0 \
+\
+We always watch the test fail before writing the code to make it pass, and check the diagnostic message. If the test fails in a way we didn\'92t expect, we know we\'92ve misunderstood something or the code is incomplete, so we fix that. When we get the right failure, we check that the diagnostics are helpful. If the failure description isn\'92t clear, someone will struggle when the code breaks later. We adjust the test code and rerun the tests until the error messages guide us to the problem with the code.\
+\
+Fig 5.2 Improving the diagnostics as part of the TDD cycle\
+\
+\
+As we write the production code, we keep running the test to see our progress and to check the error diagnostics as the system is built up behind the test. Where necessary, we extend or modify the support code to ensure the error messages are always clear and relevant.\
+\
+
+\b Develop from the Inputs to the Outputs
+\b0 \
+\
+We start developing a feature by considering the events coming into the system that will trigger the new behavior. The end-to-end tests for the feature will simulate these event arriving. At the boundaries of the system, we will need to write one or more objects to handle these events. As we do so, we discover that these objects need supporting services from the rest of the system to perform their responsibilities. We write more objects to implement these services, and discover what services these new object need in turn.\
+\
+
+\b Unit Test Behavior Not Methods
+\b0 \
+\
+Focus on the features that the object under test should provide, each of which may require collaboration with its neighbors and calling more than one of its methods. We need to know how to use the class to achieve the goal, not how to exercise all the paths through its code. Choose test names that describe how the object behaves in the scenario being tested.\
+\
+
+\b Listen to the Tests
+\b0 \
+\
+Stay alert for areas of the code that are difficult to test. Don\'92t just ask how to test it, but also why is it difficult to test.\
+\
+The likely cause is poor design. The same structure that makes the code difficult to test now will make it difficult to change in the future. \
+\
+If we find it hard to write the next failing test, improve the design by refactoring the code. \
+\
+Fig 5.3 :\
+\
+Expect unexpected changes guides development. If we keep up the quality of the system by refactoring when we see a weakness in the design, we will be able to make it respond to whatever changes turn up. The alternative is the software rot where the code decays until the team cannot respond to the needs of its customers.\
+\
+
+\b Tuning the Cycle
+\b0 \
+\
+There\'92s a balance between exhaustively testing execution paths and testing integration. If we test at too large a grain, the combinatorial explosion of trying all the possible paths through the code will bring development to a halt. Throwing exceptions will be impractical to test from that level. On the other hand, if we test at too fine a grain - just at the class level for example - the testing will be easier but we\'92ll miss problems that arise from objects not working together.\
+\
+
+\b Designing for Maintainability
+\b0 \
+\
+Separation of concerns\
+\
+
+\b Higher levels of abstraction
+\b0 \
+\
+Cockburn\'92s Port and Adapters architecture. Eric Evans anti-corruption layer is related to this.\
+\
+Fig 6.1 An application\'92s core domain model is mapped onto technical infrastructure\
+\
+\
+
+\b No And, Or, or But
+\b0 \
+\
+Every object should have a single, clearly defined responsibility. We should be able to describe what an object does without using any conjunctions (and, or). This principle also applies when we\'92re combining objects into new abstractions. If we\'92re packaging up behavior implemented across several objects into a single construct, we should be able to describe its responsibility clearly.\
+\
+
+\b Composite Simpler than the Sum of Its Parts
+\b0 \
+\
+When composing objects into a new type, we want the new type to exhibit simpler behavior than all of its component parts considered together. The composite object\'92s API must hide the existence of its component parts and the interactions between them, and expose a simpler abstraction to its peer. Think of a mechanical clock.\
+\
+The API of a composite object should not be more complicated than that of any of its components. This rule raises the level of abstraction.\
+\
+
+\b Context Independence
+\b0 \
+\
+This rule helps us decide whether an object hides too much or hides the wrong information. A system is easier to change if its objects are context-independent; that is, if each object has no built-in knowledge about the system in which it executes. This allows us to take units of behavior (objects) and apply them in new situations. To be context-independent, whatever an object needs to know about the larger environment it\'92s running in must be passed in. Those relationships might be permanent (passed in on construction) or transient (passed in to the method that needs them).\
+\
+Each object is told just enough to do its job and wrapped up in an abstraction that matches its vocabulary. Eventually, the chain of objects reaches a process boundary, which is where the system will find external details such as host names, ports and user interface event.\
+\
+A class that uses terms from multiple domains is violating context independence unless it\'92s part of a bridging layer.\
+\
+
+\b Hiding the Right Information
+\b0 \
+\
+Example: encapsulate the name of application\'92s log file in the pricing policy class. Hiding details of the log file in PricingPolicy violates context independence - they\'92re concepts from different levels in the Russian doll structure of nested domains. If the log file is necessary, it should be passed in from a level that understands external configuration.\
+\
+\
+\
+}

@@ -1,0 +1,239 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Test Method
+\b0 \
+\
+We organize the test logic following one of the standard test method templates to make the type of test easily recognizable. In a simple success test, we have a purely linear flow of control from fixture setup through exercising the SUT to result verification. In an expected exception test, language based structures direct us to error-handling code. If we reach that code, we pass the test; if we don\'92t, we fail it.\
+\
+We follow the standard test templates to keep test methods as simple as possible. This greatly increases their utility as system documentation by making it easier to find the description of the basic behavior of the SUT. It is a lot easier to recognize which tests describe this basic behavior if only expected exception tests contain error-handling language constructs.\
+\
+
+\b Simple Success Test
+\b0 \
+\
+Most software has an obvious success scenario (happy path). A simple success test verifies the success scenario in a simple and easily recognized way. We create an instance of the SUT and call the method that we want to test. We then assert that the expected outcome has occurred. We follow the normal steps of a four phase test. What we don\'92t do is catch any exceptions that could happen. Another benefit of avoiding exception construct in the code is that when errors occur, it is easier to track them down. \
+\
+
+\b Expected Exception Test
+\b0 \
+\
+Writing software that passes the simple success test is pretty straightforward. Most of the defects in software appear in the various alternative paths - especially the ones that relate to error scenarios, because these scenarios are often untested requirements.\
+\
+An expected exception test helps us verify that the error scenarios have been coded correctly. We set up the test fixture and exercise the SUT in each way that should result in an error. We ensure that the expected error has occurred by using language construct to catch the error. If the error is raised, flow will pass to the error-handling block. This diversion may be enough to let the test pass, but if the type or message contents of the exception or error is important (such as when the error message will be shown to a user), we can use an equality assertion to verify it. If the error is not raised, we call fail to report that the SUT failed to raise an error as expected.\
+\
+We should write an expected exception test for each kind of exception that the SUT is expected to raise. It may raise the error because the client (i.e., our test) has asked it to do something invalid, or it may translate or pass through an error raised by some other component it uses. We should not write an expected exception test for exceptions that the SUT might raise but that we cannot force to occur on cue, because these kinds of errors should show up as test failures in the simple success tests. If we want to verify that these kinds of error are handled properly, we must find a way to force them to occur. The most common way to do so is to use a test stub to control the indirect input of the SUT and raise the appropriate errors in the test stub.\
+\
+Ruby can provide special assertions to which we pass the block of code to be executed as well as the expected exception / error object. \
+\
+M def test_invalid_mileage_input\
+ M  flight = Flight.new\
+M   assert_raises(RuntimeError, \'93Should have raised error\'94) do\
+ M     flight.mileage(-10)\
+M   end\
+Mend\
+\
+The code between the do/end pair is a closure that is executed by the assert_raises method. If it doesn\'92t raise an instance of the first argument (the class RuntimeError), the test fails and presents the error message supplied.\
+\
+
+\b Four-Phase Test
+\b0 \
+\
+How do we structure our test logic to make what we are testing obvious?\
+We structure each test with four distinct parts executed in sequence.\
+\
+We design each test to have four distinct phases that are executed in sequence: fixture setup, exercise SUT, result verification, and fixture teardown.\
+In the first phase, we set up the test fixture (the before picture) that is required for the SUT to exhibit the expected behavior as well as anything you need to put in place to be able to observe the actual outcome (such as using a test double)\
+In the second phase, we interact with the SUT.\
+In the third phase, we do whatever is necessary to determine whether the expected outcome has been obtained.\
+In the fourth phase, we tear down the test fixture to put the world back into the state in which we found it.\
+\
+The reader must be able to quickly determine what behavior the test is verifying. Clearly identifying the four phases makes the intent of the test much easier to see.\
+\
+The fixture setup phase of the test establishes the SUT\'92s state prior to the test, which is an important input to the test. The exercise SUT phase is where we actually run the software we are testing. When reading the test, we need to see which software is being run. The result verification phase of the test is where we specify the expected outcome. The final phase, fixture teardown, is all about housekeeping. We wouldn\'92t want to obscure the important test logic with it because it is completely irrelevant from the perspective of tests as documentation.\
+\
+We should avoid the temptation to test as much functionality as possible in a single test method because that can result in obscure tests. In fact it is preferable to have many small single condition tests. Using comments to mark the phases of a Four-Phase Test is a good source of self-discipline, in that it makes it very obvious when our tests are not single condition tests. It will be self-evident if we have multiple exercise SUT phases separated by result verification phases or if we have interspersed fixture setup and exercise SUT phases. Sure, the tests may work - but they will provide less defect localization than if we have a bunch of independent single condition tests.\
+\
+
+\b Four-Phase Test - Inline
+\b0 \
+\
+All four phases of the test are included as in-line code.\
+\
+
+\b Four-Phase Test - Implicit Setup/Teardown
+\b0 \
+\
+The fixture setup and teardown is moved out of the test method.\
+\
+
+\b Assertion Method
+\b0 \
+\
+How do we make tests self-checking?\
+\
+We call a utility method to evaluate whether an expected outcome has been achieved.\
+\
+A key part of writing fully automated tests is to make them self-checking tests to avoid having to inspect the outcome of each test for correctness each time it is run. This strategy involves finding a way to express the expected outcome so that it can be verified automatically by the test itself.\
+\
+Assertion methods give us a way to express the expected outcome in a way that is both executable by the computer and useful to the human reader, who can then use tests as documentation.\
+\
+We encode the expected outcome of the test as a series of assertions that state what should be true for the test to pass. The assertions are realized as calls to assertion methods that encapsulate the mechanism that causes the test to fail. The assertion methods may be provided by the test automation framework or by the developer as custom assertions.\
+\
+How to call the assertion methods\
+How to choose the best assertion method to call\
+What information to include in the assertion message\
+\
+
+\b Assertion Messages
+\b0 \
+\
+Assertion methods typically take an optional assertion message as a text parameter that is included in the output when the assertion fails. This structure allows the developer to explain to the maintainer exactly which assertion method failed and to better explain what should have occurred. The error detected by the test will be much easier to debug if the assertion method provides more information about why it failed.\
+\
+
+\b Choosing the Right Assertion
+\b0 \
+\
+We have two goals for the calls to assertion methods:\
+Fail the test when something other than the expected outcome occurs\
+Document how the SUT is supposed to behave\
+\
+To achieve these goals we pick the most appropriate assertion method. Assertions fall into the following categories:\
+Single-Outcome assertions such as fail; these take no arguments because they always behave the same way.\
+Stated Outcome assertions such as assert_not_nil(object) and assert_true(boolean_expression); these compare a single argument to an outcome implied by the method name.\
+Expected Exception assertions such as assert_raises(expected_error) \{ code to execute \}; these evaluate a block of code and a single expected exception argument.\
+Equality assertions such as assert_equal(expected, actual); these compare two objects or values for equality.\
+Fuzzy Equality assertions such as assert_equal(expected, actual, tolerance); these determine whether two values are close enough to each other by using tolerance or comparison mask.\
+\
+
+\b Equality Assertion
+\b0 \
+\
+Equality assertions are the most common examples of assertion methods. They are used to compare the actual outcome with an expected outcome that is expressed in the form of a constant literal value or an expected object. By convention, the expected value is specified first and the actual value follows it. \
+\
+The diagnostic message that is generated by the test automation framework makes sense only when they are provided in this order. The equality of the two objects is determined by invoking the equals method on the expected object. If the SUT\'92s definition of equals is not what we want to use in our tests, either we can make equality assertions on individual fields of the object or we can implement our test specific equality on a test specific subclass of the expected object.\
+\
+
+\b Fuzzy Equality Assertion
+\b0 \
+\
+When we cannot guarantee an exact match due to variations in precision or expected variations in value, we use a Fuzzy Equality Assertion. Typically, these assertions look just like Equality assertions with the addition of an extra tolerance or comparison map parameter that specifies how close the actual argument must be to the expected one. The most common example is the comparison of floating-point numbers where the limitations of arithmetic precision need to be accounted for by providing a tolerance (the maximum acceptable distance between the two values).\
+\
+The same approach can be used when comparing XML documents. In this case, the fuzz specification is a comparison schema that specifies which fields need to match or which fields should be ignored. This is similar to asserting that a string conforms to a regular expression or other form of pattern matching.\
+\
+
+\b Stated Outcome Assertion
+\b0 \
+\
+Stated outcome assertions are a way of saying exactly what the outcome should be without passing an expected value as an argument. The outcome must be common enough to warrant a special assertion method. The most common examples are: assert_true(boolean_expression) which fails if the expression evaluates to false; assert_not_null(object), which fails if the object doesn\'92t refer to a valid object.\
+\
+They are often used as guard assertions to avoid conditional test logic.\
+\
+
+\b Expected Exception Assertion
+\b0 \
+\
+A variation of the stated outcome assertion that takes an additional parameter specifying the kind of exception we expect. We can use this expected exception assertion to say \'93Run this block and verify that the following exception is thrown\'94.\
+\
+assert_raises(expected_error) \{ code to execute \} \
+\
+
+\b Single-Outcome Assertion
+\b0 \
+\
+A single outcome assertion always behaves the same way. The most commonly used single outcome assertion is fail, which causes a test to be treated as a failure. It is typically used in two circumstances:\
+As an unfinished test assertion when a test is first identified and implemented as a nearly empty test method. By including a call to fail, we have the test runner remind us that we still have a test to finish writing.\
+As part of a rescue block in an expected exception test by including a call to fail in the begin block immediately after the call that is expected to throw an exception. If we don\'92t want to assert something about the exception that was caught, we can avoid an empty rescue block by using the single outcome assertion success to document that this is the expected outcome.\
+\
+One circumstance in which we really should not use single outcome assertions is in conditional test logic. There is no good reason to include conditional logic in a test method, as there is usually a more declarative way to handle this situation using other styles of assertion methods. For example, use of guard assertions results in tests that are more easily understood and less likely to yield incorrect results.\
+\
+Notes: The method fail_not_equals is a test utility method that fails the test and provides a diagnostic assertion message.\
+\
+
+\b Equality Assertion
+\b0 \
+\
+Assert_equals(x,y)\
+\
+
+\b Fuzzy Equality Assertion
+\b0 \
+\
+To compare two floating-point numbers (which are rarely ever really equal), we specify the acceptable differences using a fuzzy equality assertion:\
+Assert_equals(3.1415, diameter/2/radius, 0.001)\
+A assert_equals(expected_xml, actual_xml, elements_to_compare)\
+\
+
+\b Stated Outcome Assertion
+\b0 \
+\
+To insist that a particular outcome has occurred, we use a stated outcome assertion: assert_nut_null(a); assert_true(b > c); assert_not_zero(a)\
+\
+
+\b Expected Exception Assertion
+\b0 \
+\
+Here is an example of how we verify that the correct exception was raised :\
+\
+A assert_raised(RuntimeError, \'93Should have raised error\'94) \{ flight.mileage(-10) \}\
+\
+
+\b Single Outcome Assertion
+\b0 \
+\
+To fail a test, use the single outcome assertion: fail(\'93Expected an exception\'94); unfinished_test\
+\
+
+\b Assertion Message
+\b0 \
+\
+How do we structure our test logic to know which assertion failed?\
+We include a descriptive string argument in each call to an assertion method.\
+\
+We make tests self-checking by including calls to assertion methods that specify the expected outcome. When a test fails, the test runner writes an entry to the test result log.\
+\
+A well-crafted assertion message makes it easy to determine which assertion failed and exactly what the symptoms were when the failure happened.\
+\
+Every assertion method takes an optional string parameter that is included in the failure log. It is useful to take a moment as we write each assertion and ask ourselves what the person reading the failure log would hope to get out of it.\
+\
+
+\b Assertion Identifying Message
+\b0 \
+\
+Use the name of the variable or attribute being asserted on as the message. \
+\
+
+\b Expectation Describing Message
+\b0 \
+\
+What should have happened? Include a description of the expectation in the assertion message. While this is done automatically for an equality assertion, we need to provide this information ourselves for any stated outcome assertions.\
+\
+A assert_true(\'93Expected a > b but a was #\{a\} and b was #\{b\}\'94, a > b)\
+\
+The output would be even more meaningful if the variables had intent revealing names.\
+\
+
+\b Argument Describing Message
+\b0 \
+\
+Include the expression that was being evaluated (including the actual values) as part of the assertion message. The reader can then examine the failure log and determine what was being evaluated and why it caused the test to fail.\
+\
+
+\b Testcase Class Discovery
+\b0 \
+\
+Using common location and test case superclass\
+\
+The following example finds all files with .rb extension in the tests directory and requires them from this file. This causes Test::Unit to look for all tests in each file because the Testcase class in each file extends Test::Unit::TestCase\
+\
+Dir[\'92tests/*.rb\'92].each do |file|\
+  Require file\
+End\
+\
+The Dir[\'91tests/*.rb\'92] returns a collection of files over which the each method iterates with the block containing \'93requires file\'94 to implement Testcase class discovery. The ruby interpreter and Test::Unit finish the job by doing test method discovery on each required class.\
+\
+\
+\
+}

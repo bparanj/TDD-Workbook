@@ -1,0 +1,111 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 How Writing a Test First Helps the Design
+\b0 \
+\
+1. Starting with a test means that we have to describe 
+\i what 
+\i0 we want to achieve before we consider 
+\i how. 
+\i0 This focus helps us maintain the right level of abstraction for the target object. It also helps us with information hiding as we have to decide what needs to be visible from outside the object.\
+\
+2. To keep unit tests understandable, we have to limit their scope. Unit tests that are dozens of lines long makes the test obscure. It tells us that the component tested is too large and needs breaking up into smaller components. The resulting composite object should have a clearer separation of concerns as we tease out its implicit structure, and we can write simpler tests for the extracted objects.\
+\
+3. To construct an object for a unit test, we have to pass its dependencies to it, which means we have to know what they are. This encourages context independence, since we have to be able to set up the target object\'92s environment before we can unit-test it - a unit test is just another context. We\'92ll notice that an object with implicit (or just too many) dependencies is painful to prepare for testing - and make a point of cleaning it up.\
+\
+
+\b Communication over Classification
+\b0 \
+\
+Communication patterns between objects are more important. Interfaces define the available messages between objects, but we also need to define their patterns of communication - their communication protocols. We do what we can with naming and convention, but there\'92s nothing in the language to describe relationships between interfaces or methods within an interface, which leaves a significant part of the design implicit.\
+\
+
+\b Interface and Protocol
+\b0 \
+\
+An interface describes whether two components will 
+\i fit
+\i0  together, while protocol describes whether they will 
+\i work
+\i0  together.\
+\
+We use TDD with mock objects as a technique to make these communication protocols visible, both as a tool for discovering them during development and as a description when revisiting the code. For example, the unit test: given a certain input message, the translator should call listener.auction_closed exactly once and nothing else. \
+\
+TDD with mock objects also encourages information hiding. We should mock an object\'92s peers but not its internals. Tests that highlight an object\'92s neighbors help us to see whether they are peers or should instead be internal to the target object. A test that is clumsy or unclear is a hint that we\'92ve exposed too much implementation, and that we should rebalance the responsibilities between the object and its neighbors.\
+\
+
+\b Value Types
+\b0 \
+\
+Values are immutable, so they\'92re simpler and have no meaningful identity. Objects have state, so they have identity and relationships with each other. Define types to represent value concepts in the domain. It helps to create a consistent domain model that is self-explanatory. \
+\
+The discovery of value types is motivated by applying design principles rather than by responding to code stresses when writing tests.\
+\
+
+\b Breaking Out : Splitting a Large Object into a Group of Collaborating Objects
+\b0 \
+\
+When we find that the code in an object is becoming complex, it\'92s a sign that it\'92s implementing multiple concerns and that we can break out coherent units of behavior into helper types. \
+\
+Break up an object if it becomes too large to test easily, or if its test failures become difficult to interpret. Then unit-test the new parts separately.\
+\
+
+\b Budding Off : Defining a New Service that an Object Needs and Adding a New Object to Provide It
+\b0 \
+\
+When we want to mark a new domain concept in code, we often introduce a placeholder type that wraps a single field, or maybe has no fields at all. As the code grows, we fill in more detail in the new type by adding fields and methods. With each type that we add, we\'92re raising the level of abstraction.\
+\
+When the code is more stable and has some degree of structure, we often discover new types by pulling them into existence. We might be adding behavior to an object and find that, following our design principles, some new feature doesn\'92t belong inside it.\
+\
+Create an interface to define the service that the object needs from the object\'92s point of view. Write tests for the new behavior as if the service already exists, using mock objects to help describe the relationship between the target object and its new collaborator.\
+\
+The development cycle goes like this. When implementing an object, we discover that it needs a service to be provided by another object, we give the new service a name and mock it out in the client object\'92s unit tests, to clarify the relationship between the two. Then we write an object to provide that service and in doing so, discover what services that object needs. We follow this chain (or perhaps a directed graph) of collaborator relationships until we connect up to existing objects, either our own or from a third-party API. This is how we implement \'93Develop from the Inputs to the Outputs\'94.\
+\
+This is \'93on-demand\'94 design. We pull interfaces and their implementations into existence from the needs of the client.\
+\
+When writing a test, we ask ourselves, \'93If this worked, who would know?\'94. If the right answer to that question is not in the target object, it\'92s time to introduce a new collaborator.\
+\
+
+\b Bundling Up : Hiding Related Objects into a Containing Object
+\b0 \
+\
+When we notice that a group of values are always used together, we take that as a suggestion that there\'92s a missing construct. A first step might be to create a new type with fixed public fields - just giving the group a name highlights the missing concept. Later we can migrate behavior to the new type, which might eventually allow us to hid its fields behind a clean interface, satisfying the composite simpler than the sum of its parts rule.\
+\
+This is the application of the Composite Simpler than the Sum of its Parts rule. When we have a cluster of related objects that work together, we can package them up in a containing object. The new object hides the complexity in an abstraction that allows us to program at a higher level.\
+\
+The process of making an implicit concept concrete has benefits. First, we have to name it which helps us understand the domain better. Second, we can scope dependencies more clearly, since we can see the boundaries of the concept. Third, we can be more precise with our unit testing. We can test the new composite object directly, and use a mock implementation to simplify the tests for code from which it was extracted (since we added an interface for the role the new object plays).\
+\
+When the test for an object becomes too complicated to set up - when there are too many moving parts to get the code into the relevant state - consider bundling up some of the collaborating objects.\
+\
+
+\b Identify Relationships with Interfaces
+\b0 \
+\
+Use interfaces to emphasize on the relationships between objects, as defined by their communication protocols. Use interfaces to name the roles that objects can play and to describe the messages they\'92ll accept.\
+\
+
+\b Compose Objects to Describe System Behavior
+\b0 \
+\
+TDD at the unit level guides us to decompose our system into value types and loosely coupled computational objects. The tests give us a good understanding of how each object behaves and how it can be combined with others. We then use lower-level objects as the building blocks of more capable objects; this is the web of objects.\
+\
+We assemble a description of the expected calls for a test in a context object called a Mockery. During a test run, the Mockery will pass calls made to any of its mocked objects to its Expectations, each of which will attempt to match the call. If an Expectation matches, that part of the test succeeds. If none matches, then each Expectation reports its disagreement and the test fails. At runtime the assembled objects look like:\
+\
+Fig Mock expectations are assembled from many objects\
+\
+The advantage of this approach is that we end up with a flexible application structure built from relatively little code. It\'92s particularly suitable where the code has to support many related scenarios. For each scenario, we provide a different assembly of components to build, in effect, a subsystem to plug into the rest of the application. Such designs are also easy to extend - just write a new plug compatible component and add it in. You just need to write the new matchers.\
+\
+For example, we have a Mock check that a method example.do_something() is called exactly once with an argument of type string:\
+\
+
+\b Building Up to a Higher-Level Programming
+\b0 \
+\
+Clearly express what the expectation is testing. Conceptually, assembling a web of objects is straightforward. Code should help us understand the behavior of the system we\'92re assembling and express intent clearly. We can start from the declarative code we\'92d like to have and work down to fill in its implementation.\
+\
+Our purpose is to achieve more with less code. We aspire to raise ourselves from programming in terms of control flow and data manipulation, to composing programs from smaller programs - where objects from the smallest unit of behavior. It\'92s the same concept as building up layers of language in LISP or programming UNIX by composing utilities with pipes.\
+\
+}

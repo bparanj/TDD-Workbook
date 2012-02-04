@@ -1,0 +1,167 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red115\green115\blue115;\red125\green125\blue125;\red27\green27\blue27;
+}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  I\'92m not sure how to write the story of the whole addition, so we\'92ll start with a simpler\
+example\'97$5 + $5 = $10.\
+\pard\pardeftab720
+\cf2 public void \cf0 testSimpleAddition() \{\
+Money sum= Money.dollar(5).plus(Money.dollar(5));\
+assertEquals(Money.dollar(10), sum);\
+\}\
+ We could fake the implementation by just returning \'93Money.dollar(10)\'94, but the\
+implementation seems obvious. We\'92ll try:\
+\pard\pardeftab720
+\cf3 Money\
+\pard\pardeftab720
+\cf0 Money plus(Money addend) \{\
+\pard\pardeftab720
+\cf2 return new \cf0 Money(amount + addend.amount, currency);\
+\}\
+\
+ Where the design isn\'92t obvious I will still fake the implementation\
+and refactor. I hope you will see through this how TDD gives you control over the\
+size of steps.\
+\
+ Having said that I was going to go much faster, I will immediately go much slower,\
+not in getting the tests working, but in writing the test itself. There are times and\
+tests that call for careful thought. How are we going to represent multi-currency\
+arithmetic? This is one of those times for careful thought.\
+\
+The most difficult design constraint is that we would like most of the code in the\
+system to be unaware that it is (potentially) dealing with multiple currencies. One\
+possible strategy is to immediately convert all money values into a reference currency. \
+However, this doesn\'92t allow exchange rates to vary easily.\
+Instead we would like a solution that lets us conveniently represent multiple\
+exchange rates, and still allows most arithmetic-like expressions to look like, well,\
+arithmetic.\
+\
+Objects to the rescue. When the object you have doesn\'92t behave like you want,\
+make another object with the same external protocol (an Imposter), but a different\
+implementation.\
+\
+This probably sounds a bit like magic. How do you know to think of creating an\
+imposter here? There is no formula for flashes of design insight. \
+TDD can\'92t guarantee that you will have flashes of insight at the right moment. However, confidence-giving tests and carefully factored code give you preparation for insight, and preparation for applying\
+that insight when it comes.\
+\
+The solution is to create an object that acts like a Money, but represents the sum of\
+two Moneys. I\'92ve tried several different metaphors to explain this idea. One is to\
+treat the sum like a Wallet\'97you can have several different notes of different\
+denominations and currencies in the same wallet.\
+\
+Another metaphor is \'93expressions\'94, as in \'93(2 + 3) * 5\'94, or in our case \'93($2 + 3\
+CHF) * 5\'94. A Money is the atomic form of an expression. Operations result in\
+Expressions, one of which will be a Sum. Once the operation (like adding up the\
+ value of a portfolio) is complete, the resulting Expression can be reduced back a\
+single currency given a set of exchange rates.\
+\
+Applying this metaphor to our test, we know what we end up with:\
+\cf2 public void \cf0 testSimpleAddition() \{\
+\'85\
+assertEquals(Money.dollar(10), reduced);\
+\}\
+ The reduced Expression is created by applying exchange rates to an Expression.\
+What in the real world applies exchange rates? A bank.We would like to be able to\
+write:\
+\cf2 public void \cf0 testSimpleAddition() \{\
+\'85\
+Money reduced= bank.reduce(sum, \cf4 "USD"\cf0 );\
+assertEquals(Money.dollar(10), reduced);\
+\}\
+ (It\'92s a little weird to be mixing the \'93bank\'94 metaphor and the \'93expression\'94 metaphor.\
+We\'92ll get the whole story told first, and then we\'92ll see what we can do about\
+literary value.)\
+We have made an important design decision here. We could just as easily have\
+written \'93\'85reduce= sum.reduce(\'93USD\'94, bank)\'94. Why make the Bank responsible?\
+One answer is \'93that\'92s the first thing that popped into my head,\'94 but that\'92s not very\
+informative.Why did it pop into my head that reduction should be the responsibility\
+of the bank and not the expression? Here\'92s what I\'92m aware of at the moment:\
+\'95  Expressions seem to be at the heart of what we are doing. I try to keep the\
+objects at the heart as ignorant of the rest of the world as possible, so they stay\
+flexible as long as possible (and remain easy to test, and reuse, and understand.)\
+\'95  I can imagine there will be many operations involving Expressions. If we add\
+every operation to Expression, Expression will grow without limit.\
+That doesn\'92t seem like enough reasons to tip the scales permanently, but it is\
+enough for me to start in this direction. I\'92m also perfectly willing to move responsibility\
+for reduction to Expression if it turns out Bank\'92s don\'92t need to be involved.\
+The Bank in our simple example doesn\'92t really need to do anything. As long as we\
+have an object we\'92re okay:\
+\
+\cf2 public void \cf0  testSimpleAddition() \{\
+\'85\
+Bank bank= \cf2 new \cf0  Bank();\
+Money reduced= bank.reduce(sum, \cf4 "USD"\cf0  );\
+assertEquals(Money.dollar(10), reduced);\
+\}\
+The sum of two Moneys should be an Expression:\
+\cf2 public void \cf0  testSimpleAddition() \{\
+\'85\
+Expression sum= five.plus(five);\
+Bank bank= \cf2 new \cf0  Bank();\
+Money reduced= bank.reduce(sum, \cf4 "USD"\cf0  );\
+assertEquals(Money.dollar(10), reduced);\
+\}\
+At least we know for sure how to get five dollars:\
+\cf2 public void \cf0  testSimpleAddition() \{\
+Money five= Money.dollar(5);\
+Expression sum= five.plus(five);\
+Bank bank= \cf2 new \cf0  Bank();\
+Money reduced= bank.reduce(sum, \cf4 "USD"\cf0  );\
+assertEquals(Money.dollar(10), reduced);\
+\}\
+How do we get this to compile? We need an interface Expression (we could have a\
+class, but an interface is even lighter weight):\
+\pard\pardeftab720
+\cf3 Expression\
+\pard\pardeftab720
+\cf2 interface \cf0  Expression\
+Money.plus() needs to return an Expression:\
+\pard\pardeftab720
+\cf3 Money\
+\pard\pardeftab720
+\cf0  Expression plus(Money addend) \{\
+\pard\pardeftab720
+\cf2 return new \cf0  Money(amount + addend.amount, currency);\
+\}\
+Which means that Money has to implement Expression (which is easy, since there\
+are no operations yet):\
+\
+\pard\pardeftab720
+\cf3 Money\
+\pard\pardeftab720
+\cf2 class \cf0 Money \cf2 implements \cf0 Expression\
+We need an empty Bank class:\
+\pard\pardeftab720
+\cf3 Bank\
+\pard\pardeftab720
+\cf2 class \cf0 Bank\
+Which stubs out reduce():\
+\pard\pardeftab720
+\cf3 Bank\
+\pard\pardeftab720
+\cf0 Money reduce(Expression source, String to) \{\
+\pard\pardeftab720
+\cf2 return null\cf0 ;\
+\}\
+Now it compiles, and fails miserably. Hooray! Progress! We can easily fake the\
+implementation, though:\
+\pard\pardeftab720
+\cf3 Bank\
+\pard\pardeftab720
+\cf0 Money reduce(Expression source, String to) \{\
+\pard\pardeftab720
+\cf2 return \cf0 Money.dollar(10);\
+\}\
+We\'92re back to a green bar, and ready to refactor. First, reviewing, we:\
+\
+\'95 Reduced a big test to a smaller test that represented progress ($5 + 10 CHF to $5\
++ $5)\
+\'95 Thought carefully about the possible metaphors for our computation\
+\'95 Re-wrote our previous test based on our new metaphor\
+\'95 Got the test to compile quickly\
+\'95 Made it run\
+\'95 Looked forward with a bit of trepidation to the refactoring necessary to make the implementation real}

@@ -1,0 +1,59 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 We got a new test case working. However, we sinned mightily in copy/paste of code so we could do it quickly. Now it is time to clean up.\
+\
+One possibility is to make one of our classes extend the other. I tried it, and it hardly saves any code at all. Instead, we are going to find a common superclass for the two classes. What if we had a Money class to capture the common equals code? We can start small:\
+Class Money\
+\
+All the tests still run (not that we could possibly have broken anything, but that\'92s a good time to run the tests anyway)\
+\
+If Dollar extends Money, that can\'92t possibly break anything.\
+\
+Class Dollar < Money\
+\
+Can it? No, the tests still all run. Now we can move the \'93amount\'94 instance variable up to Money:\
+\
+Class Money\
+Def initialize(amount)\
+@Amount=amount\
+End\
+\
+Class Dollar < Money\
+\
+Now we can move up the equals code:\
+\
+Class Money now has equals method. \
+\
+All the tests still run.\
+\
+Now we need to eliminate Franc#equals. First we notice that the tests for equality don\'92t cover comparing Francs to Francs. Before we change the code, we\'92ll write the tests that should have been there in the first place.\
+\
+You will often be TDDing in code that doesn\'92t have adequate tests. When you don\'92t have enough tests, you are bound to come across refactorings that aren\'92t supported by tests. You could make a refactoring mistake and tests would all still run. What do you do?\
+\
+Write the test you wish you had. If you don\'92t, you will eventually break something while refactoring. Then you\'92ll get bad feelings about refactoring and stop doing it so much. Then your design will deteriorate. So, retroactively test before refactoring.\
+\
+Fortunately, here the tests are easy to write. We just copy the tests for Dollar:\
+\
+Test_equality\
+\
+Assert(Dollar.new(5).equals(Dollar.new(5))\
+AssertFalse(Dollar.new(5).equals(Dollar.new(6))\
+Assert(Franc.new(5).equals(Franc.new(5))\
+AssertFalse(Franc.new(5).equals(Franc.new(6))\
+\
+More duplication, two lines more.\
+\
+Tests in place, we can have Franc extend Money\
+\
+Class Franc < Money\
+\
+Remove equals from Franc. And run the tests. They run. \
+\
+What happens when we compare Francs and Dollars? We\'92ll get to that in the next chapter. Reviewing what we did here, we:\
+Stepwise moved common code from one class (Dollar) to a superclass (Money)\
+Made a second class (Franc) also a subclass\
+Reconciled two implementations (equals)\
+}

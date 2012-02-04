@@ -1,0 +1,125 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs28 \cf0 Minimal Fixture
+\b0 \
+Minimal Context \
+\
+Which fixture strategy should we use?\
+\
+We use the smallest and simplest fixture possible for each test.\
+\
+Figure \'85\
+\
+Every test needs some kind of test fixture. A key part of understanding a test is understanding the test fixture and recognizing how it influences the expected outcome of the test. Tests are much easier to understand if the fixture is small and simple.\
+\
+A minimal fixture is important for achieving tests as documentation and for avoiding slow tests. A test that uses a minimal fixture will be easier to understand than one that uses a fixture containing unnecessary or irrelevant information. \
+\
+We design a fixture that includes only those objects that are absolutely necessary to express the behavior that the test verifies. Another way to phrase this is \'93If the object is not important to understand the test, it is important not to include it in the fixture.\'94\
+\
+To build a minimal fixture, we ruthlessly remove anything from the fixture that does not help the test communicate how the SUT should behave. Two forms of minimization can be considered:\
+\
+We can eliminate objects entirely. That is, we don\'92t even build the objects as part of the fixture. If the object isn\'92t necessary to prove something about how the SUT behaves, we don\'92t include it at all.\
+\
+We can hid unnecessary attributes of the object when they don\'92t contribute to the understanding of the expected behavior.\
+\
+A simple way to find out whether an object is necessary as part of the fixture is to remove it. If the test fails as a result, the object was probably necessary in some way. Of course, it may have been necessary only as argument to some method we are not interested in or as an attribute that is never used (even though the object to which the attribute belongs is required for some reason). Including these kinds of objects as part of fixture setup definitely contributes to obscure tests. \
+\
+We can eliminate these unnecessary objects in one of two ways:\
+\
+1. By hiding them\
+2. By eliminating the need for them by passing in dummy objects or using entity chain snipping. If the SUT actually accesses the object as it is executing the logic under test, however, we may be forced to include the object as part of the test fixture. \
+\
+Having determined that the object is necessary for the execution of the test, we must now ask whether the object is helpful in understanding the test. If we were to initialize it off-stage, would that make it harder to understand the test? Would the object lead to an obscure test by acting as a mystery guest? If so, we want to keep the object visible. Boundary values are a good example of a case in which we do want to keep the objects and attributes that take on the boundary values visible.\
+\
+If we have established that the object or attribute isn\'92t necessary for understanding the test, we should make every effort to eliminate it from the test method, albeit not necessarily from the test fixture. Creation methods are a common way of achieving this goal. We can hid the attributes of objects that don\'92t affect the outcome of the test but that are needed for construction of the object by using creation methods to fill in all the don\'92t care attributes with meaningful default values. We can also hide the creation of necessary depended-on objects within the creation methods. A good example of this occurs when we write tests that require badly formed objects as input (for testing the SUT with invalid inputs). In this case we don\'92t want to confuse the issue by showing all valid attributes of the object being passed to the SUT; there could be many of these extraneous attributes. Instead, we want to focus on the invalid attribute. To do so, we can use the one bad attribute pattern to build malformed objects with a minimum of code by calling a creation method to construct a valid object and then replacing a single attribute with the invalid value that we want to verify the SUT will handle correctly.\
+\
+
+\b Unit Test Rules
+\b0 \
+\
+A test is not a unit test if:\
+\
+It talks to the database\
+It communicates across a network\
+It touches the file system\
+It can\'92t run correctly at the same time as any of your other unit tests\
+You have to do special things to your environment (such as editing config files) to run it\
+\
+
+\b Layer Crossing Test
+\b0 \
+\
+Back Door Manipulation\
+\
+How can we verify logic independently when we cannot use a round-trip test?\
+\
+We set up the test fixture or verify the outcome by going through a back door (such as direct database access)\
+\
+Fig\'85.\
+\
+Every test requires a starting point (the test fixture) and an expected finishing point (the expected results). The normal approach is to set up the fixture and verify the outcome by using the API of the SUT itself. In some circumstances this is either not possible or not desirable.\
+\
+In some situations we can use back door manipulation to set up the fixture and / or verify the SUT\'92s state.\
+\
+The state of the SUT can be stored in memory, on disk as files, in a database, or in other applications with which the SUT interacts. Whatever form it takes, the pre-conditions of a test typically require that the state of the SUT is a specific state. Likewise, at the end of the test we often want to do state verification of the SUT\'92s state.\
+\
+If we have access to the state of the SUT from outside the SUT, the test can set up the pre-test state of the SUT by bypassing the normal API of the SUT and interacting directly with whatever is holding that state via a back door. When exercising of the SUT has been completed, the test can similarly access the post-test state of the SUT via a back door to compare it with expected outcome. For customer tests, the back door is most commonly a test database, but it could also be some other component on which the SUT depends. For unit tests, the back door is some other class or object or an alternative interface of the SUT that exposes the state in a way normal clients wouldn\'92t use. We can replace a DoC with a suitably configured test double instead of using the real thing it that makes the job easier.\
+\
+
+\b Layer Test
+\b0 \
+\
+Single Layer Test, Testing by Layers, Layered Test\
+How can we verify logic independently when it is part of a layered architecture\
+\
+We write separate tests for each layer of the layered architecture\
+\
+Fig\'85\
+\
+It is difficult to obtain good test coverage when testing an entire application in a top-to-bottom fashion; we are bound to end up doing indirect testing on some parts of the application. \
+\
+An application with a layered architecture can be tested more effectively by testing each layer in isolation.\
+\
+We design the SUT using a layered architecture that separates the presentation logic from the business logic and from any persistence mechanism or interfaces to other systems. We put all business logic into a service layer that exposes the application functionality to the presentation layer as an API. We treat each layer of the architecture as a separate SUT. We write component tests for each layer independent of the other layers of the architecture. That is, for layer n of the architecture, the tests will take the place of layer n+1; we may optionally replace layer n-1 with a test double.\
+\
+We can use a Layer Test whenever we have a layered architecture and we want to provide good test coverage of the logic in each layer. It can be much simpler to test each layer independently than it is to test all the layers at once. This is especially true when we want to do defensive coding for return values of calls across the layer boundary. In software that is working correctly, these errors should never happen; in real life, they do. To make sure our code handles these errors, we can inject these never happen scenarios as indirect inputs to our layer.\
+\
+Layer Tests are very useful when we want to divide up the project team into subteams based on the technology in which the team members specialize. Each layer of an architecture tends to require different knowledge and often uses different technologies; therefore, the layer boundaries serve as natural team boundaries. Layer Tests can be a good way to nail down and document the semantics of the layer interfaces. \
+\
+Even when we choose to use a Layer Test strategy, it is a good idea to include a few top-to-bottom tests just to verify that the various layers are integrated correctly. These tests need to cover only one or two basic scenarios; we don\'92t need to test every business test condition because all of them have already been tested in the Layer Tests for at least one of the layers.\
+\
+
+\b Subcutaneous Test
+\b0 \
+\
+A Subcutaneous test is a degenerate form of Layer Test that bypasses the presentation layer of the system to interact directly with the Service Layer. \
+\
+
+\b Component Test 
+\b0 \
+\
+This is the most general form of Layer Test, in that we can think of the layers being made up of individual components that act as micro-layers. They are a good way to specify or document the behavior of individual components when we are doing component-based development and some of the components must be modified or built from scratch.\
+\
+
+\b Round-Trip Tests
+\b0 \
+\
+A good starting point for Layer Tests is the round-trip test, as it should be sufficient for most simple success tests. These tests can be written such that they do not care whether we have fully isolated the layer of interest from the layers below. We can either leave the real components in place so that they are exercised indirectly or we can replace them with fake objects. The latter option is useful when database or asynchronous mechanisms in the layer below lead to slow tests. \
+\
+
+\b Controlling Indirect Inputs
+\b0 \
+\
+We can replace a lower layer of the system with a test stub that returns canned results based on what the client layer passes in a request (customer 1 is a valid customer, 2 is a dormant customer, 3 has three accounts). This technique allows us to test the client logic with well-understood indirect inputs from the layer below. It is particularly useful when we are automating expected exception tests or when we are exercising behavior that depends on data that arrives from an upstream system. The alternative is to use back door manipulation to set up the indirect inputs.\
+\
+
+\b Verifying Indirect Outputs
+\b0 \
+\
+When we want to verify the indirect outputs of the layer of interest, we can use a mock object or test spy to replace the components in the layer below the SUT. We can then compare the actual calls made to the DoC with the expected calls. The alternative is to use back door manipulation to verify the indirect outputs of the SUT after they have occurred.\
+\
+\
+}

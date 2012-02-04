@@ -1,0 +1,122 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 These patterns are about when you write tests, where you write tests and when you stop writing tests.\
+\
+
+\b One Step Test
+\b0 \
+\
+Which test should you pick next from the list? Pick a test that will teach you something and that you are confident you can implement.\
+\
+Each test should represent one step towards your overall goal. If we are looking at the following test list, which test should we pick next?\
+\
+Plus\
+Minus\
+Times\
+Divide\
+Plus like\
+Equals\
+Equals null\
+Null exchange\
+Exchange one currency\
+Exchange two currencies\
+Cross rate\
+\
+There is no right answer. What is one step for less domain expertise will be one tenth for someone with more domain knowledge.\
+\
+When I look at a test list, I think, \'93That\'92s obvious, that\'92s obvious, I have no idea, obvious, what was I thinking about with that one, ah, this one I can do. That last test is the test I implement next. It didn\'92t strike me as obvious, but I\'92m also confident I can make it work.\
+\
+If you don\'92t find any test on the list that represents one step, add some new tests that would represent progress towards the items there.\
+\
+A program grown from tests like this can appear to be written top-down, because you can begin with a test that represents a simple case of the entire computation. A program grown from tests can also appear to be written bottom-up, because you start with small pieces and aggregate them larger and larger.\
+\
+Programs change over time. Growth implies a kind of self-similar feedback loop where the environment affects the program and the program affects the environment. Second, known-to-known is a helpful description. It implies that we have some knowledge and experience on which to draw, and that we expect to learn in the course of development. Put these two together and we have programs growing from known to unknown.\
+\
+
+\b Starter Test
+\b0 \
+\
+Which test should you start with? Start by testing a variant of an operation that doesn\'92t do anything.\
+\
+The first question you have to ask with a new operation is \'93Where does it belong?\'94. Until you\'92ve answered this question, you don\'92t know what to type for the test. In the spirit of solving one problem at a time, how can we answer just this question and no other?\
+\
+If you write a realistic test first, you find yourself solving a bunch of problems at once:\
+Where does the operation belong?\
+What are the correct inputs?\
+What is the correct output given those inputs?\
+\
+Beginning with a realistic test will leave you too long without feedback. Red/green/refactor, red/green/refactor. You want that loop to be minutes.\
+\
+You can shorten the loop by choosing inputs and outputs that are trivially easy to discover. For example, let\'92s consider how to write a polygon reducer test-first. The input is a mesh of polygons and the output is a mesh of polygons that describes precisely the same surface, but with the fewest possible polygons. \'93How can I test-drive this problem since getting a test to work requires reading Ph.D. Theses?\
+\
+Starter Test provides an answer:\
+The output should be the same as the input. Some configurations of polygons are already normalized, incapable of further reduction.\
+The input should be as small as possible, like a single polygon, or even an empty list of polygons.\
+\
+My starter test looked like this:\
+\
+Reducer = Reducer.new(Polygon.new())\
+Assert(0, reducer.result.npoints)\
+\
+Boom! First test is running. Now for all the rest of the tests on the list\'85\
+\
+One Step Test applies. Pick a starter test that will teach you something but that you are certain you can get working quickly. If you are implementing something for the nth time, pick a test that will require an operation or two. You will be justifiably confident you can get it working.\
+\
+If find that my starter test is often at a higher level, more like an application test than the following tests. \
+\
+
+\b Explanation Test
+\b0 \
+\
+How do you spread the use of automated testing? Ask for and give explanation in terms of tests.\
+\
+You can do this at higher levels of abstraction. If someone is explaining a sequence diagram to you, you can ask for permission to convert it to a more familiar notation. Then you type in a test case that contains all the externally visible objects and messages in the system.\
+\
+
+\b Learning Test
+\b0 \
+\
+When do you write tests for externally produced software? Before the first time you are going to use it.\
+\
+Write a little test that verifies that the API works as expected. If our understanding of the API is correct, the test will pass first time. When new releases arrive, the tests were first run (and fixed if necessary). If the tests didn\'92t run, there was no sense running the application because it certainly wouldn\'92t run. Once the tests run, the application will run.\
+\
+
+\b Another Test
+\b0 \
+\
+How do you keep a technical discussion from straying off topic? When a tangential idea arises, add a test to the list and go back to the topic.\
+\
+New ideas are greeted with respect but not allowed to diver attention. I write them down on the list, and get back to what I was working on.\
+\
+
+\b Regression Test
+\b0 \
+\
+What\'92s the first thing you do when a defect is reported? Write a smallest possible test that fails, and that once it runs, the defect will be repaired.\
+\
+Regression tests are test that with perfect foreknowledge, you would have written when coding originally. Every time you have to write a regression test, think about how you could have known to write the test in the first place.\
+\
+You will gain value by testing at the level of the whole application. Regression tests for the application give your users a chance to speak concretely to you about what is wrong and what they expect. Regression tests at smaller scale are a way for you to improve your testing. Add to your test list the lesson learned.\
+\
+You may have to refactor the system before you can easily isolate the defect. The defect in this case is your system\'92s way of telling you, \'93You aren\'92t quite done designing me yet.\'94\
+\
+
+\b Break
+\b0 \
+\
+What do you do when you feel tired or stuck? Take a break.\
+\
+
+\b Do Over
+\b0 \
+\
+What do you do when you are feeling lost? Throw away the code and start over.\
+\
+
+\b Cheap Desk, Nice Chair
+\b0 \
+\
+What physical setup should you use for TDD? Get a really nice chair, skimping on the rest.}

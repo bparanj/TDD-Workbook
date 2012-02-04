@@ -1,0 +1,89 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\deftab720
+\pard\pardeftab720
+
+\f0\fs28 \cf0  Let\'92s take a look back at the Money example, both the process we used and the\
+results. We will look at:\
+\
+\'95  What Next?\
+\'95  Metaphor\'97the dramatic effect metaphor has on the structure of the design\
+\'95  JUnit Usage\'97when we ran tests and how we used JUnit\
+\'95  Code Metrics\'97a numerical abstract of the resulting code\
+\'95  Process\'97we say red/green/refactor, but how much work goes into each step?\
+\'95  Test Quality\'97how do TDD tests stack up by conventional test metrics?\
+\
+What Next?\
+\
+ Is the code finished? No. There is that nasty duplication between Sum.plus() and\
+Money.plus(). If we made Expression a class instead of an interface (not the usual\
+direction, as classes more often become interfaces), we would have a natural home\
+for the common code.\
+\
+I don\'92t believe in \'93finished\'94. TDD can be used as a way to strive for perfection, but\
+that isn\'92t its most effective use. If you have a big system, the parts that you touch all\
+the time should be absolutely rock solid, so you can make daily changes confidently.\
+As you drift out to the periphery of the system, to parts that don\'92t change\
+ often, the tests can be spottier and the design uglier without interfering with your\
+confidence.\
+\
+When I\'92ve done all of the obvious tasks, I like running a code critic, like SmallLint\
+for Smalltalk. Many of the suggestions that come up I already know about, or I disagree\
+with. Automated critics don\'92t forget, though, so if I don\'92t delete an obsolete\
+implementation I don\'92t have to stress. The critic will point it out.\
+\
+Another \'93what next?\'94 question is, \'93What additional tests do I need?\'94 Sometimes\
+you think of a test that \'93shouldn\'92t\'94 work, and it does. Then you need to find out\
+why. Sometimes a test that shouldn\'92t work really doesn\'92t, and you can record it as a\
+known limitation or as work to be done later.\
+Finally, when the list is empty is a good time to review the design. Do the words\
+and concepts play together? Is there duplication that is difficult to eliminate given\
+the current design (lingering duplication is a symptom of latent design.)\
+\
+Metaphor\
+\
+ The biggest surprise for me in coding the Money example is how different it came\
+out this time. I have programmed Money in production at least three times that I\
+can think of. I have used it as an example in print another half dozen times. I have\
+programmed it live on stage (relax, it\'92s not as exciting as it sounds\'85) another fifteen\
+times. I coded another three or four times preparing for writing (I ripped out\
+Section I and rewrote it based on early reviews.) Then, while I was writing this, I\
+thought of using Expression as the metaphor and the design went in a completely\
+different direction than it has gone before.\
+\
+I really didn\'92t expect the metaphor to be so powerful. A metaphor should just be a\
+source of names, shouldn\'92t it? Apparently not.\
+The metaphor Ward used for \'93several monies together with potentially different\
+currencies\'94 was a vector, like a mathematic vector where the coefficients were currencies\
+instead of x2 . I used MoneySum for a while, then MoneyBag (which is nice\
+and physical), and finally Wallet (which is commoner in most folks\'92 experience).\
+All of these metaphors imply that the collection of Money\'92s is flat. For example, \'932\
+USD + 5 CHF + 3 USD\'94 would result in \'935 USD + 5 CHF\'94. Two values with the\
+same currency would be merged.\
+\
+ The Expression metaphor freed me from a bunch of nasty issues about merging\
+duplicated currencies. The code came out cleaner and clearer than I\'92ve ever seen it\
+before. I\'92m concerned about the performance of Expressions, but I\'92m happy to wait\
+until I see some usage statistics before I start optimizing.\
+\
+What if I got to rewrite everything I ever wrote 20 times? Would I keep finding\
+insight and surprise every time? Is there some way to be more mindful as I program\
+so I can squeeze all the insight out of the first three times? The first time?\
+\
+Process\
+\
+The TDD cycle is:\
+\
+\'95 Write a test\
+\'95 Make it compile, run it to see it fail\
+\'95 Make it run\
+\'95 Remove duplication\
+\
+ The three items that come up time and again as surprises when teaching TDD are:\
+\
+\'95  The three approaches to making a test work cleanly\'97fake it, triangulate, and\
+just typing in the right solution to begin with\
+\'95  Removing duplication between test and code as a way to drive the design\
+\'95  The ability to control the gap between tests to increase traction when the road\
+gets slippery and cruise faster when conditions are clear}

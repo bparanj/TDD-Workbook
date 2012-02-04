@@ -1,0 +1,135 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\b\fs36 \cf0 TDD Cycle
+\b0\fs28 \
+\
+The general TDD cycle is :\
+\
+1. 
+\i Write a test. 
+\i0 \
+\
+Think about how you would like the operation in your mind to appear in your code. You are writing a story. Invent the interface you wish you had. Include all the elements in the story that you imagine will be necessary to calculate the right answers.\
+\
+2. 
+\i Make it run. \
+\
+\pard\tx720\fi720\pardirnatural
+
+\i0 \cf0 Quickly getting that bar green dominates everything else. If a clean, simple solution is obvious, type it in. If the clean, simple solution is obvious but it will take you a minute, make a note of it and get back to the main problem, which is getting the bar green in seconds. This shift in aesthetics is hard for some experienced software engineers. They only know how to follow the rules of good engineering. Quick green excuses all sins. But only for a moment.\
+\
+3. 
+\i Make it right.\
+\
+
+\i0 Now that the system is behaving, put the sinful ways of the recent past behind you. Remove the duplication that you have introduced to get to quick green.\
+\
+The goal is clean code that works. Divide and conquer. First we\'92ll solve the \'91that works\'92 part of the problem. Then we\'92ll solve the \'91clean code\'92 part. \
+\
+\pard\tx720\fi720\pardirnatural
+
+\b \cf0 Updated To-Do List
+\b0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+\cf0 $5 + 10 CHF = $10 if rate is 2:1\
+$5 * 2 = $10\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+
+\b \cf0 Dollar side-effects?
+\b0 \
+Money rounding?\
+\pard\tx720\fi720\pardirnatural
+\cf0 \
+\pard\tx720\fi720\pardirnatural
+
+\b \cf0 Thinking Process\
+\pard\tx720\fi720\pardirnatural
+
+\b0 \cf0 \
+We got one test working but in the process we noticed something strange - when we perform an operation on a Dollar, the Dollar changes. I would like to be able to write:\
+\
+test_multiplication\
+  five = Dollar.new(5)\
+  five.times(2)\
+  assert(10, five.amount)\
+  five.times(3)\
+  assert(15, five.amount)\
+end\
+\
+I can\'92t imagine a clean way to get this test working. After the first call to times, five isn\'92t five anymore, it\'92s really ten. If, however, we return a new object from times, we can multiple our original five bucks all day and never have it change. We are changing the interface of Dollar when we make this change, so we have to change the test. That\'92s ok. Our guesses about the right interface are no more likely to be perfect than our guesses about the right implementation.\
+\
+test_multiplication\
+  five = Dollar.new(5)\
+  product = five.times(2)\
+  assert(10, product.amount)\
+  product = five.times(3)\
+  assert(15, product.amount)\
+end\
+\
+Run the test.\
+\
+Pg 31\
+\
+Making the test requires that we return a new Dollar with the correct amount:\
+\
+def times(multiplier)\
+  return Dollar.new(amount*multiplier)\
+end\
+\
+In the last chapter when we make a test work we started with a bogus implementation and gradually made it real. Here, we typed in what we thought was the right implementation and prayed while the tests ran. Because we got lucky and the test ran, we can cross of another item.\
+\
+\pard\tx720\fi720\pardirnatural
+
+\b \cf0 Updated To-Do List
+\b0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+\cf0 $5 + 10 CHF = $10 if rate is 2:1\
+$5 * 2 = $10\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+\cf0 \strike \strikec0 Dollar side-effects?\strike0\striked0 \
+Money rounding?\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+
+\b \cf0 Thinking Process\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+
+\b0 \cf0 These are two of the three strategies I know for quickly getting to green:\
+\
+1. Fake It - return a constant and gradually replace constants with variables until you have the real code.\
+2. Obvious implementation - type in the real implementation.\
+\
+When I use TDD in practice, I commonly shift between these two modes of implementation. When everything is going smoothly and I know what to type, I put in obvious implementation after obvious implementation (running the tests all the time to ensure all tests pass). As soon as I get an unexpected red bar, I back up, shift to faking implementations and refactor to the right code. When my confidence is back, I go back to obvious implementations.\
+\
+There is a third style of test-driving development, triangulation, which we will demonstrate later. To review, we:\
+\
+1. Translated a design objection (side effects) into a test case that failed because of the objection.\
+2. Got the code to compile quickly with a stub implementation.\
+3. Made the test work by typing in what seemed like the right code.\
+\
+The translation of a feeling (disgust at side effects) into a test (multiply the same dollar twice) is a common theme of TDD. The longer I do this, the better able I am to translate my aesthetic judgements into tests. When I can do this, my design discussions become much more interesting. First we can talk about whether the system should work like 
+\i this 
+\i0 or like 
+\i that. 
+\i0 Once we decide on the correct behavior, we can talk about the best way of achieving that behavior. We can speculate about truth and beauty all we want but while we are programming we can leave airy-fairy discussions behind and talk cases.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+
+\b \cf0 Review\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+
+\b0 \cf0 Make it Fail\
+No code without a failing test\
+\
+Make it Work\
+As simply as possible\
+\
+Make it Better\
+Refactor}

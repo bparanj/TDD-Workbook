@@ -1,0 +1,57 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx720\fi720\pardirnatural
+
+\f0\fs28 \cf0 $5 + 10 CHF = $10 if rate is 2:1\
+
+\b 5 CHF *2 = 10 CHF
+\b0 \
+\
+How are we going to approach the first test on that list? That\'92s the test that \'92s most interesting. It still seems to be a big leap. I\'92m not sure I can write a test that I can implement in one little step. A pre-requisite seems to be having an object like Dollar, but to represent Francs. If we can get Francs working like Dollars work now, we\'92ll be closer to being able to write and run the mixed addition test.\
+\
+We can copy and edit the Dollar test:\
+\
+Test_franc_multiplication\
+Five = Franc.new(5)\
+Assert(Franc(10), five.times(2))\
+Assert(Franc(15), five.times(3))\
+\
+Simplification we made in the last chapter made our job here easier. What short step will get us to a green bar? Copying the Dollar code and replacing \'93Dollar\'94 with \'93Franc\'94.\
+\
+Copy and paste reuse? Remember, our cycle has different phases (they go by quickly, often in seconds, but they are phases):\
+\
+1. Write a test\
+2. Make it compile\
+3. Run it to see that it fails\
+4. Make it run\
+5. Remove duplication\
+\
+The different phases have different purposes. They call for different styles of solution, different aesthetic viewpoints. The first three phases need to go by quickly, so we get to a known state with the new functionality. You can commit any number of sins to get there, because speed trumps design, just for that brief moment.\
+\
+This does not mean that you abandon all the principles of good design. The cycle is not complete.  The first four steps of the cycle won\'92t work without the fifth. Make it run, make it right.\
+\
+Class Franc\
+\
+Def initialize(amount)\
+  @Amount=amount\
+End\
+\
+Times(multiplier)\
+Return Franc.new(amount.multiplier)\
+End\
+\
+Def equals(object)\
+  Return amount == franc.amount\
+End\
+\
+Because the step to running code was so short, we were even able to skip the \'93make it compile\'94 step.\
+\
+New we have the duplication galore, and we have to eliminate it before writing our next test. We\'92ll start by generalizing equals. However, we can cross off an item, even though we have to add two more. Reviewing, we:\
+Couldn\'92t tackle a big test, so we invented a small test that represented progress\
+Wrote the test by shamelessly duplicating and editing\
+Even worse, made the test work by copying and editing model code\
+Promised ourselves we wouldn\'92t go home until the duplication was gone.\
+\
+\strike \strikec0 $5 * 2 = $10\strike0\striked0 \
+}
