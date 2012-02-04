@@ -1,0 +1,22 @@
+Structure for Book
+
+Objective for the chapter.
+Introduction to the concepts (if required).
+Progressive lessons for a specific objective.
+Code centric. Example of anti-patterns. Example of best practices. Before / After picture.
+Illustrate near miss when refactoring from anti-patterns to best practice.
+Chapter Summary
+Exercises
+
+Appendix
+Answer Key
+References
+
+Structure for Presentation
+
+Learning Objective
+Concept : Explain
+Demo Example : Recorded screencast
+Q & A
+Exercise : Work as a pair and finish the exercise within given time limit.
+Review and Q & A : Where did you have difficulty?
