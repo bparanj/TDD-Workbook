@@ -1,7 +1,7 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
-{\fonttbl\f0\fnil\fcharset0 Verdana;\f1\fnil\fcharset0 LucidaGrande;}
-{\colortbl;\red255\green255\blue255;\red26\green26\blue26;\red255\green255\blue255;\red0\green51\blue101;
-\red38\green38\blue38;\red0\green92\blue177;}
+{\fonttbl\f0\fnil\fcharset0 Verdana;}
+{\colortbl;\red255\green255\blue255;\red26\green26\blue26;\red0\green51\blue101;\red26\green26\blue26;
+\red255\green255\blue255;\red38\green38\blue38;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid102\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid103\'02\'02.;}{\levelnumbers\'01;}\fi-360\li2160\lin2160 }{\listname ;}\listid2}
 {\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}
@@ -24,7 +24,7 @@ Repeat until done\
 Be very strict about this:\
 \
 Only add code to make a failing test pass\
-Only add bran-new code to test methods in a test class\
+Only add brand-new code to test methods in a test class\
 Only create a new non-test methods by "extract method"\
 Only create new classes as destinations for "move method"\
 \
@@ -59,20 +59,21 @@ Top Down / Bottom Up\
 Backtracking\
 \
 \pard\pardeftab720\sl380\sa300
-
-\f1\fs26 \cf2 \cb3 Bob Martin{\field{\*\fldinst{HYPERLINK "http://butunclebob.com/ArticleS.UncleBob.TheThreeRulesOfTdd"}}{\fldrslt \cf4  \ul description of TDD}} :\
+\cf2 Bob Martin{\field{\*\fldinst{HYPERLINK "http://butunclebob.com/ArticleS.UncleBob.TheThreeRulesOfTdd"}}{\fldrslt \cf3  \ul description of TDD}} :\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\sl360\sa100
 \ls1\ilvl0\cf2 {\listtext	1.	}You are not allowed to write any production code unless it is to make a failing unit test pass.\
 {\listtext	2.	}You are not allowed to write any more of a unit test than is sufficient to fail; and compilation failures are failures.\
 {\listtext	3.	}You are not allowed to write any more production code than is sufficient to pass the one failing unit test.\
-\pard\pardeftab720\sl380\sa300
-\cf2 I took these rules as a starting point and then tried to produce stronger rules that would force the programmer (pair) to allow the design to evolve. I don\'92t think I\'92ve yet landed on the best set of rules, and people report difficulties with various part of it, but if I were going to do the workshop today these are the rules I would enforce (subject to change and refinement at any time, last \'a0updated 3 Sept 2011):\
+\pard\pardeftab720\sl320
+\cf4 \cb5 \
+Keith Braithwaite\'92s\cf2 \cb1  rules to force the pair to allow the design to evolve:\
+\
 \pard\pardeftab720\sa140
 
-\b\fs40 \cf2 The Rules\
+\b \cf2 The Rules\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\sl360\sa100
 \ls2\ilvl0
-\b0\fs26 \cf2 {\listtext	1.	}Write exactly one new test, the smallest test you can that seems to point in the direction of a solution\
+\b0 \cf2 {\listtext	1.	}Write exactly one new test, the smallest test you can that seems to point in the direction of a solution\
 {\listtext	2.	}See it fail\
 {\listtext	3.	}Make the test from (1) pass by writing the least implementation code you can in the test method.\'a0\
 {\listtext	4.	}Refactor to remove duplication, and otherwise as required to improve the design.\'a0Be strict about using these moves:\
@@ -91,15 +92,15 @@ Backtracking\
 \ls2\ilvl2\cf2 {\listtext	1.	}populate implementation classes with methods by doing Move Method, and no other way\
 \pard\pardeftab720\sl380\sa300
 \cf2 The member of the pair without their hands on the keyboard must be very strict in enforcing these rules, especially 4.1 and 4.2\
-After some respectable time coding, contrast and compare solutions. Consider the classes created. How many? How big? What mutable state? Consider the methods created How many? How long? Apply a few simple design metrics. How was the experience of working this way different from the usual? How could these ideas be applied in your day job?
-\f0\fs28 \cf0 \cb1 \
+After some respectable time coding, contrast and compare solutions. Consider the classes created. How many? How big? What mutable state? Consider the methods created How many? How long? Apply a few simple design metrics. How was the experience of working this way different from the usual? How could these ideas be applied in your day job?\cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
 {\field{\*\fldinst{HYPERLINK "http://www.infoq.com/presentations/TDD-as-if-You-Meant-It"}}{\fldrslt \cf0 http://www.infoq.com/presentations/TDD-as-if-You-Meant-It}}\
 \
 \pard\pardeftab720\sa240
-\cf0 \cb3  William Wake's metaphor for the test-first cycle: a traffic light. \
+\cf0  William Wake's metaphor for the test-first cycle: a traffic light. \
+\pard\pardeftab720\sa240
 
-\b \cf5 1 The Test-First Traffic Light
+\b \cf6 1 The Test-First Traffic Light
 \b0 \cf0 \
 Test-first programming is like a traffic light. A normal traffic light has green, yellow, and red lights. It starts green, goes yellow, then red, and back to green again. Occasionally, you come across a light where the pattern is different, perhaps blinking yellow or blinking red. When you see this, you pay extra attention, and say, "What's going on?"\
 It shows a green bar when all tests pass, and a red bar when any test fails. We'll think of those as green and red lights on a traffic light; failing to compile will be a yellow light. Just like a real traffic light, we expect to go green, yellow, red; green, yellow, red.\
@@ -122,7 +123,7 @@ It shows a green bar when all tests pass, and a red bar when any test fails. We'
 {\listtext	8.	}Start the cycle again.\
 \pard\pardeftab720
 
-\b \cf5 \
+\b \cf6 \
 2 Abnormal Patterns\
 \
 \pard\pardeftab720
@@ -164,11 +165,10 @@ New code didn't work. This happens to everyone occasionally - just fix the code.
 \b0  - if it happens a lot, it's telling you to move to smaller tests (so you'll add smaller bits of new code as well).\
 \pard\pardeftab720
 
-\b \cf5 \
+\b \cf6 \
 3 Quick Cycle
 \b0 \cf0 \
-\pard\pardeftab720
-\cf0 The cycle doesn't take very long:\
+The cycle doesn't take very long:\
 \pard\tx220\tx720\pardeftab720\li720\fi-720
 \ls4\ilvl0\cf0 {\listtext	\'95	}write test, stub, and body\
 {\listtext	\'95	}compile three times\
@@ -177,7 +177,7 @@ New code didn't work. This happens to everyone occasionally - just fix the code.
 \cf0 Depending on your environment, one to five minutes might be a typically time to run through the cycle. If you find yourself spending 10 to 15 minutes or longer, the cycle is too long, and you need to move to smaller tests.\
 \pard\pardeftab720
 
-\b \cf5 4 Refactoring
+\b \cf6 4 Refactoring
 \b0 \cf0 \
 \pard\pardeftab720\sa240
 \cf0 When you're refactoring, you're often not seeing the traffic light go yellow and red. It's more like those days when you drive down the road and hit every light green.\
@@ -189,14 +189,10 @@ New code didn't work. This happens to everyone occasionally - just fix the code.
 \cf0 \
 \pard\pardeftab720\sa240
 \cf0 You will get the occasional yellow or red light, telling you to watch your syntax, or be more careful in your transformations, or because the refactoring uses the compiler to tell what's safe. But mostly, it's green lights all the way.\
-[In the event that you are not familiar with the idea of refactoring, I'll be discussing it in a future issue. The short definition is "improving the design of existing code." To learn more about refactoring have a look at Fowler's book on the subject [{\field{\*\fldinst{HYPERLINK "http://edn.embarcadero.com/article/29648#xp:fowler:1999"}}{\fldrslt 
-\b \cf6 2}}] or the refactoring web site he maintains [{\field{\*\fldinst{HYPERLINK "http://edn.embarcadero.com/article/29648#xp:refactoring.com"}}{\fldrslt 
-\b \cf6 1}}]. Later in this issue, we'll do a bit of refactoring.. consider it a teaser for the upcoming issue. 
-\i -Ed
-\i0 ]\
+Refactoring is "improving the design of existing code."\
 \pard\pardeftab720
 
-\b \cf5 5 Example\
+\b \cf6 5 Example\
 \pard\pardeftab720\sa240
 
 \b0 \cf0 Let's see a small example of test-first programming. Suppose you have a person object like this:\
@@ -265,18 +261,12 @@ New code didn't work. This happens to everyone occasionally - just fix the code.
 \cf0 \
 \pard\pardeftab720
 
-\b \cf5 6 Conclusion
+\b \cf6 6 Conclusion
 \b0 \cf0 \
-\pard\pardeftab720
-\cf0 Visualize the traffic light as you code, until any abnormal pattern gives you just a little twinge.
-\b \cf5 \
-\pard\pardeftab720
-\cf5 \
-7 In Closing
-\b0 \cf0 \
-\pard\pardeftab720
-\cf0 I hope you enjoyed this exploration of the flow of test-first. In the next issue we'll explore what it means to code intentionally and how to do it.
-\i \cb1 \
+Visualize the traffic light as you code, until any abnormal pattern gives you just a little twinge.
+\b \cf6  
+\b0 \cf0 Flow of test-first. 
+\i \
 
 \itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrt\brdrnil \trbrdrl\brdrnil \trbrdrt\brdrnil \trbrdrr\brdrnil 
 \clvertalt \clshdrawnil \clwWidth16980\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadl0 \clpadr0 \gaph\cellx8640
