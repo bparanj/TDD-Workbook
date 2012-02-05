@@ -1,0 +1,2065 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SearchIndexes Version="1.0">
+    <Documents>
+        <Document ID="3">
+            <Title>Rhythm of TDD</Title>
+            <Text>Rhythm of TDD
+
+My goal is for you to see the rhythm of test-driven development:
+
+1.  Quickly add a test
+2.  Run all tests and see the new one fail
+3.  Make a little change
+4.  Run all tests and see them all succeed
+5.  Refactor to remove duplication
+
+The surprises are likely to be:
+
+1.  How each test can cover a small increment of functionality
+2.  How small and ugly the changes can be to make the new tests run
+3.  How often the tests are run
+4.  How many teensy tiny steps make up the refactorings
+
+TDD Cycle
+
+The general TDD cycle is :
+
+1. Write a test. 
+
+Think about how you would like the operation in your mind to appear in your code. You are writing a story. Invent the interface you wish you had. Include all the elements in the story that you imagine will be necessary to calculate the right answers.
+
+2. Make it run. 
+
+Quickly getting that bar green dominates everything else. If a clean, simple solution is obvious, type it in. If the clean, simple solution is obvious but it will take you a minute, make a note of it and get back to the main problem, which is getting the bar green in seconds. This shift in aesthetics is hard for some experienced software engineers. They only know how to follow the rules of good engineering. Quick green excuses all sins. But only for a moment.
+
+3. Make it right.
+
+Now that the system is behaving, put the sinful ways of the recent past behind you. Step back onto the straight and narrow path of software righteousness. Remove the duplication that you have introduced to get to quick green.
+
+The goal is clean code that works. Divide and conquer. First we’ll solve the ‘that works’ part of the problem. Then we’ll solve the ‘clean code’ part. 
+
+Arrange Act Assert
+
+Arrange - create some objects
+Act - stimulate them
+Assert - check the results
+
+Canonical Test Structure
+
+If we write tests in a standard form, they’re easier to understand. We can skim-read to find expectations and assertions quickly and see how they related to the code under test. If we’re finding it difficult to write a test in a standard form, that’s often a hint that the code is too complicated or that we haven’t quite clarified our ideas.
+
+The most common form for a test is:
+
+1. Setup: Prepare the context of the test, the environment in which the target code will run.
+2. Execute: Call the target code, triggering the tested behavior.
+3. Verify: Check for a visible effect that we expect from the behavior
+4. Teardown: Clean up any leftover state that might corrupt other tests.
+
+There are other versions of this form, such as Arrange, Act, Assert, which collapse some of the stages.
+For example, no teardown. Tests that set expectations on mock objects use a variant of this structure where some of the assertions are declared before the execute stage and are implicitly checked afterwards (setup, expect, assert, teardown)
+
+Passing the First Test : The Necessary Minimum
+
+Iteration zero requires focus to get the walking skeleton working. The point is to design and validate the initial structure of the end-to-end system - where end-to-end includes deployment to a working environment - to prove that our choices of packages, libraries, and tooling will actually work. A sense of urgency will help the team to strip the functionality down to the absolute minimum sufficient to test their assumptions.
+
+Iteration zero usually brings up project chartering issues as the team looks for criteria to guide its decisions, so the project’s sponsors should expect to field some deep questions about its purpose.
+
+We have something visible we can present as a sign of progress, so we can cross off the first item on our list. Single item join, lose without bidding. The next step is to start building out real functionality.
+
+Software Development as a Learning Process
+
+Everyone involved in a software project has to learn as it progresses. For the project to succeed, the people involved have to work together just to understand what they’re supposed to achieve and to identify and resolve misunderstanding along the way. They all know there will be changes, they just don’t what changes. They need a process that will help them cope with uncertainty as their experience grows - to anticipate unanticipated changes.
+
+Feedback is the Fundamental Tool
+
+The best approach a team can take is to use empirical feedback to learn about the system and its use, and then apply that learning back to the system. A team needs repeated cycles of activity. In each cycle it adds new features and gets feedback about the quantity and quality of the work already done. The team members split the work into time boxes, within which they analyze, design, implement, and deploy as many features as they can.
+
+The fundamental TDD Cycle
+
+As we develop the system, we use TDD to give us feedback on the quality of both its implementation (Does it work?) and design (Is it well structured?). 
+
+Writing tests:
+
+Makes us clarify the acceptance criteria for the next piece of work - we have to ask ourselves how we can tell when we’re done (design)
+Encourages us to write loosely coupled components, so they can easily be tested in isolation and, at higher levels, combined together (design)
+Adds an executable description of what the code does (design)
+Adds to a complete regression suite (implementation)
+
+Running tests:
+
+Detects errors while the context is fresh in our mind (implementation)
+Lets us know when we’ve done enough, discouraging gold plating and unnecessary features (design)
+
+The Bigger Picture
+
+When implementing a feature, start by writing an acceptance test, which exercises the functionality we want to build. While it’s failing, an acceptance test demonstrates that the system does not yet implement that feature; when it passes, we’re done. When working on a feature, we use its acceptance test to guide us as to whether we actually need the code we’re about to write - we only write code that’s directly relevant. Underneath the acceptance test, we follow the unit level test/implement/refactor cycle to develop the feature; the whole cycle looks like:
+
+Inner and Outer Feedback Loops in TDD
+
+
+#
+
+
+
+The outer test loop is a measure of demonstrable progress, and the growing suite of tests protects us against regression failures when we change the system. Acceptance tests often take a while to make pass, certainly more than one check-in episode, so we usually distinguish between acceptance tests we’re working on (which are not yet included in the build) and acceptance tests for the features that have been finished (which are included in the build and must always pass).
+
+The inner loop supports the developers. The unit tests help us maintain the quality of the code and should pass soon after they’ve been written. 
+
+Testing End-to-End
+
+Wherever possible, an acceptance test should exercise the system end-to-end without directly calling its internal code. An end-to-end test interacts with the system only from the outside: through its user interface, by sending messages as if from third-party systems, by invoking its web services, by parsing reports and so on. The whole behavior of the system includes its interaction with its external environment. This is often the riskiest and most difficult aspect; we ignore it at our peril. We try to avoid acceptance tests that just exercise the internal objects of the system, unless we really need the speed-up and already have a stable set of end-to-end tests to provide cover.
+
+Levels of Testing
+
+Acceptance : Does the whole system work?
+Integration : Does our code work against code we can’t change?
+Unit : Do our objects do the right thing, are they convenient to work with?
+
+We use acceptance tests to help us, with the domain experts, understand and agree on what we are going to build next. We also use them to make sure that we haven’t broken any existing features as we continue developing. 
+
+Integration tests refer to the tests that check how some of our code works with code from outside the team that we can’t change. It might be a public framework or library from another team within our company. The distinction is that integration tests make sure that any abstractions we build over third-party code work as we expect. They help tease out configuration issues and to give quicker feedback than the slower acceptance tests.
+
+A unit test for an objects needs to create the object, provide its dependencies, interact with it, and check that it behaved as expected. So, for a class to be easy to unit-test, the class must have explicit dependencies that can easily be substituted and clear responsibilities that can easily be invoked and verified. This means that the code must be loosely coupled and highly cohesive.</Text>
+        </Document>
+        <Document ID="12">
+            <Title>Kick Starting the Test Driven Cycle</Title>
+            <Text>First test a walking skeleton
+</Text>
+        </Document>
+        <Document ID="4">
+            <Title>Strategic Questions</Title>
+            <Text>What do we mean by testing?
+When do we test?
+How do we choose what logic to test?
+How do we choose what data to test?</Text>
+        </Document>
+        <Document ID="21">
+            <Title>Test Readability</Title>
+            <Text>Test names describe features
+Test name first or last?
+Regularly read documentation generated from tests
+Write tests backwards
+How many assertions in a test method
+Streamline the test code
+Use structure to explain
+Use structure to share
+Accentuate the positive
+Delegate to subordinate objects
+Assertions and expectations
+Literals and variables
+Test data builders
+Creating similar objects
+Combining builders
+Emphasizing the domain model with factory methods
+Removing duplication at the point of use
+First remove duplication
+Then raise the game
+Communication first</Text>
+        </Document>
+        <Document ID="30">
+            <Title>Test Doubles</Title>
+            <Text>What are the indirect inputs and outputs?
+Why do we care about indirect inputs?
+Why do we care about indirect outputs?
+How do we control indirect inputs?
+How do we verify indirect outputs?
+
+Testing with doubles
+Types of test doubles
+Dummy objects
+Test stubs
+Test spies
+Mock objects
+Fake objects
+Dependency injection
+Responder
+Saboteur
+Temporary test stub
+Entity chain snipping
+Hard coded test stub
+Configurable test stub
+Fake database
+In-memory database
+Fake Web-Service
+Fake Service Layer
+Building the fake object
+Hard coded test double
+Test double subclass
+Self shunt
+Test specific subclass</Text>
+        </Document>
+        <Document ID="13">
+            <Title>Maintaining the Test Driven Cycle</Title>
+            <Text>Start each feature with an acceptance test
+Separate tests that measure progress from those that catch regressions
+Start testing with the simplest success case
+Write the test that you’d want to read
+Watch the test fail
+Develop from the inputs to the outputs
+Unit test behavior not methods
+Listen to the tests
+Tuning the cycle
+Designing for maintainability
+Higher levels of abstraction
+No And, Or, or But
+Composite simpler than the sum of its parts
+Context independence
+Hiding the right information</Text>
+        </Document>
+        <Document ID="5">
+            <Title>Goals of Test Automation</Title>
+            <Text>Tests should help us improve quality
+  	•	Executable Specification
+  •	Defect Localization
+
+Tests should help us understand the SUT
+	•	Tests as documentation
+	•	Tests as safety net
+	•	Do no harm
+
+Tests should be easy to run
+	•	Repeatable test
+
+Tests should be easy to write and maintain
+	•	Simple tests
+	•	Expressive tests
+	•	Separation of concerns
+
+Tests should require minimal maintenance as the system evolves around them
+Robust test
+
+</Text>
+        </Document>
+        <Document ID="22">
+            <Title>Test Diagnostics</Title>
+            <Text>Design to fail
+Stay close to home
+Small, focused, well named tests
+Explanatory assertion messages
+Highlight detail with matchers
+Self describing value
+Obviously canned value
+Tracer object
+Explicitly assert that expectations were satisfied
+Diagnostics are a first class feature</Text>
+        </Document>
+        <Document ID="6">
+            <Title>Philosophy of Test Automation</Title>
+            <Text>Test First or Last?
+State or Behavior Verification?</Text>
+        </Document>
+        <Document ID="31">
+            <Title>xUnit Test Patterns Glossary</Title>
+            <Text>Direct input
+Indirect input
+Direct output
+Indirect output
+Back door
+Front door
+User acceptance test
+Customer test
+Need driven development
+Behavior driven development
+Example driven development
+Component
+Depended on component
+Control point
+Interaction point
+Observation point
+Outgoing interface
+Retrospective
+Roundtrip test
+Layer crossing test
+Substitutable dependency
+Design for testability
+System under test
+Test condition
+Equivalence class
+Assertion
+Test fixture
+Fixture setup
+Test context
+Exercise SUT
+Expectation
+Expected Outcome
+Result verification
+Verify outcome
+Fixture teardown
+Test driven bug fixing
+Emergent design
+False negative
+False positive
+Fault insertion test
+
+
+
+Organizing Tests
+Right-sizing test methods</Text>
+        </Document>
+        <Document ID="14">
+            <Title>Achieving object oriented design</Title>
+            <Text>How writing a test first helps the design
+Communication over classification
+Interface and Protocol
+Value Types
+Breaking Out : Splitting a large object into a group of collaborating objects
+Budding Off : Defining a new service that an object needs and adding a new object to provide it.
+Bundling Up : Hiding related objects into a containing object
+Identify relationships with interfaces
+Compose objects to describe system behavior
+Building up to a higher-level programming
+</Text>
+        </Document>
+        <Document ID="7">
+            <Title>Test Automation Strategy</Title>
+            <Text>Mechanics of making software testable
+	Control Points and Observation Points
+Interaction Styles and Testability Patterns
+Humble Executable Pattern
+Divide and Test</Text>
+        </Document>
+        <Document ID="23">
+            <Title>Test Flexibility</Title>
+            <Text>Specify precisely what should happen and no more
+Test for information not representation
+Precise assertions
+Precise expectations
+Precise parameter matching
+Allowances and expectations
+Allow queries; expect commands
+Ignoring irrelevant objects
+Invocation order
+Only enforce invocation order when it matters
+The power of mock states</Text>
+        </Document>
+        <Document ID="40">
+            <Title>Test Driven Development Practical Guide</Title>
+            <Text>Test Driven Development : A Practical Guide
+
+Strive for simplicity
+Test the simple stuff first
+Some things are easier to test, or it's obvious how to write the tests. The types of things that this could include are:
+proper handling of null (but only in cases where null would be a potential value)
+empty collection or null object behavior
+generally, the basis case for recursive or iterative structures and computations.
+By tackling these easy tests first you quickly get into the test-first rhythm.
+Test boundary conditions early
+This is similar to testing null handling, but includes items such as empty strings, 0, and MAX_INT. Don't forget about domain-specific boundary conditions. These are often more restrictive than the natural ones. This is also a bootstrap or tester's block technique. These tests tend to be easy to write so if you're casting about for what to write, try these if there are any untested.
+Keep your tests independent of each other
+Try writing tests in such a way as to make them as independent as possible. Conditions that cause one test to fail shouldn't (ideally) cause other tests to fail as well.
+Keep test methods small
+Most importantly, keep the number of assertions to a minimum in each test method. Doing this will keep your tests small and focused. This leads to easy-to-understand tests. The "extreme" of this is one assertion per test.
+Avoid testing against databases and network resources
+When you are testing code that talks to a database or communications system (serial, wireless, network, etc.) use interfaces to decouple the code from the actual resources. Then you can use mocks.
+This decoupling is a good idea in any event, regardless of whether you are using TDD.
+Avoid printing messages to standard out and error in your tests
+A few lines of output per test look fine when running a small number of tests, but when you're running a suite of 1,000-plus tests, it just becomes so much screen garbage. Worse than that it can actually slow down the tests. One approach that you can take if there are log messages being generated is to reassign the log's output stream in the setUp() and tearDown() methods.
+If you can check something visually, try to do the same with an assertion instead. After all, these tests are supposed to be automated, with programmatic assertions to do the work.
+Start with the assert
+When you are writing a test, start by writing what you are testing: the assert. Then work backward and fill in whatever is needed to set things up for the assert.
+Always write a to_s method
+The failure reports use the to_s method of the expected and/or actual objects involved in the assertion. If meaningful implementations of to_s are provided, these failure reports will be more informative, saving time and effort.
+Mock Objects
+When we write tests we strive for :
+focused tests: ideally one assert each
+independent tests: the fixture is built and cleaned up for each test, allowing tests to run in any order
+fast tests: you want to be able to run them frequently
+There is a potential conflict here. Small, focused tests mean that you will have lots of tests, each very small and focused. To keep them independent you need to have a clean fixture for each. That means you need to rebuild (and re-cleanup) the fixture for each test, every time it is run. OK, so far so good. The last goal is the problem. We want the tests to be fast...as fast as possible...so that we can run them frequently. For trivial fixtures, that's OK. But what happens if your test fixtures get complex and time-consuming to build and cleanup?
+You may simply have a lot of fixture to put in place, or you may be working in the context of a large, complex system. This could be a database, a workflow system, or some system for which you are developing an extension. Your fixture may involve getting the system into a specific state so that it responds the way your tests require. This may be impossible to do quickly.
+In such problematic test resources, how do we reconcile our three goals of focus, independence, and speed? Mock objects provide one approach that has proven successful. Mock objects are used when it is difficult or impossible to create the required state for a problematic resource, or when access to that resource is limited. There are other interesting uses for mock objects. 
+Mock objects take the place of real objects for the purposes of testing some functionality that interacts with and is dependent on the real objects. 
+The basic idea behind mocks is to create lightweight, controllable replacements for objects you need in order to write your tests. Mocks also enable you to specify and test your code's interaction with the mocks themselves.
+Uses For Mocks
+Using mocks would seem to have several advantages beyond keeping test fixtures light-weight and fast to build and cleanup. There are several reasons to use mocks. 
+To help keep the design decoupled
+Using mocks helps to enforce interface-centric design. Programming against a mock removes the possibility of depending on the implementation of the objects being used.
+To check your code's usage of another object
+By setting expectations in a mock, we can verify that the code we are working on properly uses the mocked interface.
+To test-drive your code from the inside out
+By setting return values in the mocks, we can provide specific information to the code under development, then test that the resulting behavior is correct.
+To make your tests run faster
+By mocking things like communications or database subsystems, we can avoid the overhead involved in setting up and tearing down connections, etc.
+To make it easier to develop code that interacts with hardware devices, remote systems, and other problematic resources
+If the code we are writing needs to interact with some tricky resource, we can create a proxy layer to isolate us from the real resource. Then we can use a mock of that layer. This allows us to develop code without needing access to the actual device or system.
+To defer having to implement a class
+We can use mocks for classes that we haven't written yet but that the code we are working on needs to interact with. This lets us defer implementing those classes, letting us focus on the interface between them and the code we are writing. This allows us to leave implementation decisions until we know more. If all you need for your test is to simulate the behavior, a mock will suffice.
+To let us test-drive components in isolation from the rest of the system
+By mocking the components that the code being written has to interact with, we can focus on it in isolation. This lets us go faster, because complex interactions with other components are fully under our control.
+To promote interface-based design
+Mocks are easiest to use when you adopt an interface-heavy style of programming. By using interfaces, you make it easier to decouple your classes. Reasons to use interfaces boils down to three characteristics that an interface-rich system has: flexibility, extensibility, and plug-ability. Using mocks is made easier if you freely use interfaces, because if methods expect an interface, you can easily create a mock implementation and use that in place of a real implementation. It's no coincidence that Extract Interface is a very important refactoring.
+To encourage composition over inheritance
+This is related closely to the previous point. In general, inheritance is overused. As a result, monolithic functionality builds up in an inheritance hierarchy. A class is and always will be whatever it inherits. Mocking any aspect of a class in an inheritance hierarchy is difficult because of all of the baggage that the class inherits. The desire to mock certain aspects (e.g., persistence) tends to yield smaller classes that get smart by collaborating with other classes. Then different implementations of these classes, including mocks, can be easily interchanged.
+To refine interfaces
+Using a mock for a class you will eventually need to implement gives you an early chance to think about and refine the interface. This is especially true when using test-first design. You have to think about the interface from the view of a real class that will be using it — because you begin with a real test class that uses it.
+To test unusual, unlikely, and exceptional situations
+You can easily create a mock that will return values that don't usually occur, or that will throw exceptions on demand. This allows you to easily test exception handling. In general, you can write a mock to replicate any situation that might be hard (or even impossible) to arrange to happen for the purposes of a test.
+</Text>
+        </Document>
+        <Document ID="8">
+            <Title>Principles of Test Automation</Title>
+            <Text>Write the tests first
+Design for testability
+Use the front door first
+Communicate intent
+Don’t modify the SUT
+Keep tests independent
+Isolate the SUT
+Minimize test overlap
+Minimize untestable code
+Keep test logic out of production code
+Verify one condition per test
+Test concerns separately
+Ensure commensurate effort and responsibility</Text>
+        </Document>
+        <Document ID="15">
+            <Title>TDD with Objects</Title>
+            <Text>A web of objects
+Values and objects
+Follow the messages
+Tell, don’t ask
+Unit testing the collaborating objects
+Support for TDD with mock objects
+Test fixtures
+Expectations 
+
+</Text>
+        </Document>
+        <Document ID="41">
+            <Title>Rails Test Prescriptions</Title>
+            <Text>Shoulda Active Record Macros
+
+It is custom domain specific assertions for web apps. It just happens to use a one-to-one mapping of the macro name to the Rails macro; should have_many(:tasks) does not test behavior. Write tests that indirectly exercises the has_many macro. Useful for checking range, required fields and scenarios where it simplifies the test code.</Text>
+        </Document>
+        <Document ID="24">
+            <Title>Red Bar Patterns</Title>
+            <Text>Which test should you pick next from the list?
+Which test should be the first test?
+When do you write tests for externally produced software?
+How do you keep a technical discussion from straying off topic?
+What’s the first thing you do when a defect is reported?
+What do you do when you feel tired or stuck?
+What do you do when you are feeling lost?</Text>
+        </Document>
+        <Document ID="9">
+            <Title>A Roadmap to Effective Test Automation</Title>
+            <Text>Test automation difficulty
+Roadmap to highly maintainable automated tests
+Exercise the happy path code
+Verify direct outputs of the happy path
+Verify alternative paths
+Controlling indirect inputs
+Making tests repeatable and robust
+Verify indirect and output behavior
+Optimize test execution and maintenance
+Make the tests run faster
+Make the tests easy to understand and maintain
+Reduce the risk of missed bugs</Text>
+        </Document>
+        <Document ID="33">
+            <Title>https://github.com/drhenner/ror_ecommerce/tree/master</Title>
+            <Text>https://github.com/drhenner/ror_ecommerce/tree/master/app/controllers for examples of anti-patterns
+
+ A test double  is a “fake” object used in place of a “real” object for the purposes of automated testing. It can be used when the real object is unavailable or difficult to access from a test environment—a common example is an external credit-card payment system. It can also be used to easily re-create a specific application state that
+would be otherwise difficult to trigger in a test environment, like a database or network failure. It can be used strategically to limit the scope of a test to the object and method specifically under test. 
+
+  Setting a stub on a method says, “Ignore the real implementation of this method and return this value,”
+while setting a mock on a method is more says, “This method will return this value, and you better call the method, or else !”
+
+ A stub is a replacement for all or part of an object that prevents a normal method call from happening and instead returns a value that is preset when the stub is created.
+
+stub_chain(project.leader.address.city).and_return("Chicago")
+mock_model(Project, :method => value)
+Project.stub!(:find).and_return(mock_model(Project, :save => false))
+project.should_receive(:method).with(1)
+obj.should_receive(:method).and_return(1)
+obj.should_not_receive(:method)
+project.stub!(method).and_return(1)
+stub = stub("name", :method => value)
+
+Testing API using RSpec Request specs
+
+spec/requests/api_spec.rb
+require 'spec_helper'
+describe "api" do
+  describe "GET /api/v1/accounts/:account_id" do
+    it "returns a json hash with the proper data" do
+      get "/api/v1/accounts/abc123"
+      Yajl::Parser.parse(response.body).should == { "id" => "abc123", "billing_date" => "12/12/2009" }
+    end
+  end
+end
+
+Contract Tests
+
+require "observer"
+
+class Controller
+  def initialize
+    accelerometer = Accelerometer.new
+    lander = Lander.new(accelerometer, Altimeter.new)
+    parachute = Parachute.new(lander)
+    detachment_system = DetachmentSystem.new(parachute)
+    accelerometer.add_observer(detachment_system)
+  end
+end
+
+class Parachute
+  def initialize(lander)
+    @lander = lander
+  end
+
+  def open
+    @lander.decelerate()
+  end
+
+  def detach
+    raise "You broke the lander, idiot." unless @lander.has_landed?
+  end
+end
+
+module AccelerationObserver
+  def update(acceleration)
+    raise "Implementation responsibility"
+  end
+end
+
+class DetachmentSystem
+  include AccelerationObserver
+
+  def initialize(parachute, altimeter)
+    @parachute = parachute
+    @altimeter = altimeter # Added to fix the integration problem
+  end
+
+  def update(acceleration)
+    @parachute.detach if acceleration &lt;= -50 &amp;&amp; @altimeter.altitude &lt; 5
+  end
+end
+
+class Accelerometer
+  include Observable
+
+  def report_acceleration(acceleration)
+    changed
+    notify_observers(acceleration)
+  end
+end
+
+class Altimeter
+
+end
+
+class Lander
+  def initialize(accelerometer, altimeter)
+    @accelerometer = accelerometer
+    @altimeter = altimeter
+  end
+
+  def decelerate
+    @accelerometer.report_acceleration(-50)
+  end
+end
+
+
+
+require "rubygems"
+require "spec"
+require "spec/autorun"
+
+require "#{File.dirname(__FILE__)}/mars_rover"
+
+# What happens when we open the parachute?
+# [1] Parachute#open decelerates the Lander
+describe Parachute do
+  describe "#open" do
+    it "decelerates the lander" do
+      parachute = Parachute.new(lander = mock(Lander))
+      lander.should_receive(:decelerate)
+      parachute.open
+    end
+
+    # [10] What happens if decelerating the lander fails?
+    it "handles deceleration failure" do
+      parachute = Parachute.new(lander = mock(Lander))
+      lander.stub(:decelerate).and_raise(StandardError)
+
+      lambda {
+        parachute.open
+      }.should raise_error
+    end
+  end
+end
+
+# [2] Lander#decelerate reports the acceleration to the Accelerometer
+describe Lander do
+  describe "#decelerate" do
+    it "reports the acceleration" do
+      accelerometer = mock(Accelerometer)
+      lander = Lander.new(accelerometer, mock(Altimeter))
+      accelerometer.should_receive(:report_acceleration).with(-50)
+      lander.decelerate
+    end
+
+    # [9] What happens if the acceleration report fails?
+    it "handles acceleration report failure" do
+      accelerometer = mock(Accelerometer)
+      lander = Lander.new(accelerometer, mock(Altimeter))
+      accelerometer.stub(:report_acceleration).and_raise(StandardError)
+
+      lambda {
+        lander.decelerate
+      }.should raise_error
+    end
+  end
+end
+
+# [3] Accelerometer#report_acceleration updates the AccelerationObservers
+describe Accelerometer do
+  describe "#report_acceleration" do
+    it "can report rapid acceleration" do
+      accelerometer = Accelerometer.new
+      observer = mock(AccelerationObserver, :update => nil)
+      accelerometer.add_observer(observer)
+      observer.should_receive(:update).with(-50)
+      accelerometer.report_acceleration(-50)
+    end
+
+    # [8] Detach system doesn't handle an acceleration update failure,
+    # so we have to
+    it "handles an acceleration report failure" do
+      accelerometer = Accelerometer.new
+      observer = mock(AccelerationObserver)
+      observer.stub(:update).and_raise(StandardError.new)
+      accelerometer.add_observer(observer)
+
+      lambda {
+        accelerometer.report_acceleration(-50)
+      }.should raise_error
+    end
+  end
+end
+
+# [4] AccelerationObservers must be able to handle an update of -50
+# CONTRACT
+shared_examples_for "AccelerationObserver" do
+  before(:each) do
+    @observer = create_acceleration_observer
+  end
+
+  describe "#update" do
+    it "can handle rapid acceleration" do
+      lambda {
+        @observer.update(-50)
+      }.should_not raise_error
+    end
+  end
+end
+
+# [5] The concrete AccelerationObserver DetachmentSystem detaches the parachute
+describe DetachmentSystem do
+  it_should_behave_like "AccelerationObserver"
+
+  def create_acceleration_observer
+    DetachmentSystem.new(@parachute = mock(Parachute, :detach => nil), @altimeter = mock(Altimeter, :altitude => 0))
+  end
+
+  describe "#update" do
+    it "detaches the parachute" do
+      @parachute.should_receive(:detach)
+      @observer.update(-50)
+    end
+
+    # [7] In response to the examples for Parachute below,
+    # we need to be able to handle a detach failure
+    it "handles a detach failure" do
+      @parachute.stub(:detach).and_raise(StandardError.new)
+      lambda {
+        @observer.update(-50)
+      }.should raise_error
+    end
+
+    # [11] Don't detach when we're too high up
+    it "doesn't detach at great altitude" do
+      @altimeter.stub(:altitude => 5)
+
+      @parachute.should_not_receive(:detach)
+      @observer.update(-50)
+    end
+  end
+end
+
+# [6] Parachute can detach when the Lander has landed
+describe Parachute do
+  describe "#detach" do
+    context "while landed" do
+      it "detaches successfully" do
+        # Comment by Kevin Rutherford on the original page points out that
+        # at this point we need the contract specs for Lander#has_landed?
+        parachute = Parachute.new(lander = mock(Lander, :has_landed? => true))
+        lambda {
+          parachute.detach
+        }.should_not raise_error
+      end
+    end
+
+    context "while not landed" do
+      it "breaks the lander" do
+        parachute = Parachute.new(lander = mock(Lander, :has_landed? => false))
+        lambda {
+          parachute.detach
+        }.should raise_error("You broke the lander, idiot.")
+      end
+    end
+  end
+end
+
+http://blog.patchspace.co.uk/the-mars-lander-without-integration-tests-in-0</Text>
+        </Document>
+        <Document ID="16">
+            <Title>Building on Third Party Code</Title>
+            <Text>Only mock types that you own. Don’t mock types you can’t change.
+Write an adapter layer
+Mock application objects in integration tests</Text>
+        </Document>
+        <Document ID="42">
+            <Title>Gregory Moeck 4</Title>
+            <Text>"Why You Don't Get Mock Objects" by Gregory Moeck
+RubyConf 2011 | 2011-09-29 | Gregory Moeck (@gregmoeck)
+	•	Recommended as the best book on mocks: Growing Object-Oriented Software, Guided by Tests by Steve Freeman &amp; Nat Pryce
+	•	Common arguments against mocks
+	◦	They duplicate implementation
+	◦	They lead to brittle tests
+	•	Mock objects + procedural programming = bad idea
+	•	If you're doing traditional Rails development (which tends to follow more of a "procedural", do-this-and-then-do-that style), mock objects probably aren't for you
+	•	Mocks are not stubs
+	◦	When you're asserting on state, you're stubbing
+	◦	When you're asserting on messages between objects, you're mocking
+	•	Emphasized specific OO principles
+	◦	Tell, don't ask (i.e., commands)
+	◦	Hides internal state (i.e., no getters)
+	•	If you have these principles in play, you cannot assert on state
+	◦	You could add getters just for the tests, but that's a bad idea
+	◦	Instead, use mocks to assert on the message going between objects
+	•	Key mocking rules
+	◦	Mock roles, not objects
+	▪	Wanting to mock concrete objects is a design smell
+	▪	Well designed objects don't know explicitly who they're talking to
+	▪	They should only know the role that their collaborator is playing
+	▪	When mocking roles, TDD becomes a design process
+	▪	Helps you follow the Single Responsibility Principle
+	◦	Only mock types that you own
+	▪	If you don't own the API, there is no design feedback that you'll get by writing a test for it
+	▪	Instead of mocking a role, you're mocking an implementation
+	▪	You're duplicating production code in a test, and this is a test smell
+	◦	Only mock peers, not internals
+	▪	Decide what is inside and what is outside your object
+	▪	Not everything belongs to a peer
+	▪	Ask yourself, "Is this the role that this object is supposed to play?" If so, the behavior is internal to the object and should therefore not be mocked.
+</Text>
+        </Document>
+        <Document ID="25">
+            <Title>Test Strategy Patterns</Title>
+            <Text>Minimal fixture
+Unit test rules
+Layer crossing test
+Layer test
+Subcutaneous test
+Component test
+Round trip test
+Controlling indirect inputs
+Verifying indirect outputs
+
+How do you get a test case running that turns out to be too big?
+How do you test an object that relies on expensive or complicated resource?
+How do you test that one object communicates correctly with another?
+How do you test that the sequence in which messages are called is correct?
+How do you test error code that is unlikely to be invoked?
+How do you leave a programming session when you are programming alone?
+How do you leave a programming session when you are programming in a team?</Text>
+        </Document>
+        <Document ID="32">
+            <Title>New file</Title>
+        </Document>
+        <Document ID="34">
+            <Title>Gregory Moeck 1</Title>
+            <Text>Stubbing Is Not Enough
+There has been a good amount of buzz within the Rails community lately about "Isolation Testing", "Mock Objects", and "Fast Tests". I think that this is a wonderful trend. Particularly becuase of Corey Haines' emphasis that practicing Test-Driven development means that you need to listen to your tests in such a way that pain causes you to change yourdesign rather than your tests. It has been a long time coming that Rails developers would begin to listen to the pain coming from their tests, start to use test doubles, and start breaking dependencies within their design.This is wonderful, and I applaud the effort.
+Yet at the same time, there are a number of ways in which the community can still press listening to their tests further. For example, although "mock objects" have become almost a buzz word recently within the community, the actual objects that are being created by and large are stubs, not mocks. This means that although we're isolating our tests so that they run faster, we're not completely dealing with the underlying coupling that is pulling in all these dependencies, and making our tests slow.
+This post is my attempt to lay out how I think we can both improve the speed of our tests, while at the same time improving the quality of our architectures.
+Mocks Are Not Stubs, And Stubs Are Not Mocks
+The first clarification that I think is necessary within the community is that there is a difference between "mocks", and "stubs". Although they both replace a real object within a test, they do different things. Gerard Meszaros' definition within his book xUnit Test Patterns is helpful here:
+"A Test Stub is an object that replaces a real component on which the SUT [system under test] depends so that the test can control the indirect inputs of the SUT. It allows the test to force the SUT down paths it might not otherwise exercise...
+A Mock Object is an object that replaces a real component on which the SUT depends so that the test can verify its indirect outputs."
+The key difference is in the way you use the fake object you create.
+You would use a stub when a method depends on another object for data in the form of a query. Instead of having to setup a real collaborating object (which might include hitting the database, etc), you replace that object with another object that only returns the data that you need, so that you can avoid having to do the setup. By doing this, you isolate the object under test, because the only dependency that the test needs to run is the code for the object itself.
+This is what Corey Haines essentially does in his "Fast Rails Tests" talk. First instead of having a method directly inside of his ActiveRecord object, he moves it into a module, that looks like the following:
+class ShoppingCart &lt; ActiveRecord::Base
+  include ShoppingCartExtensions::CalculatesTotalPrice
+
+  has_many :shopping_cart_products, dependent: :destroy
+  has_many :products, :through => :shopping_cart_products
+end
+
+module ShoppingCartExtensions
+  module CalculatesTotalPrice
+    def total_price
+      products.map(&amp;:price).inject(0,&amp;:+)
+    end
+  end
+end
+Then in order to test the object in isolation he includes that mixin in a dummy object inside of his tests like this:
+class DummyCartWithProducts
+  include ShoppingCartExtensions::CalculatesTotalPrice
+end
+
+describe "Calculating Total Price" do
+  it "returns the total price of the products" do
+    cart = DummyCartWithProducts.new
+    products = [stub(price: 5), stub(price:10)]
+    cart.stub(:products) { products }
+    cart.total_price.should == 15
+  end
+end
+Essentially what he's done is treated the ActiveRecord part of the shopping cart as a collaborator, and created a stub method for its products. This way he doesn't have to add products into the database and then read them out just in order to be able to test that the cart can properly calculate its total price. And as you might have already guessed, the benefit that comes from the stubs is speed.
+Why Stubs Are Not Enough
+The primary problem that people generally point out in relation to this form of stubbing however is that it leaves you with "brittle tests" which will give you either false positives, or false negatives. So for example (and I know this is a bit contrived, but the total price method is fairly simple) imagine that I changed price to be a money object that returned the currency type, and the value. What would happen to the calculating total price method? Well, since the test for the total price method doesn't use a real product object the test is going to stay green even though when it is used in production it is going to explode. These sorts of examples can also go the other way as well- although I can't think of a way to do this for the shopping cart example - where the tests break in a refactoring, even though the actual behavior of the system hasn't changed.
+One might initially think that this whole "fast tests" thing isn't worth it if it means that our tests are going to become brittle. However the right response is to go back to how Corey starts his presentation, by noticing the difference between Test-Driven Development, and Test-First Development. Practicing Test-Driven development means that you need to listen to your tests in such a way that pain causes you to change your design rather than your tests.
+So what is wrong with the design of a system that requires stubs in order to test its objects in isolation? That problem is almost always that the system has poor encapsulation. Why? When you need to stub an object, it means that your going to be querying some dependency for information in order to test the behavior of the object. This means that the behavior of whatever object your testing is necessarily dependent upon the behavior of whatever object your stubbing.Now in some cases, maybe this isn't that bad, but in others this coupling is going to cause a ripple of changes throughout your system whenever you have to change the object that needs to be stubbed. This is a flaw in the design, not the tests.
+How Mocks Solve This Problem
+The solution to the design problem is to encapsulate our objects so that their behavior can only be affected through their public API. One of the primary ways that we can accomplish this is to follow the "Tell, Don't Ask" principle. That is, instead of asking an object for its properties and then making decisions based on that information, we want our objects to communicate with each other by telling other objects to do something. Any time something needs to happen that has to operate on the data outside of the wall of our object, we delegate that to the object that is responsible for that data to do it for us.
+Another way to think about this is that any objects collaborators should be playing a different role than the object itself, and each object should have only a single responsibility. If in the course of developing our objects we run into another responsibility/role we want to delegate that task to the object that is playing that role. If you want more information about how this solves the problem, you should read my articles, "Why you should care about encapsulation", and "Why you should care about information hiding".
+This then brings us back to using mock objects instead of stubs inside of our tests. Remember that Meszaros defined a mock object as an object that "replaces a real component on which the SUT depends so that the test can verify its indirect outputs". What he is saying is that a mock object stands in for one or more of the roles of an object's collaborators in order for us to verify the commands sent to that object. That is, since some actions do not necessarily modify the state of the isolated object under test, the way that we want to do our assertion is if it sends the right command to its collaborator.
+So for example, the following ticket machine interface is an example of a well encapsulated code:
+class TicketMachineInterface
+  def initialize(ticket_reserver)
+    @ticket_reserver = ticket_reserver
+    @current_display = ""
+  end
+
+  def number_pressed(number)
+    @current_display += number.to_s
+  end
+
+  def delete_pressed
+    @current_display.chop!
+  end
+
+  def submit_request
+    @ticket_reserver.reserve(@current_display.to_i)
+  end
+end
+If I wanted to test this object in isolation, how would I do that? Well, instead of passing in a real object that would play the role of the ticket reserver, I could pass in a mock object that would allow me to assert on the messages that was sent to it. So for example, my test would look something like the following:
+describe TicketMachineInterface do
+  it "reserves the number of tickets inputted when the user submits a request" do
+    ticket_reserver = double('ticket_reserver')
+    ticket_reserver.should_receive(:reserve).with(55)
+
+    machine = TicketMachineInterface.new(ticket_reserver)
+    machine.number_pressed(5)
+    machine.number_pressed(5)
+    machine.submit_request
+  end
+end
+The assertion here is found in the code "ticket_reserver.should_receive(:reserve).with(55)". Instead of asserting on the state of the object, I assert on its behavior. This then allows my test to respect the encapsulation of my object, and isolate it from its dependencies (which means it runs fast), while not making my tests brittle.
+The only key becomes mocking roles, instead of objects so that we can let the object decide how to accomplish what it is told to do. And when we follow this "Tell, Don't Ask" style of design it produces flexable code because it then becomes easy to swap or compose objects that play the same role in order to change the behavior of the system.
+Conclusion
+As I said at the outset, I'm quite happy that there seems to be an increasing interest in Test-Driven Development, and feeling the pain within our tests. I hope this post has given you something to think about, and some ways to think about improving the speed of your test suite without creating brittle tests. I'd love any feedback in the comments.
+</Text>
+        </Document>
+        <Document ID="17">
+            <Title>First Real Functionality</Title>
+            <Text>Outside in development
+Use nil when an argument doesn’t matter
+Discovering further work
+Finish the job
+Focus, Focus, Focus
+How should we describe expected values
+Null implementation
+The end-to-end tests pass
+Defer decisions
+Keep the code compiling
+Emergent design</Text>
+        </Document>
+        <Document ID="43">
+            <Title>Notes</Title>
+            <Text>Testability has two facets: controllability and observability. To test a component we must be able to control the input (and internal state) and observe its outputs.</Text>
+        </Document>
+        <Document ID="26">
+            <Title>Green Bar Patterns</Title>
+            <Text>What is your first implementation once you have a broken test?
+How do you most conservatively drive abstraction with tests?
+How do you implement simple operations?
+How do you implement an operation that works with collection of objects?</Text>
+        </Document>
+        <Document ID="35">
+            <Title>Gregory Moeck 2</Title>
+            <Text>Why you should care about encapsulation
+As I've been preparing to give a talk entitled "Why You Don't Get Mock Objects" at this year's RubyConf, I've begun to change my mind a little bit about why the Ruby community scorns mock objects. I used to think that the community just didn't understand how mock objects are meant to be used, but I've come be believe there is another contributing factor. I think that the reason the community doesn't really get mock objects is because they don't really understand the principles that drove the authors of mock objects to create them to begin with. Things like encapsulation, information hiding, and the law of demeter are not really well understood, which makes the motivation behind mock objects very difficult to grasp. As such, I want to try and sketch out some of these design principles in some blog posts as a way to "till the soil", and motivate why someone would bother to create mock objects in the first place. This is the first of those blog posts, where I'm going to attempt to lay out the idea of encapsulation, and why you should care about it.
+What is encapsulation?
+Before we talk about why you should care about encapsulation, it would be good define exactly what I mean by the term. In my experience people often confuse encapsulation with information hiding, but I think there is a subtle difference between the two. For the purpose of this blog post, when I say encapsulation, I mean "the behavior of an object can only be affected through its API". Or to put it negatively, an object is not well encapsulated when its behavior can be affected without calling its API. Or another way to think about it is that a well encapsulated object draws a solid boundry or wall around itself, and ensures that all the code that changes its behavior is contained within the object itself.
+Consider the following example:
+class TrainTicketStation
+  def initialize(train)
+    @train = train
+  end
+
+  def buy_ticket
+    available_seats = @train.seats.reject { |seat| seat.reserved? }
+    raise "TrainIsFull" if available_seats.length &lt; 1
+    available_seats.first.reserved = true
+  end
+end
+
+class TrainTicketWebsite
+  def initialize(train)
+    @train = train
+  end
+
+  def buy_tickets(number_of_seats)
+    available_seats = @train.seats.reject { |seat| seat.reserved? }
+    raise "InsuffecientSeats" if available_seats.length &lt; number_of_seats
+    seats_to_reserve = available_seats.slice(0, number_of_seats)
+    seats_to_reserve.each { |seat| seat.reserved = true }
+  end
+end
+If we were to have a station and a website both referencing the same train, then the behavior of both can be affected without touching their public API. For example, by reserving seats through the website, we can modify the behavior of the buy_ticket method on the ticket station object.
+This is because both objects make decisions about reserving seats based upon the state of their shared train object. And since the state of that train object is mutable, when one object changes that state, it necessarily impacts the behavior of the other object.
+Why should I care?
+The issue with poorly encapsulated code is that when we go to make a change, we have to spend a good amount of time tracing what the potential effects of this change might be on the system as a whole. And the bigger the system, the bigger this problem becomes. If you have ever worked in a system where you were afraid to make a change to the behavior of one section of the code base because you didn't know if that change would break other places, you've experienced the pain of poorly encapsulated code. To put it in the language of the definition of encapsulation that I offered earlier, what you were really worried about that in making this change, you were then changing the behavior of the system in another place.
+So for example, if we wanted to change the above example from keeping an array of available seats to just keep a count of the available seats, we would have to change the code in two places. The buy_ticket method inside of the train ticket station, and the buy_tickets method inside of the train ticket website. And if we origionally made the change inside of the train ticket station, and forgot that the train ticket website was dependent upon that, then the application would break.
+However when code is well encapsulated, it is like having a wall around its behavior, and the only things that can modify that behavior are contained within the wall. With the "wall" of encapsulation in place, we don't have to worry about if we're changing the behavior of another place in our system, because we know it is "outside the wall".
+So for example, imagine that we refactored the origional code to be the following:
+class TrainTicketStation
+  def initialize(train)
+    @train = train
+  end
+
+  def buy_ticket
+    @train.buy_tickets(1)
+  end
+end
+
+class TrainTicketWebsite
+  def initialize(train)
+    @train = train
+  end
+
+  def buy_tickets(number_of_seats)
+    @train.buy_tickets(number_of_seats)
+  end
+end
+
+class Train
+  def buy_tickets(amount)
+    raise "InsuffecientSeats" if available_seats.length &lt; amount
+    seats_to_reserve = available_seats.slice(0, number_of_seats)
+    seats_to_reserve.each { |seat| seat.reserved = true }
+  end
+
+  private
+  def available_seats
+    @seats.reject { |seat| seat.reserved? }
+  end
+end
+Now, if we wanted to make a change to only keep track of the number of available seats, instead of using an actual array of seats, the changes are all located inside of the train object. And we can modify the train, without having to modify the two ways to purchase tickets as follows:
+class Train
+  def initialize(seats)
+    @available_seats = seats
+  end
+
+  def buy_tickets(amount)
+    raise "InsuffecientSeats" if @available_seats &lt; amount
+    @available_seats -= amount
+  end
+end
+How can we maintain encapsulation?
+One of the primary ways that one can move towards well encapsulated code is to follow the "Tell, Don't Ask Principle", which is what we did in the code above. Instead of asking an object for its properties and then making decisions based on that information, objects communicate with each other by telling other objects to do something. We make it such that the only properties that can affect the behavior of the object are contained within the object itself. Any time something needs to happen that operates on the data "outside our wall", we tell the object that is responsible for that data to do it for us. For example in the above example, instead of asking the train for its seats, and then making decisions based on what we get back, we merely tell the train to reserve the proper number of seats, and let it operate on its own data.
+There are of course more design techniques that you can use to help maintain encapsulation. A couple of them are avoiding global variables or singletons, copying collections or mutable value objects(entities), and defining imutable value types. But those are topics for another post.
+For now at least I hope you've come to understand encapuslation a bit better, and why its a helpful thing to have. I welcome feedback in the comments.
+</Text>
+        </Document>
+        <Document ID="18">
+            <Title>Second Functionality</Title>
+            <Text>Making steady progress
+20/20 hindsight
+A defect exception
+Keyhole surgery for software
+Programmer hyper sensitivity
+Celebrate changing your mind
+The end of off by one errors
+Making progress while we can
+A design moment
+TDD Confidential
+Finding a role
+Incremental architecture
+Three point contact
+Dynamic as well as static design
+Distinguishing between test setup and assertions
+Other modeling techniques still work
+Domain types are better than string</Text>
+        </Document>
+        <Document ID="44">
+            <Title>Rails Test Prescription</Title>
+            <Text>The Five Characteristics of Good Tests
+
+Tests are code that don’t have tests. Your code is verified by your tests, but your tests are verified by nothing. So, having
+your tests be as clear and manageable as possible is the only way to keep your tests honest and keep them going.
+
+A successful test has the following five charteristics:
+
+• Independent
+• Repeatable
+• Clarity
+• Concise
+• Robust
+
+Independent
+
+A test is independent if the test does not depend on any external tests or data to run. An independent test suite gives the same results no matter
+what order the tests are run and also tends to limit the scope of test failures to only those tests that cover the buggy method. In contrast, a
+change in one part of an application with a very dependent test suite could trigger failures throughout your tests. A clear sign that your tests
+are not independent is if you have test failures that happen only when the test suite is run in a particular order—in fully independent tests,
+the order in which they are run should not matter.
+
+The biggest impediment to independence is the use of global data. If the application is poorly designed, it will be difficult
+or impossible to make the tests fully independent of one another. Rails fixtures are not the only possible cause of global data in a Rails test suite, but they are a really common cause. Somewhat less common in a Rails context is using a tool or third-party library in a setup and not tearing it down.
+
+For example, the FlexMock mock object tool needs to be explicitly torn down between tests, as does the Timecop time-freezing gem.
+Other than the use of fixtures, most Rails developers know to steer clear of global data in general, not just in a test suite and for the same
+reason—code that has strange, hard-to-trace dependencies. One reason factory tools are preferable to fixtures is that they result in tests
+that have better independence.
+
+Repeatable
+
+A test is repeatable if running the same test multiple times gives the same result. The hallmark of a test suite that lacks repeatability is intermittent test failure.
+
+Two classic causes of repeatability problems are time and date testing and random numbers. In both cases, the issue is that your test data
+changes from test to test. The date and time have a nasty habit of continuing to get higher, while random data tends to stubbornly insist
+on being random.
+
+ The problems with the two types of data are slightly different. Dates and times tend to lead to intermittent failures when certain magic time
+boundaries are crossed. Random numbers, in contrast, make it somewhat difficult to test both the randomness of the number and that the
+randomly generated number is used properly in whatever calculation requires it.
+
+The basic approach to solving this problem is similar for both cases and applies to any constantly changing dataset. The goal is a combination of encapsulation and mocking. Encapsulation generally involves creating a service object that wraps the changing functionality. By wrapping the functionality, you make it easier to stub or mock the output values, providing the consistency you need for testing. You might, for example, create a RandomService  class that wraps Ruby’s rand ( ) method and, critically, provides a way for you to preset a stream of output values either by using an existing mock package or by giving the service object a way to use a predefined value stream. Once you have verified that the random service class is random with its own unit tests, the service class can be stubbed in any other test to provide oxymoronic consistent random behavior.
+
+The exact mix of encapsulation and mocking varies. Timecop, for example, stubs the time and date classes with no encapsulation. Creating a time service is a superior solution.
+
+Clarity
+
+ A test is clear if its purpose is immediately understandable. Clarity in testing has two components. The first is the readability that applies to tests as it applies to any code. The second is the kind of clarity that describes how the test fits into the larger test suite. Every test should have a point, meaning it should test something different from the other tests, and that purpose should be easy to discern from reading the test.
+
+Fixtures are a test-specific issue that can lead to poor clarity, specifically, the way fixtures tend to create to “magic” results. To wit:
+
+test "the sum should be 37" do
+  assert_equal(37, User.all_total_points)
+end
+
+ Where does the 37 come from? Well, if you were to peek into the user fixture file of this fake example, you’d see that somehow the totals of
+the total points of all the users in that file add up to 37. The test passes.Yay?
+
+The two most relevant problems for the current discussion are the magic literal, 37 , which comes from nowhere, and the fact that the name
+of the test is utterly opaque about whether this is a test for the mainline case, a test for a common error condition or for some other reason. Combine these problems, and it quickly becomes next to impossible to fix the test a few months later when a change to the User  class or the fixture file breaks it.
+
+Naming obviously helps with the latter problem. Factory tools have their place solving clarity issues, as well. Since the defaults for a factory definition are preset, the definition of an object created in the test can be limited to only the attributes that are actually important to test behaving as expected. Showing those attributes in the test is an important clue toward the programmer intent. Rewriting the test with a little more clarity might result in this:
+
+test "total points should round to the nearest integer" do
+  User.make(:points => 32.1)
+  User.make(:points => 5.3)
+  assert_equal(37, User.all_total_points)
+end
+
+ Reader now knows where 37 comes from and where the test fits in the grand scheme of things. The reader might then have a better chance of fixing the test if something breaks. The test is also more independent, since it no longer relies on global fixtures—making it less likely to break.
+Long tests make it hard to identify the critical parts of the test. Basically, the guideline is that tests are code, and the same principles that would guide refactoring and cleaning up code apply. This is especially true of the rule that states “A method should only do one thing,” which here means splitting up test setups into semantically meaningful parts, as well as keeping each test focused on one particular goal.
+
+On the other hand, if you can’t write clean tests, consider the possibility that it is the code’s fault, and you need to do some redesign. If it’s hard to set up a clean test, that often indicates the code has too many internal dependencies.
+
+There’s an old programming aphorism that since debugging is more complicated than coding, if you’ve written code that is as complicated
+as you can make it, then you are by definition not skilled enough to debug it. Because tests don’t have their own tests and need to be correct,
+this aphorism suggests that you should keep your tests simple, so as to give yourself some cognitive room to understand them. In particular,
+this guideline argues against clever tricks to reduce duplication among multiple tests that share a similar structure. If you find yourself
+starting to metaprogram to generate multiple tests in your suite, you’re probably going to find that complexity working against you at some
+point. You never want to be in a position to have to decide whether a bug is in your test or in the code. Well, you’ll be in that position at some
+point, but it’s an easier place to be if the test side is relatively simple.
+
+Concise
+
+ A test is concise if it uses the minimum amount of code and objects to achieve its goal. Concise and clear are sometimes in conflict, as in the
+previous example, where the clear version is a couple of lines longer than the original version. Clear beats concise. Conciseness is useful only to the extent that it makes writing and maintaining the test suite easier.
+
+Conciseness often involves writing the minimal amount of tests or creating the minimal amount of objects to test a feature. In addition to
+being clearer, concise tests will run faster. A slow test suite is a pain in the neck and one of the best ways to prevent a slow suite is not to write slow tests. To put this another way, how many objects do you need to create to test a sort? A simple sort can be tested with two objects, though I often use three because the difference between the initial input and the sorted input is easier to see in the test. Creating any more
+objects is unnecessary and makes the test slower to write and run.
+
+To look at the issue of conciseness in another way, let’s say you have a feature in which a user is given a different title based on some kind of
+point count; a user with less than 500 points is a novice, 501–1000 is an apprentice, 1001–2000 is a journeyman, 2001–5000 is a guru, and
+5001 and up is a super Jedi rock star. How many assertions do you need to test that functionality?
+
+In this case, there’s a legitimate possibility of difference of opinion. I’d test the following cases, in practice I’d probably do separate single assertion tests. Also, in practice I’d be writing code after each new assertion.
+
+def assert_user_level(points, level)
+  User.make(:points => points)
+  assert_equal(level, user.level)
+end
+
+def test_user_point_level
+  assert_user_level(1, "novice")
+  assert_user_level(501, "apprentice")
+  assert_user_level(1001, "journeyman")
+  assert_user_level(2001, "guru")
+  assert_user_level(5001, "super jedi rock star")
+  assert_user_level(0, "novice")
+  assert_user_level(500, "novice")
+  assert_user_level(nil, "novice")
+end
+
+ That works out to one assertion for the start of each new level, plus an assertion for the special cases 0 and nil, and an assertion at the end of a level to assure that I don’t have an off-by-one bug. That’s a total of eight assertions. Given the way this code would probably be implemented, as a case  statement with the while  clauses using ranges, I don’t feel the need to test the end condition of more than one field, nor do I feel the
+need to test every point value in a range. 
+
+Robust
+
+ A test is robust if it actually tests the logic as intended. That is, the test passes when the underlying code is correct and fails when the underlying code is wrong. 
+
+A frequent cause of brittle tests is targeting the assertions of the test at surface features that might change even if the underlying logic stays
+the same. The classic example along these lines is view testing, in which you base the assertion on the actual creative text on the page that will
+frequently change, even though the basic logic stays the same. Like so:
+
+test "the view should show the project section" do
+  get :dashboard
+  assert_select("h2", :text => "My Projects")
+end
+
+ It seems a perfectly valid test —right up until somebody decides that “My Projects” is a lame header and decides to go with “My Happy Fun-Time Projects.” And breaks your test. You are often better served by testing something that slightly insulated from surface changes, like a DOM ID.
+
+test "the view should show the project section" do
+  get :dashboard
+  assert_select("h2#projects")
+end
+
+ The basic issue here is not limited to view testing. There are areas of model testing in which testing to a surface feature might be brittle in
+the face of trivial changes to the model (as opposed to tests that are brittle in the face of changes to the test data itself, which we’ve already
+discussed). For example, the test in the previous section with the novice levels is actually dependent on the specific values of the level boundaries. You might want to make the test more robust with something like this:
+
+def assert_user_level(points, level)
+  User.make(:points => points)
+  assert_equal(level, user.level)
+end
+
+def test_user_point_level
+  assert_user_level(User::NOVICE_BOUND + 1, "novice")
+  assert_user_level(User::APPRENTICE_BOUND + 1, "apprentice")
+  # And so on...
+end
+
+ You must be cautious at this point, because the other side of robustness is not just a test that brittlely fails when the logic is good but a test
+that stubbornly passes even if the underlying code is bad—a tautology, in other words. The previous test isn’t a tautology, but you can see how
+it might easily get there.
+
+Speaking of tautologies, mock objects have their own special robustness issues. It’s easy to create a tautology by using a mock object. It’s also easy to create a brittle test by virtue of the fact that a mock object often creates a hard expectation of exactly what methods will be called on the mock object. If you add an unexpected method call to the code being tested, then you can get mock object failures simply because an unexpected method has been called. I’ve had changes to a login filter cause hundreds of test failures because mock users going through the login filter bounced off the new call. One workaround, depending on your mock package, is to use something like Mocha’s mock_everything ( ) method, which automatically returns nil  for any unexpected method call without triggering an error.
+
+Find the Seam
+
+Mock objects are a specific version of a more general technique for working with legacy code, which involves finding seams in the code and exploiting them to make testing the legacy functionality possible. A seam is a place where we can change the behavior of our application
+without changing the actual code. A mock object package acts as a seam because adding the mock object, which happens in the test, changes the behavior of the code by mandating a specific response to a method call without actually executing the method. Again, the behavior of the method under test changes in the test environment without affecting behavior in the production and without changing the existing development code.
+
+It sounds magical, but the basic idea is simple, and Ruby makes it easy to execute. Essentially, redirect a method call from its intended target
+to some other code that we want to run during tests. A mock object does this by replacing the entire method call with a return value, but
+the generic form lets us do anything we want instead of the method call. We might do this if we wanted a side effect that a mock package
+wouldn’t normally provide, such as diagnostic logging. Alternately, we might want a more elaborate processing of arguments or state than a
+mock can easily provide, to re-create the output of a web service our application depends on, for example.</Text>
+        </Document>
+        <Document ID="27">
+            <Title>xUnit Patterns</Title>
+            <Text>How do you check that tests worked correctly?
+How do you create common objects needed by several tests?
+How do you release external resources in the fixture?
+How do you represent a single test case?
+How do you document the contract of the class being tested?
+How do you test for expected exceptions?
+Refactoring : How do you unify two similar looking pieces of code?
+Fixture Management : Misuse of setup method
+
+Test method
+Simple success test
+Expected exception test
+Four-Phase test
+Four-Phase test - inline
+Four-Phase test - implicit setup / teardown
+Assertion method
+Assertion messages
+Assertion identifying message
+Choosing the right assertion
+Equality assertion
+Fuzzy equality assertion
+Stated outcome assertion
+Expected exception assertion
+Expectation describing message
+Single outcome assertion
+Argument describing message
+Test case class discovery</Text>
+        </Document>
+        <Document ID="36">
+            <Title>Gregory Moeck 3</Title>
+            <Text>Why you should care about information hiding
+As I mentioned in my last post, in preparation for my upcoming RubyConf talk I'm writing a series of blog posts about the design priciples that drive the use of mock objects. In that post I covered what encapsulation is, and why you should care about it. Today I want to take up a closely related, yet slightly different topic: Information Hiding.
+What is information hiding?
+Before talking about why you should care about information hiding, lets talk a bit about what information hiding is, and what it is not. When I say that an object hides its information well, I mean that an object hides how it implements its behavior from the outside world. That is, its API only exposes what a given object does, not how it does it. I've found that people are generally confused as to the benefits of information hiding because the general example that is given to illustrate information hiding is something like the following:
+class Encapsulation
+  def initialize(value)
+    @value = value
+  end
+
+  def set_value(value)
+    @value = value
+  end
+
+  def get_value
+    @value
+  end
+end
+There are some benefits to doing something like this (you could have value be computed somehow for instance), but this isn't really accomplishing information hiding as I described above. It's really providing an API to modify the data which the object is "encapsulating". The object isn't really exposing behavior as much as it is holding data and as such, in order to use the object, you still have to keep in mind the low level details of how it works. Any code that does not hide its information behind a solid API is inherantly a leaky abstraction.
+Why should I care?
+Maybe it's just me, but when my applications get large I find it difficult to keep all of the details about how everything works in my head. Even when I'm the one who has written all of the code, it eventually becomes too much, and it only gets worse when there are multiple developers working in the same code base. But when the implementation of how an object accomplishes what its API promises to do is hidden, it enables us to treat the object essentially as a black box. We can trust that the object will do what it is supposed to do, even if we don't know how it does it.
+The biggest benefit to having good information hiding in my mind is that it allows you to build abstractions that allow you to work on higher and higher layers because you can ignore details that are not related to what your currently working on. Almost every programmer expects this out of their libraries, but rarely do they expect it from their own code.
+Consider the following ticket machine interface:
+class TicketMachineInterface
+  def initialize(ticket_reserver)
+    @ticket_reserver = ticket_reserver
+    @current_display = ""
+  end
+
+  def number_pressed(number)
+    @current_display += number.to_s
+  end
+
+  def delete_pressed
+    @current_display.chop!
+  end
+
+  def submit_request
+    @ticket_reserver.reserve(@current_display.to_i)
+  end
+end
+The key thing to notice is that the API exposes behavior instead of data, or implementation. In order to use the object, you need only to know its API, and give it a ticket reserver on creation. Notice also, that the "ticket reserver" is merely a role that another object is going to play. From the perspective of the ticket machine, all it cares about is that it implements an api to reserve tickets. It could do that by communicating over HTTP, writing to a database, or whatever. Since the ticket reserver seems to have hidden its information as well, the object is just a role, and any object which implements the role's API can just step in.
+Isn't this just encapsulation?
+You can see that one of the nice side effects of good information hiding is that it tends to produce well encapsulated code. If your API does not expose how it does what it does, it is very difficult to change the behavior of an object without calling its API. However as Nat Price has pointed out, the two still have different goals, and it can be helpful to focus on only one of thos goals at a time.
+What does this have to do with Mock Objects?
+I think that the above ticket machine interface code is a good example of encapsulated code that hides its information well. Now if you were to follow the state based sort of unit testing approach, how would you write a test for that object? I think the only way you could is to add getters or setters for the information that your attempting to "hide". Whereas with a mock object, you would write a test something like the following:
+describe TicketMachineInterface do
+  it "reserves the number of tickets inputted when the user submits a
+request" do
+    ticket_reserver = double('ticket_reserver')
+    ticket_reserver.should_receive(:reserve).with(55)
+
+    machine = TicketMachineInterface.new(ticket_reserver)
+    machine.number_pressed(5)
+    machine.number_pressed(5)
+    machine.submit_request
+  end
+end
+Conclusion
+If your interested further, I'm going to be giving my RubyConf talk on "Why You Don't Get Mock Objects", which will focus on these issues some more. I'll also likely follow up with some more blog posts after the fact.
+
+Your tests have no tests. How do you prove correctness of your test?</Text>
+        </Document>
+        <Document ID="19">
+            <Title>Handing Failure</Title>
+            <Text>Inverse salami development
+Small methods to express intent</Text>
+        </Document>
+        <Document ID="45">
+            <Title>Efficient Rails TDD</Title>
+            <Text>Good tests are:
+
+Compact
+Responsible for testing one concern only
+Fast
+DRY
+
+should respond_to
+should be_nil
+should be_valid
+
+should_not *
+
+expect {}.to change(object, :method).by(difference)
+expect {}.to change(object, :method).from(initial).to(final)
+
+should eql == a
+
+Setup
+
+before, before(:each), before(:all)
+after, after(:each), after(:all)
+describe
+it
+
+expect {}.to change(Person.count).by(1)
+
+RSpec ==, eql, equal
+
+o.should == 5        5 == 5
+o.should eql(5)      5.eql 5
+o.should equal(5)    5.equal 5
+
+Object Equality vs Identity
+
+eql, == compare values
+equal, === compare objects, classes
+
+Testing validation
+
+Create the object
+o.should_not be_valid
+o.errors.on(:first_name).should_not be_nil
+
+Testing Models
+
+Validation
+Side-effects before/after saving
+Associations
+Association proxy methods
+Named Scopes, custom finders
+Nested Attributes
+Observers
+Custom Methods
+
+context "Validations" do
+  
+  it "must have some field" do
+    p "Instantiate object with invalid property"
+    p "Check for not valid? : o.should_not be_valid?"
+    p "Check for error on right attribute : a.errors.on(:field).should_not be_nil"
+  end
+
+  it "should not use looping to get rid of the duplication for validation of fields" do
+    p "You can use domain specific custom assertions (shouda_matchers is a good choice)"
+  end
+  
+end
+
+context "Model Callbacks : Check for side effects"
+
+  it "should default a value before saving" do
+    p "Instantiate object with valid attributes"
+    p "Check the field is not populated before save"
+    p "Save"
+    p "Verify the field is populated"
+  end
+  
+  it "should send an email after saving" 
+  it "should post to a URL on delete"
+  it "has callbacks: before_save, after_save, after_destroy etc that has a corresponding trigger event such create, save etc"
+  
+  it "can test callbacks" do
+    p "Set up object in state before callback"
+    p "Trigger callback"
+    p "Check for side effect"
+  end
+
+end
+
+Factories should create valid objects.
+ 
+How to test Custom Finders
+
+Create the smallest non-trivial dataset
+Check dataset is non-trivial
+Run finder
+Check results include a subset of dataset
+
+it "should find records that match a given term" do
+ objs = [Factory(), Factory(), ...]
+ Person.all.should == objs
+ r = Person.find_custom("Foo")
+ r.should == []
+ p "Why do you need to care about the order of the returned results? It is not necessary"
+ p "We could use result.should include(obj) twice"
+end
+
+Named Scope
+
+Composable
+Testable with proxy_options
+
+How to test for Associations?
+
+Are the association methods present?
+Checking for one is enough.
+No need to test Rails unless using associations with options
+Check that method runs, if options used
+
+it "has many addresses" do
+  p = Person.new
+  p.should respond_to(:addresses)
+end
+
+Association Options
+
+Ordering
+Class name
+Foreign key
+Conditions
+
+How to test Associations with Options?
+
+Setup a non-trivial data set
+Verify that it is non-trivial.
+Run association method having options
+Verify result
+
+it "sorts addresses by zip" do
+  p = Factory(:person)
+  # Factory for addrs with zip 23456, 12345
+  Address.all.should == [addr1, addr2]
+  
+  p.addresses.should == [addr2, addr1]
+end
+
+it "requires state to be of length 2"
+  subject.state = 'cal'
+  subject.should_not be_valid                   &lt;- Declarative
+  subject.errors.on(:state).should_not be_nil   &lt;- Implementation details
+end
+
+This contains implementation details. Specify behavior. Restrict to declarative statements.
+Use shoulda matcher macros. If the implementation of custom assertion is tied to the framework,
+then tests will break during upgrade. It may have to create objects to be independent of framework API 
+but it will be slower.
+
+Add another test whenever you provide options to the Rails macros
+
+Declarative test for active record association macros respond_to(:items) will become redundant test when it is
+ exercised indirectly by another test and can be deleted.
+
+Mock, Stub, Double
+
+m = mock("Car")
+m.stub(:stop)
+m.stop => nil
+
+m.stub(:stop).and_return(true)
+m.stop => true
+
+m = mock("Car", :stop => true)
+
+Message Expectations
+
+m = mock("Car")
+m.should_receive(:stop)
+m.should_receive(:stop).and_return(true)
+
+m.should_receive(:stop).twice
+m.should_receive(:foo).exactly(5).times
+
+m.should_receive(:stop).with(/slip/) Regex - Argument that matches slip
+with(hash_including{:name => "Foo"})
+
+Partial Mocks
+
+Replace a method on an existing class
+
+jan1 = Time.civil(2010)
+Time.stub!(:now).and_return(jan1) 
+
+Add a method to an existing class
+
+Time.stub!(:jan1).and_return(jan1)
+
+Mocks allow isolation by removing dependencies.
+Mocks go stale when it is not updated after the real implementation of the mocked methods. Tedious to keep them
+in synch. 
+
+Uses of Mocks
+
+External Services
+System Services (Time, I/O, Files)
+Mature Internal API - Slow queries, Queries with complicated data setup
+
+Controllers
+
+Pass-through entities
+Mostly boiler plate - biz logic in the model
+Dumb and skinny
+
+RESTful Actions
+Display methods (Read)
+GET : index, show, new, edit
+Update
+PUT
+Create
+POST
+Delete
+DELETE
+
+REST
+Representational State Transfer
+
+All resource-based applications &amp; API's need to do similar things : create, read, update, delete
+
+It's a convention. No configuration, no ceremony. Simpler inter-process communication.
+
+Read Test Pattern
+
+Make request (with id of record if a single record)
+Check Rendering : correct template, redirect, status code, content type (html, json, xml)
+Verify variable assignments required by view
+
+Read Formula
+
+Find data based on parameters
+Assign variables
+Render
+
+Create / Update Test Pattern
+
+Make request with form fields to be created / updated
+Verify Variable Assignments
+Verify Check Success - Rendering
+Verify Failure / Error Case - Rendering, Variables
+Verify HTTP Verb Protection
+
+Update : Find record from parameters
+Create : Instantiate new model object
+Assign form fields parameters to model object
+ - This should be a single line
+ - It is a pattern, the "Controller Formula"
+Save
+Handle success - typically a redirect
+Handle failure - typically a render
+
+To find the parameters, look at the log file or do a view source in the browser.
+
+assigns[:person].should be_kind_of(Person)
+
+HTTP verb protection
+controller.should_not_receive(:create)
+get :create
+
+What is the Rails 3.2 way of :
+
+verify method: :post, only: :create
+
+Emphasize behavior over display
+Check that the application handles errors correctly
+Test views only for things that could go wrong badly - incorrect form URL, incorrect names on complicated forms, because
+they impact parameter representation
+
+View Testing
+
+render view
+response.should have_tag("form")
+
+Check JSON from controllers and use Selenium test JS.
+
+Nested Attributes
+
+it "should create an address record from attributes" do
+  expect do
+  expect do
+	    Person.create(name: 'Joe', addresses_attributes => [{city: 'SF', state: 'CA'}])
+  end.to_change (Person, count).by(1)
+	end.to_change (Address, count).by(1)
+End
+
+Value Driven Outside In BDD
+
+Write controller tests first
+Make them pending while fleshing out model
+Implement model logic with nested_scopes, associations, with rich options and proxy methods, accepts_nested_attributes_for
+Resume controller test
+Add views
+Exploratory Cucumber/Selenium test to avoid test gap between view and controller
+
+Selenium
+
+Problems:
+Very low level
+ - hard to see what's being checked
+ - hard to reuse
+ - prone to copy &amp; paste
+
+Next step
+ - pull out common methods
+ - but common file quickly gets cluttered
+ - most tests only use a small fraction of common methods
+
+Page Objects
+
+Each Page represented by an Object
+Methods are
+ - things you can do
+ - things you can see
+ - apply to this page only
+Each method returns a page object
+ - itself
+ - another page object
+
+How to build Page Objects?
+
+Model the UI in Page Objects
+entire pages
+parts of a page
+
+Advantages
+
+Reuse is easy
+Documentation
+Maintainability
+ - Changes to the UI or page require only one change of the test code, in only one place
+Method chaining
+ - Development of new tests is easy and fast
+ - Easy reuse of existing "library of things to do" on a page
+
+When to Wait?
+
+An Event Trigger
+Click, Mouse over/out
+Form submit
+
+Waiting For
+
+Page load, AJAX load, Javascript action (e.g., hide/show)
+
+Waiting for Page
+
+open "/" (will automatically wait for page)
+clicking on a link (wait_for :page)
+
+Wait for Element
+
+click "locator", :wait_for => :element, :element => 'locator'
+
+Wait for Visibility
+
+Something appearing or disappearing dynamically
+click "locator", :wait_for => :visible, :element => 'locator'
+
+Note: The element must be present (see wait for element) or visibility check will fail with a "no element
+found error"
+
+Custom Matchers
+
+[1,2,3] == [2,3,1]
+
+([1,2,3]-[2,3,4]).should be_empty
+[1,2,3].should be_commutative_with([2,3,1])
+
+1. Create a new file custom_matchers.rb
+2. Define module CustomMatchers 
+3. Define a class CommutationMatcher class
+4. Implement the methods: matches?, failure_message_for_should, initialize.
+5. be_commutative_with method is defined outside the class within the module
+
+Access Control
+
+Controller Access : Disallowed action should be blocked via before_filters.
+View Access : Disallowed pages/actions should not be linked to. Purely cosmetic</Text>
+        </Document>
+        <Document ID="28">
+            <Title>Mastering TDD</Title>
+            <Text>How large should your tests be?
+What don’t you have to test?
+How do you know if you have good tests?
+How much feedback do you need?
+When should you delete tests?
+What are the causes of fragile tests? [Refer: Test Smells]</Text>
+        </Document>
+        <Document ID="37">
+            <Title>JB Rainsberger</Title>
+            <Text>The World’s Best Intro to TDD
+#
+Join J. B. Rainsberger and learn whether test-driven development (TDD) will work for you. In addition to basic TDD training, this course unlocks some of the secrets of modular design from one of TDD’s master practitioners. Bring your laptop and be prepared to change the way you write software.
+Audience
+You have had professional experience on at least one software project in Java, C#, Python or Ruby. You would like to know how to design software incrementally with test-driven development.
+You will learn…
+		how test-driven development can help you deliver software your users will love
+		how test-driven development can help you earn revenue sooner on your software projects
+		how to perform the steps of test-driven development
+		the secrets of truly modular software design
+		how to practise test-driven development and integrate it into your daily practice
+		how to design effectively with interfaces
+		how to test-drive a web user interface without having to deploy your application
+Topics
+		An introduction to test-driven development and the theory of constraints
+		Realizing the promise of modular design with test-driven development
+		A demonstration of the technique of test-driven development
+		Exercise: test-drive a single-class design
+		Making test-driven development a daily habit
+		A demonstration of evolving an architecture with test-driven development
+		Exercise: test-drive a multiple-class design
+		Zero integration defects without integration tests
+		A demonstration of evolving an architecture through interfaces
+		Exercise: test-drive a multiple-class design with interfaces and test doubles
+		Remaining questions and answers
+		
+		Every time I say “I need a thing to do X” I introduce an interface. In my current test, I end up stubbing or mocking one of those tests.
+		Every time I stub a method, I make an assumption about what values that method can return. To check that assumption, I have to write a test that expects the return value I’ve just stubbed. I use only basic logic there: if A depends on B returning x, then I have to know that B can return x, so I have to write a test for that.
+		Every time I mock a method, I make an assumption about a service the interface provides. To check that assumption, I have to write a test that tries to invoke that method with the parameters I just expected. Again, I use only basic logic there: if A causes B to invoke c(d, e, f) then I have to know that I’ve tested what happens when B invokes c(d, e, f), so I have to write a test for that.
+		Every time I introduce a method on an interface, I make a decision about its behavior, which forms the contract of that method. To justify that decision, I have to write tests that help me implement that behavior correctly whenever I implement that interface. I write contract tests for that. Once again, I use only basic logic there: if A claims to be able to do c(d, e, f) with outcomes x, y, and z, then when B implements A, it must be able to do c(d, e, f) with outcomes x, y, and z (and possibly other non-destructive outcomes).
+		I simply kept applying these points over and over again until I stopped needing tests. Along the way, I found a problem and fixed it before it left my hands.
+http://blog.thecodewhisperer.com/2009/09/30/surely-the-mars-rover-needed-integrated-tests-maybe-not
+</Text>
+        </Document>
+        <Document ID="46">
+            <Title>Questions</Title>
+            <Text>How do make the test drive the development?
+
+From Bootcamp Participants
+
+1) Keeping Mocks in Synch
+2) How to test JSON API ?</Text>
+        </Document>
+        <Document ID="29">
+            <Title>Result Verification Patterns</Title>
+            <Text>Verify state or behavior
+State verification
+Procedural state verification
+Expected state specification
+Using built-in assertions
+Verifying behavior
+Procedural behavior verification
+Expected behavior verification
+Reducing test code duplication
+Custom assertion
+Custom equality assertion
+Domain assertion
+Diagnostic assertion
+Verification method
+Custom assertion test
+Delta assertion
+Guard assertion
+Avoiding conditional test logic
+Eliminating if statements
+Eliminating loops
+Techniques for writing easy to understand tests : Working Backward, Outside-In
+Using TDD to write test utility methods</Text>
+        </Document>
+        <Document ID="38">
+            <Title>TDD as if you meant it</Title>
+            <Text>Add a test : The simplest test you can think of
+See it fail : Not compiling counts as failing
+Make all tests pass : By writing the least code possible
+Refactor : In the shortest time possible
+Repeat until done
+
+Rules for Adding Code
+
+Be very strict about this:
+
+Only add code to make a failing test pass
+Only add bran-new code to test methods in a test class
+Only create a new non-test methods by "extract method"
+Only create new classes as destinations for "move method"
+
+Work in pairs, "navigator" to keep you honest
+
+Use Version Control
+
+Check in on every green bar
+Describe your current design thinking in the comment
+
+Optional: Publish a link to your code in the comments section.
+
+
+10 Minute Check
+
+How's it going? Who is finding it difficult to test?
+Who's written a class called Board or Game?
+
+Checkpoint
+
+Review
+
+Top Down / Bottom Up
+Backtracking
+
+Bob Martin description of TDD :
+	1.	You are not allowed to write any production code unless it is to make a failing unit test pass.
+	2.	You are not allowed to write any more of a unit test than is sufficient to fail; and compilation failures are failures.
+	3.	You are not allowed to write any more production code than is sufficient to pass the one failing unit test.
+I took these rules as a starting point and then tried to produce stronger rules that would force the programmer (pair) to allow the design to evolve. I don’t think I’ve yet landed on the best set of rules, and people report difficulties with various part of it, but if I were going to do the workshop today these are the rules I would enforce (subject to change and refinement at any time, last  updated 3 Sept 2011):
+The Rules
+	1.	Write exactly one new test, the smallest test you can that seems to point in the direction of a solution
+	2.	See it fail
+	3.	Make the test from (1) pass by writing the least implementation code you can in the test method. 
+	4.	Refactor to remove duplication, and otherwise as required to improve the design. Be strict about using these moves:
+	1.	you want a new method—wait until refactoring time, then… create new (non-test) methods by doing one of these, and in no other way:
+	1.	preferred: do Extract Method on implementation code created as per (3) to create a new method in the test class, or
+	2.	if you must: move implementation code as per (3) into an existing implementation method
+	2.	you want a new class—wait until refactoring time, then… create non-test classes to provide a destination for a Move Method and for no other reason
+	1.	populate implementation classes with methods by doing Move Method, and no other way
+The member of the pair without their hands on the keyboard must be very strict in enforcing these rules, especially 4.1 and 4.2
+After some respectable time coding, contrast and compare solutions. Consider the classes created. How many? How big? What mutable state? Consider the methods created How many? How long? Apply a few simple design metrics. How was the experience of working this way different from the usual? How could these ideas be applied in your day job?
+http://www.infoq.com/presentations/TDD-as-if-You-Meant-It
+
+ William Wake's metaphor for the test-first cycle: a traffic light. 
+1 The Test-First Traffic Light
+Test-first programming is like a traffic light. A normal traffic light has green, yellow, and red lights. It starts green, goes yellow, then red, and back to green again. Occasionally, you come across a light where the pattern is different, perhaps blinking yellow or blinking red. When you see this, you pay extra attention, and say, "What's going on?"
+It shows a green bar when all tests pass, and a red bar when any test fails. We'll think of those as green and red lights on a traffic light; failing to compile will be a yellow light. Just like a real traffic light, we expect to go green, yellow, red; green, yellow, red.
+	1.	Start. (Green light!)
+	2.	Write a test.
+	3.	Try to run the test. It fails to compile, because the called routine hasn't been written yet. (Yellow light!)
+	4.	Write a stub for the new routine.
+	5.	Try to run the test. It fails, because the stub doesn't do anything yet. (Red light!)
+	6.	Write the body of the stubbed routine.
+	7.	Try to run the test. It passes. (Green light again!)
+	8.	Start the cycle again.
+
+2 Abnormal Patterns
+
+From green to green:
+The test passed right away. Either the test is bad, or you've already implemented the feature being tested. You might consider modifying the implementation just to see the test fail.
+
+From green to red:
+The test failed right away. This is OK if it's a new test of an existing routine.
+
+From yellow to yellow:
+Oops - syntax error creating the stub.
+
+From yellow to green:
+The test didn't compile without the stub, but adding the stub let the test pass. This is very suspicious: if a do-nothing stub makes the test work, is the test valid? This isn't to say that there is a problem. In static language like Java and C++, if a method is declared to return something, then it must. In this case your stub method should return the closest value to nothing, typically 0 or null. For tests that test a basis case, this often is enough to pass the test. an example is testing the length of an empty collection... it should be zero.
+
+From red to yellow:
+Oops - syntax error implementing the routine.
+
+From red to red:
+New code didn't work. This happens to everyone occasionally - just fix the code. But - if it happens a lot, it's telling you to move to smaller tests (so you'll add smaller bits of new code as well).
+
+3 Quick Cycle
+The cycle doesn't take very long:
+	•	write test, stub, and body
+	•	compile three times
+	•	run twice
+Depending on your environment, one to five minutes might be a typically time to run through the cycle. If you find yourself spending 10 to 15 minutes or longer, the cycle is too long, and you need to move to smaller tests.
+4 Refactoring
+When you're refactoring, you're often not seeing the traffic light go yellow and red. It's more like those days when you drive down the road and hit every light green.
+	1.	Start. (Green light.)
+	2.	Apply the refactoring.
+	3.	Compile and run the test. (Green light again!)
+
+You will get the occasional yellow or red light, telling you to watch your syntax, or be more careful in your transformations, or because the refactoring uses the compiler to tell what's safe. But mostly, it's green lights all the way.
+[In the event that you are not familiar with the idea of refactoring, I'll be discussing it in a future issue. The short definition is "improving the design of existing code." To learn more about refactoring have a look at Fowler's book on the subject [2] or the refactoring web site he maintains [1]. Later in this issue, we'll do a bit of refactoring.. consider it a teaser for the upcoming issue. -Ed]
+5 Example
+Let's see a small example of test-first programming. Suppose you have a person object like this:
+public class Person {
+    String name;
+    int favorite = -1;
+
+    public Person (String name, int favorite) {
+        this.name = name;
+        this.favorite = favorite;
+    }
+}
+You'd like to represent this as an XML string like this: &lt;name>the-name&lt;/name> (if favorite is less than 0), or &lt;name favorite="nn">the-name&lt;/name> if favorite is 0 or more.
+	•	Start with a green light.
+	•	Create a testPerson p = new Person("Pop", -1);
+	•	assertEquals("&lt;name>Pop&lt;/name>", p.asXml());
+	•	
+	•	When you compile, you get a syntax error (yellow light!) because the asXml() method doesn't exist.
+	•	Stub out the method on Person:public String asXml() {return null;}
+	•	
+	•	Compile and run; the test fails (red light!).
+	•	Implement the method as simply as possible:public String asXml() {return "&lt;name>" + name + "&lt;/name>";}
+	•	
+	•	
+	•	Compile and run (green light!) - a full cycle.
+	•	We can add a second test, and see another situation:Person p2 = new Person("Mom", 1);
+	•	assertEquals("&lt;name favorite="1">Mom&lt;/name>", p2.asXml());
+	•	
+	•	When we compile and run, we skip the yellow light, and get a red light. Why? Because asXml() exists but doesn't have the added functionality.
+	•	Implement the extra code:public String asXml() {
+	•	    return "&lt;name"
+	•	           + (favorite &lt; 0 ? "" : " favorite="" + favorite + """) + ">"
+	•	           + name + "&lt;/name>";
+	•	}
+	•	
+	•	Run the tests again (green light).
+	•	So, we've finished the task. Now it's time to look at the code we've written and consider whether refactoring is called for. You bet it is. Time for a mini-lesson on refactoring. The return string in the asXML() method is rather obtuse. Let's refactor by using the "Introduce Explaining Variable" refactoring to extract the attribute string generation:public String asXml() {
+	•	    String favoriteAttribute = favorite &lt; 0
+	•	                                 ? ""
+	•	                                 : "favorite="" + favorite + """;
+	•	    return "&lt;name" + favoriteAttribute + ">" + name + "&lt;/name>";
+	•	}
+	•	 Now, that's better. Notice that it is also easier now to add more attributes if the need arises.
+	•	Run the tests (green light).
+	•	Hmmm... I'm going to go a step further and refactor the favoriteAttribute out using "Replace Temp With Query":private String favoriteAsXml() {
+	•	    return (favorite &lt; 0 ? "" : "favorite="" + favorite + """; 
+	•	}
+	•	
+	•	public String asXml() {
+	•	    return "&lt;name" + favoriteAsXml() + ">" + name + "&lt;/name>";
+	•	}
+	•	
+	•	Run the test, green light. See how running the tests after each refactoring gives us reassurance that we haven't broken anything and confidence to continue.
+	•	Now that the conditional expression is off on its own we can clean that up by replacing it with a more readable control structure:private String favoriteAsXml() {
+	•	    if (favorite &lt; 0)
+	•	        return "";
+	•	    else
+	•	        return "favorite="" + favorite + """;
+	•	}
+	•	
+	•	Run the tests once more. Green. There. Very clean, very modular, very readable. Notice that the method I added is marked private since it is a product of refactoring and not part of the behavior/interface of the person class.
+
+6 Conclusion
+Visualize the traffic light as you code, until any abnormal pattern gives you just a little twinge.
+
+7 In Closing
+I hope you enjoyed this exploration of the flow of test-first. In the next issue we'll explore what it means to code intentionally and how to do it.
+
+</Text>
+        </Document>
+        <Document ID="47">
+            <Title>oopsla2004</Title>
+            <Text>Mock Roles, not ObjectsSteve Freeman, Nat Pryce, Tim Mackinnon, Joe Walnes ThoughtWorks UKBerkshire House, 168-173 High Holborn London WC1V 7AA{sfreeman, npryce, tmackinnon, jwalnes} @thoughtworks.comABSTRACTMock Objects is an extension to Test-Driven Development that supports good Object-Oriented design by guiding the discovery of a coherent system of types within a code base. It turns out to be less interesting as a technique for isolating tests from third-party libraries than is widely thought. This paper describes the process of using Mock Objects with an extended example and reports best and worst practices gained from experience of applying the process. It also introduces jMock, a Java framework that embodies our collective experience.Categories and Subject DescriptorsD.2.2 [Software Engineering]: Design Tools and Techniques, Object-Oriented design methodsGeneral TermsDesign, Verification.KeywordsTest-Driven Development, Mock Objects, Java..1. INTRODUCTIONMock Objects is misnamed. It is really a technique for identifying types in a system based on the roles that objects play.In [10] we introduced the concept of Mock Objects as a technique to support Test-Driven Development. We stated that it encouraged better structured tests and, more importantly, improved domain code by preserving encapsulation, reducing dependencies and clarifying the interactions between classes. This paper describes how we have refined and adjusted the technique based on our experience since then. In particular, we now understand that the most important benefit of Mock Objects is what we originally called “interface discovery”. We have also reimplemented our framework to support dynamic generation of Mock Objects, based on this experience.The rest of this section establishes our understanding of Test- Driven Development and good practice in Object-Oriented Programming, and then introduces the Mock Object concept. The rest of the paper introduces Need-Driven Development, as Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. To copy otherwise, or republish, to post on servers or to redistribute to lists,requires prior specific permission and/or a fee. Conference’04, Month 1–2, 2004, City, State, Country. Copyright 2004 ACM 1-58113-000-0/00/0004...$5.00.expressed using Mock Objects, and shows a worked example. Then we discuss our experiences of developing with Mock Objects and describe how we applied these to jMock, our Mock Object framework.1.1 Test-Driven DevelopmentIn Test-Driven Development (TDD), programmers write tests, called Programmer Tests, for a unit of code before they write the code itself [1]. Writing tests is a design activity, it specifies each requirement in the form of an executable example that can be shown to work. As the code base grows, the programmers refactor it [4], improving its design by removing duplication and clarifying its intent. These refactorings can be made with confidence because the test-first approach, by definition, guarantees a very high degree of test coverage to catch mistakes.This changes design from a process of invention, where the developer thinks hard about what a unit of code should do and then implements it, to a process of discovery, where the developer adds small increments of functionality and then extracts structure from the working code.Using TDD has many benefits but the most relevant is that it directs the programmer to think about the design of code from its intended use, rather than from its implementation. TDD also tends to produce simpler code because it focuses on immediate requirements rather than future-proofing and because the emphasis on refactoring allows developers to fix design weaknesses as their understanding of the domain improves.1.2 Object-Oriented ProgrammingA running Object-Oriented (OO) program is a web of objects that collaborate by sending messages to each other. As described by Beck and Cunningham [2], “no object is an island. ... All objects stand in relationship to others, on whom they rely for services and control”. The visible behaviour of each object is defined in terms of how it sends messages and returns results in response to receiving messages.Figure 1. A Web of Collaborating ObjectsThe benefit of OO is that it defines a unit of modularity which is internally coherent but has minimal coupling to the rest of the system. This makes it easy to modify software by changing how￼￼￼￼￼
+objects are composed together into an application. To achieve this flexibility in practice, objects in a well-designed system should only send messages to their immediate neighbours, otherwise known as the Law of Demeter [15].Note that the immediate neighbours of an object do not include objects whose references are returned from a call to another object. Programmers should avoid writing code that looks like:dog.getBody().getTail().wag();colloquially known as a “Train Wreck”. This is bad because this one line depends on the interfaces and implied structure of three different objects. This style laces structural dependencies between unrelated objects throughout a code base. The solution is described by the heuristic "Tell, Don't Ask" [7], so we rewrite our example as:dog.expressHappiness();and let the implementation of the dog decide what this means.Given an object that talks only to its immediate neighbours, we can describe it in terms of the services it provides and the services it requires from those neighbours. We call those required services outgoing interfaces because that is how the object calls out to other objects.1.3 Test-Driven Development of ObjectOriented ProgramsIf we concentrate on an object’s external interactions, we can test it by calling one of its services and tracking the resulting interactions with its neighbours. If we are programming test-first, we can define those tests in terms of outgoing interfaces (which might not yet exist) because that’s how we can tell whether an action has succeeded.For example, we decide that dog.expressHappiness() has succeeded when its implementation has called body.wagTail(). This is a design decision that we make when developing the dog object about how to implement one of its services (note that we’re still avoiding a Train Wreck by not asking the body about its implementation of a tail).If the DogBody object does not yet have a wagTail() method, this test has identified a new requirement that it must fulfil. We don’t want to stop now and implement the new feature, because that would be a distraction from the current task and because the implementation of wagTail() might trigger an unpredictably long chain of further implementations. Instead we provide a false implementation of the DogBody object that pretends to implement the method. Now we can instrument that false object to see if wagTail() is actually called when testing expressHappiness().To summarise, we test an object by replacing its neighbours with objects that test that they are called as expected and stub any behaviour that the caller requires. These replacements are called mock objects. We call the technique of TDD with mock objects, Mock Objects.2. MOCKOBJECTSANDNEED-DRIVENDEVELOPMENTMock Objects changes the focus of TDD from thinking about the changes in state of an object to thinking about its interactions with other objects. We use Mock Objects to let us write the code under test as if it had everything it needs from its environment. This process shows us what an object’s environment should be so we can then provide it.2.1 Need-DrivenDevelopmentA core principle of Lean Development is that value should be pulled into existence from demand, rather than pushed from implementation: “The effect of ‘pull’ is that production is not based on forecast; commitment is delayed until demand is present to indicate what the customer really wants.” [16].This is the flow of programming with Mock Objects. By testing an object in isolation, the programmer is forced to consider an object’s interactions with its collaborators in the abstract, possibly before those collaborators exist. TDD with Mock Objects guides interface design by the services that an object requires, not just those it provides. This process results in a system of narrow interfaces each of which defines a role in an interaction between objects, rather than wide interfaces that describe all the features provided by a class. We call this approach Need-Driven Development.For example, Figure 2 depicts a test of object A. To fulfil the needs of A, we discover that it needs a service S. While testing A we mock the responsibilities of S without defining a concrete implementation.Test AFigure 2. Interface DiscoveryOnce we have implemented A to satisfy its requirements we can switch focus and implement an object that performs the role of S. This is shown as object B in Figure 3. This process will then discover services required by B, which we again mock out until we have finished our implementation of B.￼￼￼mock S￼￼|S￼mock T￼￼￼TestSBTU￼￼mock UFigure 3. Iterative Interface DiscoveryWe continue this process until we reach a layer that implements real functionality in terms of the system runtime or external libraries.The end result is that our application is structured as a composition of objects that communicate through narrowly defined role interfaces (Figure 4). As another writer put it, "From each according to his abilities, to each according to his needs!" [11].|
+￼￼C ABTESUFigure 4. A Web of Objects Collaborating Through RolesOur experience is that systems we produce this way tend towards very flat class hierarchies. This avoids well-known problems, such as the Fragile Base Class [12], which make systems harder to understand and modify.This process is similar to traditional Top-Down Development, in which the programmer starts at the highest level of abstraction and proceeds, layer by layer, to fill in the detail. The intention is that each layer of code is written in a coherent terminology, defined in terms of the next level of abstraction. This is difficult to achieve in practice because the most important decisions have to be taken early and it is hard to avoid duplication across lower level components. TDD mitigates this by including Refactoring in its process.Programming from the Bottom-Up has different risks. All the authors have had the experience of developing a supporting class in isolation, as part of a larger task, only to find that the result was not right because we had misunderstood something.We find that Need-Driven Development helps us stay focussed on the requirements in hand and to develop coherent objects.3. A WORKED EXAMPLETo illustrate the technique, we will work through an example. Consider a component that caches key-based retrievals from an object loading framework. The instances become invalid a given time after they've been loaded, so sometimes we want to force a reload.With Mock Objects we use a common structure, identified in [10], for programmer tests.1. Create the test fixture including any mock objects2. Define expectations and stubs on the mock objects3. Invoke the method to be tested4. Verify expectations and assert any postconditionsThis makes the tests easier to read.3.1 An Object LoaderOur first programmer test should be a simple success case, to load and return objects that are not in the cache. In the case, we expect to call the loader exactly once with each key, and we need to check that the right value is returned from the cache. Using the jMock framework, described in detail later, we can write out a JUnit [9] test for this (we have left out instance creation for brevity. KEY and VALUE are constants in the test case, not part of the jMock framework).public class TimedCacheTest {public void testLoadsObjectThatIsNotCached() {    // we expect to call load    // exactly once with the key,    // this will return the given value    mockLoader.expect(once())      .method("load").with( eq(KEY) )      .will(returnValue(VALUE));    mockLoader.expect(once())      .method("load").with( eq(KEY2) )      .will(returnValue(VALUE2));    assertSame( "should be first object",                VALUE, cache.lookup(KEY) );    assertSame( "should be second object",                VALUE2, cache.lookup(KEY2) );￼￼￼￼￼￼￼|￼￼V DW￼￼￼￼￼￼￼￼￼￼|￼￼    mockLoader.verify();}jMock uses reflection to match methods by name and parameters. The jMock syntax for defining expectation is unusual, the first expectation is equivalent to:expectation = mockLoader.expect(once()); expectation.method("load"); expectation.with( eq(KEY) ); expectation.will(returnValue(VALUE));We daisy-chain these calls to make the tests more compact and readable; this is discussed later.The test implies that the Cache has relationships with something that represents an object loader.  TimedCache cache = new TimedCache (    (ObjectLoader)mockLoader;);The test says that we should call the Object Loader exactly once for each key to get a value. We call verify() on the mock object at the end of the test to check that our expectations have been met. An implementation that passes the test would be:public class TimedCache {private ObjectLoader loader;// constructorpublic Object lookup(Object key) {    return loader.load(key);  }}￼|￼￼￼￼￼￼￼￼￼}3.1.1 Discovering a New InterfaceWhat the test actually checks is that the Cache talks correctly to any object that implements ObjectLoader; the tests for the real Object Loader will be elsewhere. To write the test, all we need is an empty interface called ObjectLoader so we can construct the mock object. To pass the test, all we need is a load() method that can accept a key. We have discovered the need for a type:public interface ObjectLoader {    Object load(Object theKey);}We have minimised the dependency between our cache and whatever object loading framework we eventually use. The mock object framework also has the advantage that we avoid difficulties with complex setup or changeable data at this level of testing. This leaves us free to think about the relationships between objects, rather than how to get the test infrastructure to work.|￼￼￼
+3.2 IntroducingCachingThe next test case is to look up a value twice and not have it loaded the second time. We expect to call the loader exactly once with a given key and return the found value. Our second test is:public void testCachedObjectsAreNotReloaded() { mockLoader.expect(once())value and then look it up again within its lifetime. We expect to get a timestamp twice, once for the first load and once for the second look up; we expect to call the loader exactly once with the given key and return the found value; and, we expect to compare the two timestamps to make sure that the cache is still valid.For brevity, we will leave out the instantiation of the timestamp objects loadTime and fetchTime. The test is now:public void testReturnsCachedObjectWithinTimeout() {￼￼.method("load").with( eq(KEY) ).will( returnValue(VALUE) );￼￼￼assertSame(assertSame("loaded object",VALUE, cache.lookup(KEY) );"cached object",VALUE, cache.lookup(KEY) );mockClock.expect(atLeastOnce()) .method("getCurrentTime").withNoArguments() .will( returnValues(loadTime, fetchTime) );  mockLoader.expect(once())    .method("load").with( eq(KEY) )    .will( returnValue(VALUE) );mockReloadPolicy.expect(atLeastOnce()) .method("shouldReload")       .with( eq(loadTime), eq(fetchTime) )     .will( returnValue(false) );  assertSame( "should be loaded object",              VALUE, cache.lookup(KEY) );  assertSame( "should be cached object",              VALUE, cache.lookup(KEY) );}Again, given the lifetime requirements, we pass the Clock and Reload Policy in to the constructor.TimedCache cache = new TimedCache(  (ObjectLoader)mockLoader,  (Clock)mockClock,  (ReloadPolicy)mockReloadPolicy);This test, of course, fails with message:AssertionFailedError:mockClock: expected method was not invoked:   expected at least once:    getCurrentTime(no arguments),returns &lt;loadTime>, then returns &lt;fetchTime>This failure was caught during the verify() and shows that we need to introduce timing behaviour to the Cache. The next change to TimedCache is a bit larger. We add a simple TimestampedValue class to hold a timestamp/value pair, and loadObject() loads the requested object and inserts it with the current time as a TimestampedValue into cachedValues.private class TimestampedValue {  public final Object value;  public final Timestamp loadTime;}public Object lookup(Object theKey) {  TimestampedValue found =(TimestampedValue) cachedValues.get(theKey);  if( found == null ||      reloadPolicy.shouldReload(found.loadTime, clock.getCurrentTime() ) found = loadObject(theKey);  return found.value;}￼￼￼￼￼￼￼￼}￼We have left out the calls to verify() which in practice are handled automatically by the MockObjectTestCase class. This test, of course, fails with a message:DynamicMockError: mockObjectLoader: no match found Invoked: load(&lt;key>)in:expected once and has been invoked:  load( eq(&lt;key>) ), returns &lt;value>This tells us that we have called load() a second, unexpected time with the key. The lines after “in:” describe the interactions we expect to have with the Object Loader during the test. We can pass this test by adding a hash map to the Cache; we need a hash map, rather than just a value field, so that the first test will still pass.public Object lookup(Object key) {  Object value = cachedValues.get(key);  if (value == null) {    value = loader.load(key);    cachedValues.put(key, value);  }  return value;}There is, of course, an implication here that we cannot load null values which we will treat as a requirement. In this case we would also add tests to show what happens when a value is missing.3.2.1 Testing interactionsBy concentrating on the interactions between objects, rather than their state, we can show that the cache does not have to go back to the loader once a value has been retrieved; it calls lookup() twice, but fails if load() is called more than once.We also benefit from failing at the right time when the error occurs, rather than at the end of the test. The stack trace takes us to the load() within the second lookup(), and the failure message tells what has happened and what should have.3.3 IntroducingTimeWe have a requirement for time-dependent behaviour. We do not want programmer tests to use system time because that makes them subject to non-deterministic failures and timing pauses will slow them down, so we introduce a Clock object that returns Timestamp objects. We don’t want to think too hard just yet about what it means for a value to expire, so we defer that decision to a ReloadPolicy object.This requirement changes the premise of the previous cache hit test, so we’ll adapt and rename it. The test is now to look up a{}￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼
+3.3.1 Programming by CompositionYou might notice that everything that the TimedCache needs is passed into it, either in the constructor or with the method call. This is more or less forced on the programmer by the need to substitute the neighbouring objects with mock implementations. We believe that this is a strength, because it pushes the design towards small, focussed objects that interact only with known collaborators. It also encourages the programmer to create types to represent abstract concepts in the system, such as the ReloadPolicy, which gives a clearer separation of concerns in the code.3.3.2 Programming in the AbstractThe test now also checks that the Cache finds the current time twice, once for each lookup, and routes those values correctly to the reload policy. We don’t yet have to define what we mean by time or how a value goes stale, we’re just concerned with the essential flow of the method. Everything to do with external time is abstracted away into interfaces that we have not yet implemented, just as we abstracted away the object loading infrastructure. This code treats the timestamps as opaque types, so we can use dummy implementations. This leaves us free to concentrate on getting the core caching behaviour right.3.4 IntroducingSequenceWe are also concerned that the timestamp for an object is not set before it’s loaded into the cache. That is, we expect to retrieve the current time after we load the object. We can adjust the test to enforce this sequence.public void testReturnsCachedObjectWithinTimeout() {  mockLoader.expect(once())    .method("load").with( eq(KEY) )    .will( returnValue(VALUE) );  mockClock.expect(atLeastOnce())    .after(mockLoader, "load").method("getCurrentTime").withNoArguments() .will( returnValues(loadTime, fetchTime) );mockReloadPolicy.expect(atLeastOnce()) .method("shouldReload")       .with( eq(loadTime), eq(fetchTime) )     .will( returnValue(false) );  assertSame( "should be loaded object",              VALUE, cache.lookup(KEY) );  assertSame( "should be cached object",              VALUE, cache.lookup(KEY) );}The after() clause matches on the identity of an invocation, in this case in a different object. That identity can be set in an id() clause with a default, as here, of the method name. This fails, because our implementation of loadObject() retrieves the current time into a variable before loading the object, with the message:DynamicMockError: mockClock: no match found Invoked: getCurrentTime()in:  expected at least once:    getCurrentTime(no arguments),after load on mockObjectLoader,returns &lt;loadTime>, then returns &lt;fetchTime>This message tells us that we have an invocation of getCurrentTime(), but we’re actually looking for an invocation of getCurrentTime() that occurs after an invocation of load(), which is not the same thing. We fix the implementation by moving the call to Clock.3.4.1 Varying Levels of PrecisionThis test now specifies an extra relationship to say that the clock should not be queried until an object has been loaded. This is possible because we’re testing interactions between objects rather than final state, so we can catch events at the time they happen. Our use of mock implementations of all the neighbouring objects means that we have somewhere to attach those additional assertions.On the other hand, we don’t care if the ReloadPolicy is called more than once, as long as it has the right parameters; it will always return the same result. This means we can weaken its requirement from being called exactly once to being called at least once. Similarly, jMock can also soften the requirements on the parameters for a mock object using a technique we call Constraints; this is described later.3.5 IntroducingaTimeoutFinally, we want to check that a stale value will actually be refreshed from the loader. In this case, we expect that the loader will be called twice with the same key and return two different objects. In addition, the reload policy will request a reload, and we expect that the clock will return an extra timestamp for the additional load.public void testReloadsCachedObjectAfterTimeout() {mockClock.expect(times(3)) .method("getCurrentTime").withNoArguments() .will( returnValues(loadTime, fetchTime,                        reloadTime) );mockLoader.expect(times(2)) .method("load").with( eq(KEY) ).will( returnValues(VALUE, NEW_VALUE) );mockReloadPolicy.expect(atLeastOnce()) .method("shouldReload")       .with( eq(loadTime), eq(fetchTime) )     .will( returnValue(true) );  assertSame( "should be loaded object",              VALUE, cache.lookup(KEY) );assertSame( "should be reloaded object", NEW_VALUE, cache.lookup(KEY) );}The existing implementation passes this test. In this case, we might experiment by breaking the code to make sure that this is because the code is correct rather than because the test is incomplete.As before, this test exercises a timeout without having to wait because we have abstracted out the timing aspects of the Cache. We can force the reload by returning a different value from the ReloadPolicy.3.6 WritingTestsBackwardsIn practice we have noticed that we write the tests in a different order, one that follows our thinking during TDD.￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼
+1. Identify the object we are testing and write the method call, with any required parameters2. Write expectations to describe the services the object requires from the rest of the system3. Represent those services as mock objects4. Create the rest of the context in which the test willexecute5. Define any postconditions6. Verify the mocks.As a result of following the “Tell, Don’t Ask” principle, we often don’t have any postconditions to assert (step 5). This is surprising to programmers who are not thinking about how their objects communicate.4. MOCKOBJECTSINPRACTICEBetween us, the authors have been working with Mock Objects on a wide range of projects for over 5 years. We have also corresponded with other developers who have been using the technique. The longest project was 4 years, and the largest team was 15 developers. We have used it with Java, C#, Ruby, Python, and Javascript, with application scale ranging from enterprise- level to hand-held.Mock Objects is a design aid, but is no substitute for skilled developers. Our experience is that mock-based tests quickly become too complicated when the system design is weak. The use of mock objects amplifies problems such as tight coupling and misallocated responsibilities. One response to such difficulties is to stop using Mock Objects, but we believe that it is better to use this as a motivator for improving the design. This section describes some of the heuristics that we have found to be helpful.4.1 Only Mock Types You OwnMock Objects is a design technique so programmers should only write mocks for types that they can change. Otherwise they cannot change the design to respond to requirements that arise from the process. Programmers should not write mocks for fixed types, such as those defined by the runtime or external libraries. Instead they should write thin wrappers to implement the application abstractions in terms of the underlying infrastructure. Those wrappers will have been defined as part of a need-driven test.We have found this to be a powerful insight to help programmers understand the technique. It restores the pre-eminence of the design in the use of Mock Objects, which has often been overshadowed by its use for testing interactions with third-party libraries.4.2 Don’tusegettersThe trigger for our original discovery of the technique was when John Nolan set the challenge of writing code without getters. Getters expose implementation, which increases coupling between objects and allows responsibilities to be left in the wrong module. Avoiding getters forces an emphasis on object behaviour, rather than state, which is one of the characteristics of Responsibility- Driven Design.4.3 BeexplicitaboutthingsthatshouldnothappenA test is a specification of required behaviour and is often read long after the original programmer wrote the test. There are some conditions that are not made clear when they are simply left out of the test. A specification that a method should not be called, is not the same as a specification that doesn’t mention the method at all. In the latter case, it’s not clear to other readers whether a call to the method is an error. We often write tests that specify that methods should not be called, even where not necessary, just to make our intentions clear.4.4 SpecifyaslittleaspossibleinatestWhen testing with Mock Objects it is important to find the right balance between an accurate specification of a unit's required behaviour and a flexible test that allows easy evolution of the code base. One of the risks with TDD is that tests become “brittle”, that is they fail when a programmer makes unrelated changes to the application code. They have been over-specified toThese steps are shown in the example below :public void testReturnsNullIfLoaderNotReady(){// 3 //2//4// 4 //1 //5 //6￼Mock mockLoader = mock(ObjectLoader.class); mockLoader.expect(never()) .method("load").with( eq(KEY) )mockLoader.stub() .method("isReady").withNoArguments() .will( returnValue(false) );TimedCache cache =new TimedCache((ObjectLoader)mockLoader);Object result = cache.lookup(KEY);assertNull( "should not have a KEY”,            result );mockLoader.verify();￼￼￼￼￼￼￼}It is particularly important to make sure that you are clear about the object that you are testing and its role (step 1) as we have often observed this to be a source of confusion when people are having trouble writing tests. Once they have clarified this, it becomes straightforward to proceed from step 2.3.7 SummaryWorking through this example has shown how programmers can drive the discovery of object roles by concentrating on the interactions between objects, not their state. Writing tests provides a framework to think about functionality, Mock Objects provides a framework for making assertions about those relationships and for simulating responses.Programmers can concentrate on the task in hand, assuming that the infrastructure they need will be available because they can build it later. The need to pass mock objects into the target code leads to a object-oriented style based on composition rather than inheritance. All this encourages designs with good separation of concerns and modularity.Mock Objects also allows programmers to make their tests only as precise as they need to be. The example showed both a more precise assertion, that one invocation must follow another, and a less precise assertion, that a call may be made more than once. The jMock Constraint framework is discussed later.One flaw with this example is that the requirements for the TimedCache itself have not been driven by a higher-level client, as would normally be the case.
+check features that are an artefact of the implementation, not an expression of some requirement in the object. A test suite that contains a lot of brittle tests will slow down development and inhibit refactoring.The solution is to re-examine the code and see if either the specification should be weakened, or the object structure is wrong and should be changed. Following Einstein, a specification should be as precise as possible, but not more precise.4.5 Don’tusemockstotestboundaryobjectsIf an object has no relationships to other objects in the system, it does not need to be tested with mock objects. A test for such an object only needs to make assertions about values returned from its methods. Typically, these objects store data, perform independent calculations or represent atomic values. While this may seem an obvious thing to say, we have encountered people trying to use mock objects where they don’t actually need to.4.6 Don’taddbehaviourMock objects are still stubs and should not add any additional complexity to the test environment, their behaviour should be obvious [10]. We find that an urge to start adding real behaviour to a mock object is usually a symptom of misplaced responsibilities.A common example of this is when one mock has to interpret its input to return another mock, perhaps by parsing an event message. This introduces a risk of testing the test infrastructure rather than the target code.This problem is avoided in jMock because its invocation matching infrastructure allows the test to specify expected behaviour. For example:mock.expect(once()).method("retrieve").with(eq(KEY1)) .willReturn(VALUE1);mock.expect(once()) .method("retrieve").with(eq(KEY2)) .willReturn(VALUE2);4.7 OnlymockyourimmediateneighboursAn object that has to navigate a network of objects in its implementation is likely to be brittle because it has too many dependencies. One symptom of this is tests that are complex to set up and difficult to read because they have to construct a similar network of mock objects. Unit tests work best when they focus on testing one thing at a time and only setting expectations on objects that are nearest neighbours.The solution might be to check that you are testing the right object, or to introduce a role to bridge between the object and its surroundings.4.8 Too Many MocksA similar problem arises when a test has to pass too many mock objects to the target code, even if they are all immediate neighbours. Again, the tests is likely to be complex to set up and hard to read. Again the solution might be to change misaligned responsibilities, or to introduce an intermediate role. Alternatively, it is possible that the object under test is too large and should be broken up into smaller objects that will be more focussed and easier to test.4.9 InstantiatingnewobjectsIt is impossible to test interactions with an object that is created within the target code, including interactions with its constructor. The only solution is to intervene in the creation of the object, either by passing an instance in or by wrapping the call to new.We have found several useful ways of approaching this problem. To pass an instance in, the programmer can either add a parameter to the constructor or the relevant method of the object under test, depending on the relationship between the two objects. To wrap instance creation, the test can either pass in a factory object or add a factory method to the object under test.The advantage of a factory object is that the test can set expectations on the arguments used to create a new instance. The disadvantage is that this requires a new type. The factory object often represents a useful concept in the domain, such as the Clock in our example.A factory method simply returns a new instance of the type, but can be overridden in a subclass of the target object for testing to return a mock implementation. This is a pragmatic solution which less heavyweight than creating a factory type, and may be effective as an interim implementation.Some developers propose using techniques such as Aspect Oriented Programming or manipulating class loaders to replace real objects. This is useful for removing external dependencies but does not help to improve the design of the code base.5. MISCONCEPTIONSABOUTMOCKSWhat we mean by "Mock Objects" is often different from what other people mean, and different from what we used to mean. In particular,5.1 MocksarejustStubsStubs are dummy implementations of production code that return canned results. Mock Objects act as stubs, but also include assertions to instrument the interactions of the target object with its neighbours.5.2 MockObjectsshouldonlybeusedattheboundaries of the systemWe believe the opposite, that Mock Objects are most useful when used to drive the design of the code under test. This implies that they are most useful within the system where the interfaces can be changed. Mocks and stubs can still be useful for testing interactions with third-party code, especially for avoiding test dependencies, but for us this is a secondary aspect to the technique.5.3 Gather state during the test and assertagainst it afterwards.Some implementations set values when methods are called on the Mock Object and then check them at the end of the test. A special case of this is the Self Shunt pattern [3] in which the test class implements a Mock itself.￼￼￼￼
+public class TimedClassTest  implements ObjectLoader{final Object RESULT = new Object(); final Object KEY = new Object(); int loadCallCount = 0;Object lookupKey;  // ObjectLoader method  public Object lookup(Object key) {    loadCallCount++;    lookupKey = key;    return LOOKUP_RESULT;}public testReturnsCachedObjectWithinTimeout() {    // set up the rest of the test...    assertSame( "loaded object",                RESULT, cache.lookup(KEY) );    assertSame( "cached object",                RESULT, cache.lookup(KEY) );assertEquals("lookup key", KEY, lookupKey); assertEquals("load call count",                 1, loadCallCount);} }This is straightforward and self-contained but has two obvious disadvantages. First, any failures occur after the fact rather than at the time of the error, whereas putting the assertions into the Mock means that the test will fail at the point where the extra call to load() happens. Our experience is that immediate failures are easier to understand and fix than post-hoc assertions. Second, this approach splits the implementation of the assertion across the test code, raising its intellectual overhead. Our strongest objection, however, is that this approach does not focus the interactions between the object under test and its neighbours, which we believe is key to writing composable, orthogonal code. As the author says, a Self Shunt is likely to be a placeholder implementation as it does not scale well.5.4 T esting using Mock Objects duplicates thecode.Some uses of Mock Objects set up behaviour that shadows the target code exactly, which makes the tests brittle. This is particularly common in tests that mock third-party libraries. The problem here is that the mock objects are not being used to drive the design, but to work with someone else’s. At some level, mock objects should shadow a scenario for the target code, but only because the design of that code should be driven by the test. Complex mock setup for a test is actually a hint that there is a missing object in the design.5.5 Mock Objects inhibits refactoring becausemany tests break together.Some programmers prefer to test clusters of objects so they can refactor code within that cluster without changing the tests. This approach, however, has disadvantages because each test depends on more objects than for Mock Object-based testing. First, a change to a core class because of a new requirement may force changes to multiple tests, especially to test data which is not as amenable to refactoring as code. Second, finding the error when a test does fail can be more complex because the link between the tests and the failing code is less direct; at its worst, this might even require a debugger. Our experience is that Mock Object-based test failures are more focussed and more self-explanatory, reducing the turnaround on code changes.5.6 Using Strings For Method Names isFragileOur dynamic mock frameworks look up methods by name using strings. These are not recognised and changed by refactoring development environments when the mocked method is renamed, so related tests will break. Some programmers believe that constantly being forced to repair tests will slow refactoring too much. In practice, types tend to be used more locally in a Mock Object-driven code base, so fewer tests break than might be expected, and those test break cleanly so that the required change is obvious. There is some extra overhead, but we believe it is worth paying for the greatly increased flexibility of the way we can specify expectations.6. JMOCK: A TOOL FOR NEED-DRIVEN DEVELOPMENTjMock is an open source framework that provides a convenient and expressive API for mocking interfaces, specifying expected invocations and stubbing invoked behaviour. jMock encapsulates the lessons we have learned during the last few years of using mock objects in a test driven process.The test-driven process, especially when used with pair programming [18], has a rhythm that gives feedback and maintains motivation. The rhythm is broken if the programmers must stop writing the test to write support code.The first mock object library had this problem: programmers who discovered an interface while writing a test had to stop and write its mock implementation. The jMock API uses dynamic code generation to create mock implementations on the fly at runtime and does everything it can (within the limitations of the Java language) to support programmers when writing and, later, reading expectations.The main entry point to the jMock API is MockObjectTestCase, a class that extends JUnit's TestCase with support for using mock objects. MockObjectTestCase provides methods that make expectations easy to read and helps the programmer avoid mistakes by automatically verifying mock objects at the end of the test.Mock objects are created by the mock(...) method, which takes a Class object representing an interface type and returns a Mock object that implements that interface. The Mock object can then be cast to the mocked type and passed to the domain code under test.class TimedCacheTest  extends MockObjectTestCase{Mock mockLoader = mock(ObjectLoader.class); TimedCache cache = new TimedCache (    (ObjectLoader)mockLoader );  ...}The Mock object returned from the mock(...) method provides methods for setting up expectations.
+6.1 DefiningExpectationsjMock is especially designed for writing tests that are both run and read as a form of documentation. Most of the jMock API is concerned with defining readable syntactic sugar for defining expectations. This goal has led to an API that is quite unconventional when compared to typical Java designs because it tries to implement a domain specific embedded language [6] hosted in Java. In particular, the API deliberately breaks the Law of Demeter and does not name methods as verbs in the imperative mood.An expectation is specified in multiple clauses. The first clause states whether we want to expect or stub an invocation. jMock treats a stub as a degenerate form of expectation that does not actually have to occur. However, the distinction between stubs and expectations is so important to the programmer that jMock makes the distinction obvious in test code.Subsequent clauses define which method invocations on the mock are tested by the expectation (matching rules), define the stubbed behaviour for matching methods, and optionally identify the expectation so that it can be referenced in the matching rules of subsequent expectations. An expectation contains multiple matching rules and matches invocations that pass all of its rules.Each clause of an expectation is represented in test code by a method call to an API interface. Each method returns a reference to an interface with which the programmer can define the next clause, which will return another interface for the following clause, and so on. The chain of calls that defines an entire expectation is started by calling expect() or stub() on the mock itself.mock.expect(expectation) .method(method name) .with(argument constraints) .after(id of prior invocation) .match(other matching rule) .will(stubbed behaviour) .id(id of this invocation);mock.stub().method(method name)...The names of the chained methods in a statement that sets up the expectation make the expectation easy to understand. The daisy- chain API style ensures that all expectations are specified in a consistent order: expectation or stub, method name, arguments, ordering and other matching rules, stubbed behaviour, identifier. This makes it easier to work with tests that are written by different people.When used with auto-completion in a development tool, the API acts like a "wizard", guiding the programmer step by step through the task of defining an expectation.6.2 FlexibleandPreciseSpecificationsTo avoid the problems of over specification described above, jMock lets the programmer specify expected method calls as constraints that must be met, rather than actual values. Constraints are used to test argument values and even method names. This allows the programmer to ignore aspects of an object's interactions that are unrelated to the functionality being tested.Constraints are usually used to specify allowable argument values. For example, we can test that a string contains an expected substring while ignoring unimportant details of formatting andpunctuation. Although the most common case is that arguments are compared to expected values, the constraints make explicit whether the comparison is actually for equivalence (the equals method) or identity (the == operator). It is also common to ignore parameters altogether, which can be specified with the IS_ANYTHING constraint.Constraints are created by “sugar” methods in the MockObjectTestCase. The with method of the expectation builder interface defines argument constraints. The expectation below specifies that the pipeFile method must be called once with two arguments, one of which is equal to the expected fileName and the other of which is the mockPipeline object.mock.expect(once()).method("pipeFile") .with(eq(fileName),same(mockPipeline)) .will( returnValue(fileContent) );It is often useful to match more than just parameter values. For example, it is often useful to match against subsets of an object's methods, such as all Java Bean property getters. In this case, jMock lets the programmer specify a constraint over method names. Along with a mechanism to create default results, this allows us to ignore unrelated aspects of an object's interface and concentrate only on the interesting aspects for the test.mock.stub().method(startingWith("get")) .withNoArguments() .will(returnADefaultValue);jMock lets the user specify more complex matching rules such as constraints on the order of calls to a mock, or even the order of calls on different mocks. In general, ordering constraints are not necessary, and should be used with care because they can make tests too brittle. jMock minimises this risk by letting the user specify partial orderings between individual invocations. We demonstrated ordering when we introduced sequence in the example.jMock forces users to specify argument constraints to ensure that tests can easily be read as documentation. We have found that users prefer the resulting clarity, despite the extra typing involved, because it helps them avoid subtle errors.6.3 ExtensibilityAlthough jMock provides a large library of constraints and matching rules, it cannot cover every scenario that a programmer might need. In fact creating constraints specific to your problem domain improves the clarity of your tests. For this reason matching rules and constraints are extensible. Programmers can define their own rules or constraints that seamlessly extend the jMock syntax.For example, objects that fire events will create a new event object each time an event occurs. To match against an event from a specific object we can write a custom constraint that compares the source of the event to an expected source:mock.expect(once()) .method("actionPerformed") .with(anActionEventFrom(quitButton));jMock is primarily designed to support Need-Driven Development. As such, the API may be less applicable in other scenarios. Users have asked us to modify jMock to help them
+perform integration testing, do procedural programming, avoid refactoring poorly designed code, and mock concrete classes, but we have politely declined. No API can be all things to all people, but jMock contains many useful constructs for testing in general, whether or not you do Need-Driven Development. Therefore, jMock has a layered design: the jMock API is "syntactic sugar" implemented in terms of a core object-oriented framework that can be used to create other testing APIs. A description of these core APIs is beyond the scope of this paper but can be found on the jMock website.6.4 Built To FailjMock is designed to produce informative messages so that it is easy to diagnose what caused a test failure. Mock objects are named so that the programmer can easily relate failure messages to the implementation of the test and the target code. The core objects that are composed to specify expectations can provide descriptions that combine to produce a clear failure message.By default, a mock object is named after the type that it mocks. It is often more useful to use the name to describe the role of that mock within the test. In this case, a mock can be named explicitly by passing the name to the mock's constructor.namedMock = mock(MockedType.class,"namedMock");We have discovered a number of other testing techniques that contribute to good error messages, such as Self Describing Values and Dummy Objects. A Self Describing Value is one that describes its role in the test when printed as part of an error message. For example, a string that is used as a file name should have value such as "OPENED-FILE-NAME" instead of a realistic file name, such as "invoice.xml". A Dummy Object is an object that is passed between objects but not actually invoked during the test. A test uses a dummy object in to specify expectations or assertions that verify that the object under test collaborates correctly with its neighbours. The jMock API includes convenience functions for creating self-describing dummy objects.Timestamp loadTime = (Timestamp)newDummy(Timestamp.class,"loadTime");Dummy Objects allow the programmer to defer design decisions about the definition of a type and how the type is instantiated.7. RELATED WORKResponsibility Driven Design [19] is acknowledged as a useful approach to the design of object oriented software. Need-Driven Development is a technique for doing Responsibility-Driven Design test-first. Mock Objects helps the user discover and design roles and responsibilities from the act of writing tests.The original mockobjects.com library [10] provided a low level library for specifying and verifying expectations in hand written mocks. Having to take time out to create mock implementation of interfaces interrupted the rhythm of the Test Driven Development cycle and resulted in extra work when interfaces changed. To mitigate this, the project provided mock implementations of many of the common JDK and J2EE interfaces. This was impractical to complete and focused on using mock objects for testing rather than as a design tool.MockMaker [14] automatically generated the source code for mock objects from user defined interface definitions at build time. This encouraged the use of mock objects as a design aid and reduced the interruption to the rhythm of programming. A drawback was that it complicated the build process and the generated mock objects were hard to customise.EasyMock [5] generates mock objects at runtime through dynamic code generation. It features a “record and playback” style API. Test code defines expected calls by making calls onto a mock object while it is in “record mode” and then puts the mock object into “playback mode” before invoking the object under test. The mock object then verifies that it receives the same calls with the same arguments as those that it recorded. This provided an API that was very easy for new users and that worked well with refactoring tools. However, the simple way of defining expectations often results in over-specified, brittle tests.DynaMock [13] also generates mock objects at run time. The API is designed to be read as a specification of required behaviour. However, the API is inflexible and hard to extend by users.Some projects use Aspect Oriented Programming [8] or byte code manipulation to redirect calls on application objects to mock objects during tests. This approach can be useful if you need to test code that runs against inflexible third party APIs. However, this approach is just a testing technique and inhibits useful feedback into the design process.8. FURTHER WORKOur plans for jMock are to improve the API to work well with automatic refactoring tools and code completion whilst maintaining the flexibility and expressiveness of the current API.We plan to port jMock to other languages, including C#, and dynamic languages such as Ruby and Python. Much of the development effort of jMock was spent on exploring how to define a usable domain specific language in Java. A design goal of the porting efforts will be to maintain the expressiveness of the API while supporting local language idioms.An issue with the Mock Objects technique is maintaining and checking consistency between different tests. A test that uses a Mock Object verifies that the object under test makes an expected sequence of outgoing calls. However, this does not test that all objects that use the same interface use that interface in a consistent way, or are consistent with implementers of that interface. We currently address this issue by integration testing and running acceptance tests end-to-end. This catches integration errors but identifying the cause of an error is complicated. We are currently working on an API for testing consistency among clients and implementers of an interface by explicitly describing protocols between objects.9. CONCLUSIONSSince our previous paper on the topic, we have found that our basic concepts still hold up in daily use across multiple projects. Our understanding of the technique has deepened, in particular we now have a much stronger bias towards using Mock Objects for design, rather than just testing. We now understand its role in driving good design from requirements, and its technical limitations. We have embodied our experience in jMock, a new
+generation of Mock Object framework that we believe gives us the expressiveness we need to support Need-Driven Development.10. ACKNOWLEDGMENTSOur thanks to Martin Fowler, John Fuller, Nick Hines, Dan North, Rebecca Parsons, Imperial College, our colleagues at ThoughtWorks, and members of the eXtreme Tuesday Club.11. REFERENCES[1] Astels, D. Test-Driven Development: A Practical Guide, Prentice-Hall, 2003.[2] Beck, K. and Cunningham, W. A Laboratory For Teaching Object-Oriented Thinking. In SIGPLAN Notices (OOPLSA’89), 24, 10, October 1989.[3] Feathers, M. The “Self-Shunt” Unit Testing Pattern, May 2001. Available at:http://www.objectmentor.com/resources/articles/SelfShunPtr n.pdf[4] Fowler, M. et al. Refactoring: Improving the Design of Existing Code, Addison-Wesley, Reading, MA, 1999.[5] Freese, T. EasyMock 2003. Available at: http://www.easymock.org[6] Hudak, P . Building domain-specific embedded languages. ACM Computing Surveys, 28(4es), December 1996.[7] Hunt, A. and Thomas, D. T ell, Don’ t Ask, May 1998. Available at:http://www.pragmaticprogrammer.com/ppllc/papers/1998_05 .html[8] Kiczales, G., et al. Aspect-Oriented Programming, In proceedings of the European Conference on Object-Oriented Programming (ECOOP), Finland. Springer-Verlag LNCS 1241. June 1997.[9] JUnit. 2004. Available at http://www.junit.org[10] Mackinnon, T., Freeman, S., Craig, P. Endo-testing: unit testing with mock objects. In Extreme Programming Examined, Addison-Wesley, Boston, MA. 2001. 287-301.[11] Marx, K. Critique of the Gotha Program, 1874.[12] Mikhajlov, L. and Sekerinski, E. A Study of the Fragile Base Class Problem. In E. Jul (Ed.), ECOOP'98 - Object-Oriented Programming 12th European Conference, Brussels, Belgium, July 1998, pp 355-382, Lecture Notes in Computer Science 1445, Springer-Verlag,1998.[13] Massol, V. and Husted, T. JUnit in Action, Manning, 2003. [14] Moore, I. and Cooke, M. MockMaker, 2004. Available at:http://www.mockmaker.org[15] Lieberherr, K. and Holland, I. Assuring Good Style for Object-Oriented Programs IEEE Software, September 1989, 38-48.[16] Poppendieck, M. Principles of Lean Thinking, In OOPSLA Onward!, November 2002.[17] Sun Microsystems, Java Messaging Service, Available at: http://java.sun.com/products/jms[18] Williams, L. and Kessler, R. Pair Programming Illuminated. Addison-Wesley, Reading, MA, 2002. ISBN 0201745763.[19] Wirfs-Brock, R. and McKean, A. Object Design: Roles, Responsibilities, and Collaborations, Addison-Wesley, Reading, MA, 2002.</Text>
+        </Document>
+        <Document ID="39">
+            <Title>Nat Pryce</Title>
+            <Text>State vs Interaction Based Testing
+
+Martin Fowler has recently written an article comparing what he calls "state-based" and "interaction-based" unit testing. The article doesn't really cover the subject in much depth but one statement in particular surprised me: "interaction-based tests are ... more coupled to the implementation of a method." I think that Martin is spot on when he says "one of the hardest things for people to understand in OO design is the 'Tell Don't Ask' principle," but that principle has a big influence on how you write tests and is exactly what makes interaction-based testing necessary. In an object-oriented design, an object's stateis an implementation detail that should be properly encapsulated and its interactions with its environment should be its only visible behaviour. If you follow the "Tell, Don't Ask" style, objects have very little visible state to assert about.
+When writing a program, I care only about what that program does, not the internal state that the program uses to control what it does. The only visible behaviour that a program has is its interactions with external entities, such as I/O devices or remote processes. When a program is divided into modules, likewise the internal state of a module is unimportant; it is only how a module interacts with other modules that matters.
+In a procedural program, modules interact by reading and writing state that is stored in shared data structures, and so changes to that state should be tested. In an object oriented program, on the other hand, a program is modularised as collaborating objects that perform actions by sending messages to other objects. To effect changes in the program's environment, application objects send messages to objects that represent entities in the environment. The behaviour of a program, and that of the objects within it, is defined solely in terms of message sending, and those messaging interactions are what should be tested.
+In software that has a pure object-oriented design, in which logic operating upon state is defined only in the objects that hold that state and objects interact in a "Tell, Don't Ask" style, objects expose next to no visible state that can be used for state based testing. Making assertions about state and state changes therefore requires objects to provide access to their internals that is not neccessary for the normal execution of the software, and ties the tests to implementation details that should be properly encapsulated.
+Blaming "brittleness" of tests upon interaction-based testing is a red herring. Both interaction-based tests and state-based tests become brittle if they make assertions upon implementation details and overly constrain the interfaces between modules. Whether you prefer a procedural style in which you test the changes of visible state in data structures, or an object-oriented style in which you test the coordination of actions between objects, you need to carefully choose what your tests specify to keep them from being brittle. In state based tests you have to be careful that you don't test for inconsequential state changes or make too tight assertions about state values. In interaction tests you have to be careful not to test for inconsequential interactions and make too tight assertions about parameter values. This is why jMock provides so much flexibility in the way a test can define constraints upon method signature, parameter values, invocation ordering, expected invocation counts, etc.
+I think that the most important benefit of interaction based testing is that it helps reduce the amount of mutable state in a program. Mutable state makes a program harder to understand and maintain because the behaviour of a piece of code cannnot be easily predicted merely by reading the text but depends on the sequence of events that put it and its environment into signigicant states. By concentrating on the interactions between objects instead of state changes, interaction-based testing guides the design towards objects that transform data as they pass it around rather than store data and perform logic on the state of other objects.
+I know this makes me sound like a functional programming zealot instead of an object-oriented programming zealot, so I've dug up this quote by Alan Kay to reestablish my OO purist credentials:
+"Doing encapsulation right is a commitment not just to abstraction of state, but to eliminate state oriented metaphors from programming." - Alan Kay, Early History of Smaltalk.
+I have come to think of object oriented programming as an inversion of functional programming. In a lazy functional language data is pulled through functions that transform the data and combine it into a single result. In an object oriented program, data is pushed out in messages to objects that transform the data and push it out to other objects for further processing.
+Update: example and code.
+I think the whole division of TDD practice into "mockist" vs "state based" is pointless, distracting and does a disservice to people trying to learn and use TDD. 
+
+Mock objects are just a tool. They are one of many tools that you need to use when doing TDD. Like any tool, they are designed to help solve a set of problems in a specific context. Outside that context they do not help and can be a hindrance.
+
+For my own part, I *always* mock at system defined boundaries (e.g. filesystem, network, database, etc.) I usually mock when I want to elicit loose coupling between an interface and it's client in a top-down direction. And, I generally don't mock when the object I am interacting with is small and easily faked/stubbed.
+
+</Text>
+        </Document>
+        <Document ID="48">
+            <Title>SelfShunPtrn</Title>
+            <Text>The ‘Self’-Shunt Unit Testing PatternMichael Feathers Object Mentor, Inc. mfeathers@objectmentor.comLet's say that you are a test case. One of the things that you can do is pass yourself to the objects you are testing so that you can get more information.Test first design is fun, but in the beginning, it can be a bit overwhelming. There are all sorts of little fears. You sit at your computer, with that empty screen just staring at you. You pick a test that you want to write, but you stop. “What if I write this test and it passes, and I write another, and another, and then I discover that my objects need to put things on the GUI. How do I write a test for that?” If you are not careful, those sorts of thoughts will derail you for a while. Hopefully, you do hunker down to write the first test and move on, confident that you’ll find a way to write that test when the time comes. This article is about one very interesting strategy you can use when that time comes.Let’s suppose that we are writing a point of sale system. The first user story tells us that when a sales clerk swipes an item past a barcode scanner, its name and price come up on an LCD display. We don’t have any wiggle room here. It doesn’t look like there are any tests between the display problem and us.Let’s think about this. We can have a scanner object and we can have a display object, and we can get the item from the scanner and pass it to the display. If we write this up in JUnit, it looks like this:public class ScannerTest extends TestCase {public ScannerTest (String name) { super (name);}public void testScanAndDisplay () { Scanner scanner = new Scanner (); Display display = new Display ();Item item = scanner.scan (); display.displayItem (item);} }￼Copyright © 2001, Michael C. Feathers, All Rights Reserved.1 of 4
+But, what do we assert? Do we add a method to the display to ask it whether it has displayed anything? That seems pretty artificial. The name of our test case seems suspicious also. The name “testScanAndDisplay” screams out the fact that we are testing two things. Worse, the test case is acting as an intermediary between the scanner and the display. In your application, some object is going to fulfill that role. We might as well confront that now.public class ScannerTest extends TestCase {public ScannerTest (String name) { super (name);}public void testScan () {Display display = new Display (); Scanner scanner = new Scanner (display);scanner.scan (); }}￼￼￼￼￼￼- Test-First Design Tip -If your test acts as a mediator between two objects, pick one object and let it talk to the other￼￼￼We’ve passed the display to the scanner, but we still need to find out whether scan () did therightthing. Willthedisplaybeupdated?What forces do we have? The display will know if it has been updated, but the test case needs to know. Under test, we don’t need a real display object. In fact, a real display object could be downright irritating, flickering wildly as we run hundreds of unit tests. Why don’t we make the test case impersonate a display and pass it to the scanner?Copyright © 2001, Michael C. Feathers, All Rights Reserved. 2 of 4
+// act like a displaypublic class ScannerTest extends TestCase implements Display {public ScannerTest (String name) { super (name);}public void testScan () {}private Item lastItem;}// pass self as a displayScanner scanner = new Scanner (this);// scan calls displayItem on its displayscanner.scan ();assertEquals (new Item (“Cornflakes”), lastItem);// impl. of Display.displayItem ()void displayItem (Item item) {}lastItem = item;And that’s the ‘self’-shunt unit testing pattern. When a test case can impersonate one of your collaborators, it can check things that only a collaborator would know.‘Self’-shunt is a nice way to start a class when you need collaborators immediately, but often it is just a stepping-stone. ‘Self’-shunting test cases can become unwieldy, as they get larger. At that point, normal refactoring rules apply. With an interface like Display in place, you can factor out a Mock Object [1], or even use a real object as it is developed, provided it sets up easily and allows you decent coverage.History:‘Self’-shunt is one of those techniques that many people have discovered independently. I remember an XP Immersion class where at least two people jumped up and down and said “Hey, I’ve done that.” when Robert Martin described it on a flip chart. Kent Beck said he’d been doing it for years, but I don’t remember him jumping.In any case, three uses make it a pattern. Me? I’ve been using it for a long time, but I have no idea whether I re-discovered it or heard about it somewhere.Copyright © 2001, Michael C. Feathers, All Rights Reserved. 3 of 4
+Naming:The name ‘Self’-shunt is really a ‘tip of the hat’ to the Shunt Pattern [2], where Alistair Cockburn describes a testing shunt as:“...basically a wire that goes out the back of one jack, and into an input, so the machine is connected to itself. When you run the machine, it thinks it is connected to the world, but it is only talking to itself. In software, the trick is to fake communication against the outside world, then run the tests locally. Then your testing is partitioned.”A ‘Self’-shunt is a shunt made by passing yourself to another object.References:[1] Tim MacKinnon, Steve Freeman, Philip Craig, Endo-Testing: Unit Testing with Mock Objects. eXtreme Programming and Flexible Processes in Software Engineering (XP2000)[2] Anonymous. Shunt Pattern. Portland Pattern Repository. Dec 12, 2000. http://c2.com/cgi/wiki?ShuntPattern￼Copyright © 2001, Michael C. Feathers, All Rights Reserved. 4 of 4</Text>
+        </Document>
+        <Document ID="10">
+            <Title>Code Smells</Title>
+            <Text>Obscure test
+Eager test
+Mystery guest
+General fixture
+Irrelevant information
+Hard coded test data
+Indirect testing
+Conditional test logic
+Flexible test
+Conditional verification logic
+Production logic in test
+Multiple test conditions
+Hard to test code
+Asynchronous code
+Untestable test code
+Test logic in production
+Erratic test
+Unrepeatable test
+Nondeterministic test
+Interface sensitivity
+Behavior sensitivity
+Data sensitivity
+Context sensitivity
+Over specified software
+Frequent debugging
+Slow tests
+Too many tests
+Untested code
+Untested requirement
+</Text>
+        </Document>
+        <Document ID="11">
+            <Title>The Art of Unit Testing</Title>
+            <Text>Properties of a good unit test
+How to break dependency
+Techniques for breaking dependencies
+Writing our first test
+Indirect testing of state
+Problems with constructor injection
+When you should use property injection
+Interaction testing using mock objects
+The difference between mocks and stubs
+Using a mock and stub together
+One mock per test
+Stub chains: Stubs that produce mocks or other stubs
+Isolation frameworks
+Expectations on mocks and stubs
+Strict vs Non-Strict mocks
+Arrange act assert syntax for isolation
+Traps to avoid when using isolation frameworks
+Unreadable test code
+Verifying the wrong things
+Having more than one mock per test
+Over specifying the tests
+Use stubs instead of mocks when you can
+Avoid using stubs as mocks
+Don’t repeat logic in your tests
+Don’t use magic values
+The three pillars of good tests
+Writing trustworthy tests
+Production bugs
+Test bugs
+Semantics or API changes
+Conflicting or invalid tests
+Eliminating duplicate tests
+Avoiding logic in tests
+Testing only one thing
+Assuring code coverage
+Writing maintainable tests
+Testing private or protected methods
+Making methods public
+Extracting methods to new classes
+Making methods class method
+Removing duplication
+Using setup methods in a maintainable manner
+Enforcing test isolation
+Avoiding multiple asserts
+Refactoring into multiple tests
+Using parametrized tests
+Overriding to_s
+Avoiding over specification in tests
+Specifying purely internal behavior
+Using mocks instead of stubs
+Assuming an order or exact match when it’s not needed
+Writing readable tests
+Naming variables
+Assert yourself with meaning
+Separating asserts from actions
+</Text>
+        </Document>
+        <Document ID="20">
+            <Title>Sustainable TDD</Title>
+            <Text>Listening to the tests
+I need to mock an object I cannot replace (without magic)
+Implicit dependencies are still dependencies
+Notification rather than logging
+Mocking concrete classes
+Break glass in case of emergency
+Don’t mock values
+Bloated constructor
+Confused object
+Too many dependencies
+Too many expectations
+Write few expectations
+What the tests will tell us
+</Text>
+        </Document>
+    </Documents>
+</SearchIndexes>

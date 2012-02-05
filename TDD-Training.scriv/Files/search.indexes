@@ -2392,7 +2392,6 @@ Recommended Books
 
 http://softwaregreenhouses.com/2011/01/30/using-wayk-to-describe-tdd-fluency/
 
-
 	▪	We verify stubs by checking state after an interaction.
 	▪	We tell mocks to verify interactions.
 	▪	Sometimes stubs just make the system run.
@@ -2423,15 +2422,14 @@ Developer specs are implemented as isolation tests.
 	▪	Concern: impedes refactoring (but some say refactoring is improving design without changing behavior, so tests should not change. This really depends what level you are refactoring at).
 	▪	Concern: false positives
 
-stubs - a common helper to testing environments
-there is a difference in how test results are verified: a distinction between state verification and behavior verification.
-focusing on one element of the software at a time -hence the common term unit testing. The problem is that to make a single unit work, you often need other units.
+Stubs - a common helper to testing environments. There is a difference in how test results are verified: a distinction between state verification and behavior verification. Focusing on one element of the software at a time -hence the common term unit testing. The problem is that to make a single unit work, you often need other units.
 
 	•	Dummy objects are passed around but never actually used. Usually they are just used to fill parameter lists.
 	•	Fake objects actually have working implementations, but usually take some shortcut which makes them not suitable for production (an in memory database is a good example).
 	•	Stubs provide canned answers to calls made during the test, usually not responding at all to anything outside what's programmed in for the test. Stubs may also record information about calls, such as an email gateway stub that remembers the messages it 'sent', or maybe only how many messages it 'sent'.
 	•	Mocks are what we are talking about here: objects pre-programmed with expectations which form a specification of the calls they are expected to receive.
-only mocks insist upon behavior verification. The other doubles can, and usually do, use state verification.
+
+Only mocks insist upon behavior verification. The other doubles can, and usually do, use state verification.
 
 The classical TDD style is to use real objects if possible and a double if it's awkward to use the real thing. A mockist TDD practitioner, however, will always use a mock for any object with interesting behavior.
 An acknowledged issue with state-based verification is that it can lead to creating query methods only to support verification. It's never comfortable to add methods to the API of an object purely for testing, using behavior verification avoids that problem.

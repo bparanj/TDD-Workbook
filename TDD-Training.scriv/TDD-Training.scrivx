@@ -14,7 +14,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>263,0</TextSelection>
+                        <TextSelection>232,19</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="3" Type="Text" Created="2011-12-11 11:50:01 -0800" Modified="2011-12-27 22:20:45 -0800">
@@ -645,14 +645,14 @@
                 <IncludeInCompile>Yes</IncludeInCompile>
             </MetaData>
             <Children>
-                <BinderItem ID="75" Type="Text" Created="2011-12-14 10:35:46 -0800" Modified="2012-02-04 03:08:33 -0800">
+                <BinderItem ID="75" Type="Text" Created="2011-12-14 10:35:46 -0800" Modified="2012-02-04 10:17:11 -0800">
                     <Title>References</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>291,0</TextSelection>
+                        <TextSelection>899,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="70" Type="Text" Created="2011-12-13 11:18:48 -0800" Modified="2011-12-13 11:25:54 -0800">

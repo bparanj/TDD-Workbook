@@ -452,6 +452,17 @@
                         <FileExtension>pdf</FileExtension>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
+                    <MediaSettings>
+                        <CurrentPDFPage>0</CurrentPDFPage>
+                    </MediaSettings>
+                </BinderItem>
+                <BinderItem ID="48" Type="PDF" Created="2012-02-04 05:19:43 -0800" Modified="2012-02-04 05:19:44 -0800">
+                    <Title>SelfShunPtrn</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <FileExtension>pdf</FileExtension>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
                 </BinderItem>
             </Children>
         </BinderItem>
