@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
 {\fonttbl\f0\fnil\fcharset0 Verdana;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue154;\red102\green26\blue51;\red26\green102\blue51;
 }
@@ -66,7 +66,6 @@ Fixtures are a test-specific issue that can lead to poor clarity, specifically, 
 \cf2 \
 test "the sum should be 37" \cf3 do\
 \cf2   assert_equal(37, User.all_total_points)\
-\pard\pardeftab720
 \cf3 end\
 \
 \pard\pardeftab720
@@ -83,7 +82,6 @@ test "total points should round to the nearest integer" \cf3 do\
 \cf2   User.make(:points => 32.1)\
   User.make(:points => 5.3)\
   assert_equal(37, User.all_total_points)\
-\pard\pardeftab720
 \cf3 end\
 \pard\pardeftab720
 \cf0 \
@@ -92,28 +90,17 @@ Long tests make it hard to identify the critical parts of the test. Basically, t
 \
 On the other hand, if you can\'92t write clean tests, consider the possibility that it is the code\'92s fault, and you need to do some redesign. If it\'92s hard to set up a clean test, that often indicates the code has too many internal dependencies.\
 \
-There\'92s an old programming aphorism that since debugging is more complicated than coding, if you\'92ve written code that is as complicated\
-as you can make it, then you are by definition not skilled enough to debug it. Because tests don\'92t have their own tests and need to be correct,\
-this aphorism suggests that you should keep your tests simple, so as to give yourself some cognitive room to understand them. In particular,\
-this guideline argues against clever tricks to reduce duplication among multiple tests that share a similar structure. If you find yourself\
-starting to metaprogram to generate multiple tests in your suite, you\'92re probably going to find that complexity working against you at some\
-point. You never want to be in a position to have to decide whether a bug is in your test or in the code. Well, you\'92ll be in that position at some\
-point, but it\'92s an easier place to be if the test side is relatively simple.\
+There\'92s an old programming aphorism that since debugging is more complicated than coding, if you\'92ve written code that is as complicated as you can make it, then you are by definition not skilled enough to debug it. Because tests don\'92t have their own tests and need to be correct, this aphorism suggests that you should keep your tests simple, so as to give yourself some cognitive room to understand them. In particular, this guideline argues against clever tricks to reduce duplication among multiple tests that share a similar structure. If you find yourself starting to metaprogram to generate multiple tests in your suite, you\'92re probably going to find that complexity working against you at some point. You never want to be in a position to have to decide whether a bug is in your test or in the code. Well, you\'92ll be in that position at some point, but it\'92s an easier place to be if the test side is relatively simple.\
 \
 
 \b Concise
 \b0 \
 \
- A test is concise if it uses the minimum amount of code and objects to achieve its goal. Concise and clear are sometimes in conflict, as in the\
-previous example, where the clear version is a couple of lines longer than the original version. Clear beats concise. Conciseness is useful only to the extent that it makes writing and maintaining the test suite easier.\
+ A test is concise if it uses the minimum amount of code and objects to achieve its goal. Concise and clear are sometimes in conflict, as in the previous example, where the clear version is a couple of lines longer than the original version. Clear beats concise. Conciseness is useful only to the extent that it makes writing and maintaining the test suite easier.\
 \
-Conciseness often involves writing the minimal amount of tests or creating the minimal amount of objects to test a feature. In addition to\
-being clearer, concise tests will run faster. A slow test suite is a pain in the neck and one of the best ways to prevent a slow suite is not to write slow tests. To put this another way, how many objects do you need to create to test a sort? A simple sort can be tested with two objects, though I often use three because the difference between the initial input and the sorted input is easier to see in the test. Creating any more\
-objects is unnecessary and makes the test slower to write and run.\
+Conciseness often involves writing the minimal amount of tests or creating the minimal amount of objects to test a feature. In addition to being clearer, concise tests will run faster. A slow test suite is a pain in the neck and one of the best ways to prevent a slow suite is not to write slow tests. To put this another way, how many objects do you need to create to test a sort? A simple sort can be tested with two objects, though I often use three because the difference between the initial input and the sorted input is easier to see in the test. Creating any more objects is unnecessary and makes the test slower to write and run.\
 \
-To look at the issue of conciseness in another way, let\'92s say you have a feature in which a user is given a different title based on some kind of\
-point count; a user with less than 500 points is a novice, 501\'961000 is an apprentice, 1001\'962000 is a journeyman, 2001\'965000 is a guru, and\
-5001 and up is a super Jedi rock star. How many assertions do you need to test that functionality?\
+To look at the issue of conciseness in another way, let\'92s say you have a feature in which a user is given a different title based on some kind of point count; a user with less than 500 points is a novice, 501\'961000 is an apprentice, 1001\'962000 is a journeyman, 2001\'965000 is a guru, and 5001 and up is a super Jedi rock star. How many assertions do you need to test that functionality?\
 \
 In this case, there\'92s a legitimate possibility of difference of opinion. I\'92d test the following cases, in practice I\'92d probably do separate single assertion tests. Also, in practice I\'92d be writing code after each new assertion.\
 \pard\pardeftab720
@@ -135,8 +122,7 @@ def \cf2 test_user_point_level\
 \cf3 end\
 \
 \pard\pardeftab720
-\cf0  That works out to one assertion for the start of each new level, plus an assertion for the special cases 0 and nil, and an assertion at the end of a level to assure that I don\'92t have an off-by-one bug. That\'92s a total of eight assertions. Given the way this code would probably be implemented, as a case  statement with the while  clauses using ranges, I don\'92t feel the need to test the end condition of more than one field, nor do I feel the\
-need to test every point value in a range. \
+\cf0  That works out to one assertion for the start of each new level, plus an assertion for the special cases 0 and nil, and an assertion at the end of a level to assure that I don\'92t have an off-by-one bug. That\'92s a total of eight assertions. Given the way this code would probably be implemented, as a case  statement with the while  clauses using ranges, I don\'92t feel the need to test the end condition of more than one field, nor do I feel the need to test every point value in a range. \
 \
 
 \b Robust
@@ -144,15 +130,12 @@ need to test every point value in a range. \
 \
  A test is robust if it actually tests the logic as intended. That is, the test passes when the underlying code is correct and fails when the underlying code is wrong. \
 \
-A frequent cause of brittle tests is targeting the assertions of the test at surface features that might change even if the underlying logic stays\
-the same. The classic example along these lines is view testing, in which you base the assertion on the actual creative text on the page that will\
-frequently change, even though the basic logic stays the same. Like so:\
+A frequent cause of brittle tests is targeting the assertions of the test at surface features that might change even if the underlying logic stays the same. The classic example along these lines is view testing, in which you base the assertion on the actual creative text on the page that will frequently change, even though the basic logic stays the same. Like so:\
 \pard\pardeftab720
 \cf2 \
 test "the view should show the project section" \cf3 do\
 \cf2   get :dashboard\
   assert_select("h2", :text => "My Projects")\
-\pard\pardeftab720
 \cf3 end\
 \pard\pardeftab720
 \cf0 \
@@ -162,13 +145,10 @@ test "the view should show the project section" \cf3 do\
 test "the view should show the project section" \cf3 do\
 \cf2   get :dashboard\
   assert_select("h2#projects")\
-\pard\pardeftab720
 \cf3 end\
 \pard\pardeftab720
 \cf0 \
- The basic issue here is not limited to view testing. There are areas of model testing in which testing to a surface feature might be brittle in\
-the face of trivial changes to the model (as opposed to tests that are brittle in the face of changes to the test data itself, which we\'92ve already\
-discussed). For example, the test in the previous section with the novice levels is actually dependent on the specific values of the level boundaries. You might want to make the test more robust with something like this:\
+ The basic issue here is not limited to view testing. There are areas of model testing in which testing to a surface feature might be brittle in the face of trivial changes to the model (as opposed to tests that are brittle in the face of changes to the test data itself, which we\'92ve already discussed). For example, the test in the previous section with the novice levels is actually dependent on the specific values of the level boundaries. You might want to make the test more robust with something like this:\
 \pard\pardeftab720
 \cf3 \
 def \cf2 assert_user_level(points, level)\
@@ -185,9 +165,7 @@ def \cf2 test_user_point_level\
 \cf3 end\
 \pard\pardeftab720
 \cf0 \
- You must be cautious at this point, because the other side of robustness is not just a test that brittlely fails when the logic is good but a test\
-that stubbornly passes even if the underlying code is bad\'97a tautology, in other words. The previous test isn\'92t a tautology, but you can see how\
-it might easily get there.\
+ You must be cautious at this point, because the other side of robustness is not just a test that brittlely fails when the logic is good but a test that stubbornly passes even if the underlying code is bad\'97a tautology, in other words. The previous test isn\'92t a tautology, but you can see how it might easily get there.\
 \
 Speaking of tautologies, mock objects have their own special robustness issues. It\'92s easy to create a tautology by using a mock object. It\'92s also easy to create a brittle test by virtue of the fact that a mock object often creates a hard expectation of exactly what methods will be called on the mock object. If you add an unexpected method call to the code being tested, then you can get mock object failures simply because an unexpected method has been called. I\'92ve had changes to a login filter cause hundreds of test failures because mock users going through the login filter bounced off the new call. One workaround, depending on your mock package, is to use something like Mocha\'92s mock_everything ( ) method, which automatically returns nil  for any unexpected method call without triggering an error.\
 \
@@ -195,11 +173,6 @@ Speaking of tautologies, mock objects have their own special robustness issues. 
 \b Find the Seam
 \b0 \
 \
-Mock objects are a specific version of a more general technique for working with legacy code, which involves finding seams in the code and exploiting them to make testing the legacy functionality possible. A seam is a place where we can change the behavior of our application\
-without changing the actual code. A mock object package acts as a seam because adding the mock object, which happens in the test, changes the behavior of the code by mandating a specific response to a method call without actually executing the method. Again, the behavior of the method under test changes in the test environment without affecting behavior in the production and without changing the existing development code.\
+Mock objects are a specific version of a more general technique for working with legacy code, which involves finding seams in the code and exploiting them to make testing the legacy functionality possible. A seam is a place where we can change the behavior of our application without changing the actual code. A mock object package acts as a seam because adding the mock object, which happens in the test, changes the behavior of the code by mandating a specific response to a method call without actually executing the method. Again, the behavior of the method under test changes in the test environment without affecting behavior in the production and without changing the existing development code.\
 \
-It sounds magical, but the basic idea is simple, and Ruby makes it easy to execute. Essentially, redirect a method call from its intended target\
-to some other code that we want to run during tests. A mock object does this by replacing the entire method call with a return value, but\
-the generic form lets us do anything we want instead of the method call. We might do this if we wanted a side effect that a mock package\
-wouldn\'92t normally provide, such as diagnostic logging. Alternately, we might want a more elaborate processing of arguments or state than a\
-mock can easily provide, to re-create the output of a web service our application depends on, for example.}
+It sounds magical, but the basic idea is simple, and Ruby makes it easy to execute. Essentially, redirect a method call from its intended target to some other code that we want to run during tests. A mock object does this by replacing the entire method call with a return value, but the generic form lets us do anything we want instead of the method call. We might do this if we wanted a side effect that a mock package wouldn\'92t normally provide, such as diagnostic logging. Alternately, we might want a more elaborate processing of arguments or state than a mock can easily provide, to re-create the output of a web service our application depends on, for example.}
