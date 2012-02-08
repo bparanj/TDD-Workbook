@@ -645,7 +645,7 @@
                 <IncludeInCompile>Yes</IncludeInCompile>
             </MetaData>
             <Children>
-                <BinderItem ID="75" Type="Text" Created="2011-12-14 10:35:46 -0800" Modified="2012-02-06 16:16:23 -0800">
+                <BinderItem ID="75" Type="Text" Created="2011-12-14 10:35:46 -0800" Modified="2012-02-07 18:09:48 -0800">
                     <Title>References</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
@@ -700,7 +700,7 @@
         </Collection>
         <Collection Type="RecentSearch" ID="B354D6F8-AC67-4657-81C3-0C2E718C7629" Color="0.922 0.91 0.98">
             <Title>Search Results</Title>
-            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">stubs</SearchSettings>
+            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">command</SearchSettings>
         </Collection>
     </Collections>
     <LabelSettings>
