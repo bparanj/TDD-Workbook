@@ -7,14 +7,14 @@
                 <IncludeInCompile>Yes</IncludeInCompile>
             </MetaData>
             <Children>
-                <BinderItem ID="4" Type="Text" Created="2011-12-11 11:52:42 -0800" Modified="2012-02-04 22:34:28 -0800">
+                <BinderItem ID="4" Type="Text" Created="2011-12-11 11:52:42 -0800" Modified="2012-02-09 16:13:14 -0800">
                     <Title>Structure</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>2231,3747</TextSelection>
+                        <TextSelection>2263,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="3" Type="Text" Created="2011-12-11 11:50:01 -0800" Modified="2011-12-27 22:20:45 -0800">
@@ -244,20 +244,20 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>245,0</TextSelection>
+                        <TextSelection>5353,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="93" Type="Text" Created="2011-12-19 23:55:46 -0800" Modified="2011-12-23 02:16:35 -0800">
+                <BinderItem ID="93" Type="Text" Created="2011-12-19 23:55:46 -0800" Modified="2012-02-09 20:23:12 -0800">
                     <Title>Red Bar Patterns</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>6029,0</TextSelection>
+                        <TextSelection>5951,78</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="94" Type="Text" Created="2011-12-20 10:19:11 -0800" Modified="2011-12-23 02:16:58 -0800">
+                <BinderItem ID="94" Type="Text" Created="2011-12-20 10:19:11 -0800" Modified="2012-02-09 20:27:28 -0800">
                     <Title>Testing Patterns</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
@@ -634,7 +634,17 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>10786,0</TextSelection>
+                        <TextSelection>2602,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="131" Type="Text" Created="2012-02-09 16:12:42 -0800" Modified="2012-02-09 16:17:50 -0800">
+                    <Title>TDD Kata</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>75,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
             </Children>
@@ -652,7 +662,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>899,0</TextSelection>
+                        <TextSelection>3673,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="70" Type="Text" Created="2011-12-13 11:18:48 -0800" Modified="2011-12-13 11:25:54 -0800">
@@ -727,7 +737,7 @@
     <ProjectTargets Notify="No">
         <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="No" Deadline="2011-12-11 11:50:00 -0800" IgnoreDeadline="Yes">0</DraftTarget>
         <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="Yes" ResetType="Midnight" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
-        <PreviousSession Words="0" Characters="0" Date="2012-02-06 16:16:10 -0800"></PreviousSession>
+        <PreviousSession Words="-315" Characters="-1810" Date="2012-02-06 16:16:10 -0800"></PreviousSession>
     </ProjectTargets>
     <PrintSettings PaperSize="612.0,792.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="na-letter" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
 </ScrivenerProject>

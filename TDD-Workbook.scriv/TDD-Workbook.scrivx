@@ -14,7 +14,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>6112,0</TextSelection>
+                        <TextSelection>4738,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="4" Type="Text" Created="2011-12-28 17:49:04 -0800" Modified="2011-12-28 17:56:36 -0800">
@@ -117,7 +117,7 @@
                         <TextSelection>1626,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="24" Type="Text" Created="2011-12-28 19:06:07 -0800" Modified="2011-12-28 19:07:57 -0800">
+                <BinderItem ID="24" Type="Text" Created="2011-12-28 19:06:07 -0800" Modified="2012-02-09 15:49:41 -0800">
                     <Title>Red Bar Patterns</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
@@ -422,7 +422,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>13390,495</TextSelection>
+                        <TextSelection>12359,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="45" Type="Text" Created="2012-01-26 15:50:48 -0800" Modified="2012-02-03 10:41:48 -0800">
@@ -435,14 +435,14 @@
                         <TextSelection>8110,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="46" Type="Text" Created="2012-01-28 10:04:36 -0800" Modified="2012-02-01 11:04:59 -0800">
+                <BinderItem ID="46" Type="Text" Created="2012-01-28 10:04:36 -0800" Modified="2012-02-09 20:47:35 -0800">
                     <Title>Questions</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>44,0</TextSelection>
+                        <TextSelection>212,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="47" Type="PDF" Created="2010-07-27 02:13:11 -0700" Modified="2010-07-27 02:13:12 -0700">

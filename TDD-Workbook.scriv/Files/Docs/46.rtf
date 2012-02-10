@@ -1,11 +1,90 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
 {\fonttbl\f0\fnil\fcharset0 Verdana;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
 
-\f0\fs28 \cf0 How do make the test drive the development?\
+\f0\fs28 \cf0 How to make the test drive the development?\
 \
 From Bootcamp Participants\
 \
 1) Keeping Mocks in Synch\
-2) How to test JSON API ?}
+2) How to test JSON API ?\
+3) Is database insert a direct or indirect output\
+4) Should we always take small steps?\
+\
+\
+Testing is a design and scope control tool. When you are writing a test, you are not thinking about the implementation.\
+\
+When should you write the asserts? Try writing them first.\
+Where should you start writing a test? With the asserts that will pass when it is done.\
+\
+Things to think about when writing a test:\
+Where does the functionality belong? \
+What should the names be called?\
+How are you going to check for the right answer?\
+What is the right answer?\
+What other tests does this test suggest?\
+\
+Which test should you pick next from the list? Pick a test that will teach you something and that you are confident you can implement. Each test should represent one step towards your overall goal (one step test).\
+\
+Which test should you start with? Start by testing a variant of an operation that doesn\'92t do anything. Pick a starter test that will teach you something but that you are certain you can get working quickly.\
+\
+How do you spread the use of automated testing? Ask for and give explanation in terms of tests.\
+\
+You can do this at higher levels of abstraction. If someone is explaining a sequence diagram to you, you can ask for permission to convert it to a more familiar notation. Then you type in a test case that contains all the externally visible objects and messages in the system.\
+\
+When do you write tests for externally produced software? Before the first time you are going to use it.\
+\
+Write a little test that verifies that the API works as expected. If our understanding of the API is correct, the test will pass first time. When new releases arrive, the tests were first run (and fixed if necessary). If the tests didn\'92t run, there was no sense running the application because it certainly wouldn\'92t run. Once the tests run, the application will run.\
+\
+How do you keep a technical discussion from straying off topic? When a tangential idea arises, add a test to the list and go back to the topic (another test).\
+\
+What\'92s the first thing you do when a defect is reported? Write a smallest possible test that fails, and that once it runs, the defect will be repaired (regression test).\
+\
+What do you do when you feel tired or stuck? Take a break.\
+\
+What do you do when you are feeling lost? Throw away the code and start over.\
+\
+How do you get a test case running that turns out to be too big? Write a smaller test case that represents the broken part of the bigger test case. Get the smaller test case running (child test). Reintroduce the larger test case.\
+\
+How do you test an object that relies on an expensive or complicated resource? Create a fake version of the resource that answers constants. Mocks improve performance, reliability and readability.\
+\
+Mock Objects add a risk to the project - what if the mock doesn\'92t behave like the real object? You can reduce this risk by having a set of tests for the mock that can also be applied to the real object when it becomes available.\
+\
+How do you test error code that is unlikely to be invoked? Invoke it anyway with a special object that throws an exception instead of doing real work. Examples: File system is full, Out of memory error, network connectivity problem etc.\
+\
+How do you leave a programming session when you\'92re programming alone? Leave the last test broken. When you come back to the code, you have an obvious place to start you have a concrete bookmark to help you remember what you were thinking and making that test work should be quick work, so you\'92ll quickly get your feet back on that victory road.\
+\
+How do you leave a programming session when you\'92re programming in a team? Leave all the tests running.\
+\
+How do you implement an operation that works with collections of objects? Implement it without the collections first, then make it work with collections (one to many).\
+\
+How do you check that tests worked correctly? Write boolean expressions that automate your judgment about whether the code worked.\
+\
+How big should be your test method? Three lines is the minimum without obfuscating the test.\
+\
+What don\'92t you have to test?\
+\
+Write tests until fear is transformed into boredom. You should test: conditionals, loops, operations, polymorphism. But only those that you write. Unless you have a reason to distrust it, don\'92t test code from others. \
+\
+Sometimes I will document the presence of unusual behavior in external code with a test that will fail if the bug is ever fixed.\
+\
+How do you know if you have good tests?\
+\
+Long Setup Code\
+Setup Duplication\
+Long Running Tests\
+Fragile Tests. Improve the design by either breaking the connection or by bringing the two parts together.\
+\
+How many tests should you write? In TDD, the tests are a means to an end, the end being code in which we have great confidence.\
+\
+When should you delete tests?\
+\
+More tests is better, but if two tests are redundant with respect to each other, should you keep them both around?\
+\
+The first criterion for your tests is confidence. Never delete a test if it reduces your confidence in the behavior of the system.\
+\
+The second criterion is communication. If you have two tests that exercise the same path through the code, but they speak to different scenarios for a reader leave them alone.\
+\
+If you have two tests that are redundant with respect to confidence and communication, delete the least useful of the two.\
+}

@@ -1,11 +1,6 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
 {\fonttbl\f0\fnil\fcharset0 Verdana;\f1\froman\fcharset0 Times-Roman;}
-{\colortbl;\red255\green255\blue255;\red109\green109\blue109;\red26\green26\blue26;\red255\green255\blue255;
-\red26\green26\blue26;\red10\green8\blue8;}
-{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid2\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid3\'02\'02.;}{\levelnumbers\'01;}\fi-360\li2160\lin2160 }{\listname ;}\listid1}
-{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{square\}}{\leveltext\leveltemplateid101\'01\uc0\u9642 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
-{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid202\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid3}}
-{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
+{\colortbl;\red255\green255\blue255;\red109\green109\blue109;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
 
 \f0\b\fs28 \cf0 Structure for Presentation\
@@ -27,6 +22,7 @@ Introduction to the concepts (if required).
 \b \
 
 \b0 Progressive lessons for a specific objective.\
+Situational learning question; \
 Code centric. Example of anti-patterns. Example of best practices. Before / After picture.\
 Illustrate near miss when refactoring from anti-patterns to best practice.\
 Chapter Summary\
@@ -121,88 +117,4 @@ frame.\cell \row
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
 
 \f0\fs28 \cf0 \
-
-\b Exercise 1
-\b0  \
-\
-Calculator : Add feature. Work in pairs. The implementer is lazy and writes ugly code. Tester forces generalized solution and is the designer of the API. Can the tester force internal quality of the code?\
-\
-\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
-Overtime our daily habits become refined skills and abilities, and translate into our expertise.\
-						\'97 
-\i Brain Fitness : Peak Performance
-\i0 \
-\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
-\
-\pard\pardeftab720\sl320
-\cf3 \cb4 Keith Braithwaite\'92s\cf5 \cb1  rules to force the pair to allow the design to evolve:\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
-\cf0 \
-\pard\pardeftab720\sa140
-
-\b \cf5 The Rules\
-\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360\sa100
-\ls1\ilvl0
-\b0 \cf5 {\listtext	1.	}Write exactly one new test, the smallest test you can that seems to point in the direction of a solution\
-{\listtext	2.	}See it fail\
-{\listtext	3.	}Make the test from (1) pass by writing the least implementation code you can in the test method.\'a0\
-{\listtext	4.	}Refactor to remove duplication, and otherwise as required to improve the design.\'a0Be strict about using these moves:\
-\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360\sa100
-\ls1\ilvl1
-\b \cf5 {\listtext	1.	}you want a new method\'97wait until refactoring time, then\'85\'a0
-\b0 create new (non-test) methods by doing one of these, and in no other way:\
-\pard\tx1660\tx2160\pardeftab720\li2160\fi-2160\sl360\sa100
-\ls1\ilvl2\cf5 {\listtext	1.	}preferred: do Extract Method on implementation code created as per (3) to create a new method in the test class, or\
-{\listtext	2.	}if you must: move implementation code as per (3) into an existing implementation method\
-\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360\sa100
-\ls1\ilvl1
-\b \cf5 {\listtext	2.	}you want a new class\'97wait until refactoring time, then\'85\'a0
-\b0 create non-test classes to provide a destination for a Move\'a0Method and for no other reason\
-\pard\tx1660\tx2160\pardeftab720\li2160\fi-2160\sl360\sa100
-\ls1\ilvl2\cf5 {\listtext	1.	}populate implementation classes with methods by doing Move Method, and no other way\
-\pard\pardeftab720\sl380\sa300
-\cf5 The member of the pair without their hands on the keyboard must be very strict in enforcing these rules, especially 4.1 and 4.2\cf0 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
-
-\b \cf0 Practice #1\
-\
-\pard\pardeftab720\sl360
-
-\b0 \cf6 TDD Kata- an exercise in coding, refactoring and test-first, that you should apply daily for at least 15 minutes.\
-\
-\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
-\ls2\ilvl0\cf6 {\listtext	\uc0\u9642 	}Try not to read ahead.\
-{\listtext	\uc0\u9642 	}Do one task at a time.\'a0The trick is to learn to work incrementally.\
-{\listtext	\uc0\u9642 	}Make sure you only test for correct inputs. There is no need to test for invalid inputs for this kata.\
-\pard\pardeftab720\sl360\sa280
-\cf6 \'a0\
-String Calculator\
-\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
-\ls3\ilvl0\cf6 {\listtext	1.	}Create a simple String calculator with a method int add(string numbers)\
-\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
-\ls3\ilvl1\cf6 {\listtext	1.	}The method can take 0, 1 or 2 numbers, and will return their sum (for an empty string it will return 0) for example \'93\'94 or \'931\'94 or \'931,2\'94\
-{\listtext	2.	}Start with the simplest test case of an empty string and move to 1 and two numbers\
-{\listtext	3.	}Remember to solve things as simply as possible so that you force yourself to write tests you did not think about\
-{\listtext	4.	}Remember to refactor after each passing test\
-\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
-\ls3\ilvl0\cf6 {\listtext	2.	}Allow the Add method to handle an unknown amount of numbers\
-{\listtext	3.	}Allow the Add method to handle new lines between numbers (instead of commas).\
-\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl360
-\ls3\ilvl1\cf6 {\listtext	1.	}the following input is ok:\'a0 \'931\\n2,3\'94\'a0 (will equal 6)\
-{\listtext	2.	}the following input is NOT\'a0ok:\'a0 \'931,\\n\'94 (not need to prove it - just clarifying)\
-{\listtext	1.	}Support different delimiters\
-{\listtext	2.	}to change a delimiter, the beginning of the string will contain a separate line that looks like this:\'a0\'a0 \'93//[delimiter]\\n[numbers\'85]\'94 for example \'93//;\\n1;2\'94 should return three where the default delimiter is \'91;\'92 .\
-{\listtext	3.	}the first line is optional. all existing scenarios should still be supported\
-\pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
-\ls3\ilvl0\cf6 {\listtext	4.	}Calling Add with a negative number will throw an exception \'93negatives not allowed\'94 - and the negative that was passed. If there are multiple negatives, show all of them in the exception message.\uc0\u8232 Stop here if you are a beginner. Continue if you can finish the steps so far in less than 30 minutes.\
-{\listtext	5.	}Numbers bigger than 1000 should be ignored, so adding 2 + 1001 \'a0= 2\
-{\listtext	6.	}Delimiters can be of any length with the following format:\'a0 \'93//[delimiter]\\n\'94 for example: \'93//[***]\\n1***2***3\'94 should return 6\
-{\listtext	7.	}Allow multiple delimiters like this:\'a0 \'93//[delim1][delim2]\\n\'94 for example \'93//[*][%]\\n1*2%3\'94 should return 6.\
-{\listtext	8.	}make sure you can also handle multiple delimiters with length longer than one char\
-\pard\pardeftab720\sl360
-\cf6 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
-{\field{\*\fldinst{HYPERLINK "http://osherove.com/tdd-kata-1/"}}{\fldrslt \cf0 http://osherove.com/tdd-kata-1/}}\cf0 \
-\
-\
 }
