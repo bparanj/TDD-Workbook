@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
 {\fonttbl\f0\fnil\fcharset0 Verdana;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\fi720\pardirnatural
@@ -10,7 +10,7 @@ A test condition is something we need to prove the SUT really does; it can be de
 \
 Fig 12.1 the four phases of a typical test. Each test method implements a four phase test that ideally verifies a single test condition. Not all phases of the four phase test need be in the test method.\
 \
-Verifying one condition per test gives good defect localization. That is, when a test fails they know exactly what is wrong in the SUT because each test verifies exactly one test condition. A test that verifies a single test condition executes a single code path through the SUT and it should execute exactly the same path each time it runs; that is what makes it a repeatable test. \
+Verifying one condition per test gives good defect localization. That is, when a test fails you know exactly what is wrong in the SUT because each test verifies exactly one test condition. A test that verifies a single test condition executes a single code path through the SUT and it should execute exactly the same path each time it runs; that is what makes it a repeatable test. \
 \
 That means we need as many test methods as we have paths through the code - but how else an we expect to achieve full code coverage. What makes this pattern manageable is that we isolate the SUT when we write unit tests for each class so we only have to focus on paths through a single object. Also because each test should verify only a single path through the code, each test method should consist of strictly sequential statements that describe what should happen on that one path. \
 \

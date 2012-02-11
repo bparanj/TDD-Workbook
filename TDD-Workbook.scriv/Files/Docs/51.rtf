@@ -6,12 +6,14 @@
 \f0\b\fs28 \cf0 Why
 \b0  \
 \
-We will not discuss about the reasons for testing.\
 Why do you need to write one test at a time?\
 Why do you need to make the test fail first?\
 Why should you isolate the SUT?\
 Why should you keep test logic out of production code?\
 Why should we avoid reusing the end state of one test as the starting state of the next test?\
+Why do you need to minimize the number of objects created in the setup?\
+Why do you need to avoid testing private methods?\
+Why do we need to avoid conditional test logic in tests?\
 \
 
 \b What
@@ -19,6 +21,8 @@ Why should we avoid reusing the end state of one test as the starting state of t
 \
 What is testing?\
 What makes testing difficult?\
+Configuration. Requirements gathering. Recognizing data duplication and applying good design principles.\
+\
 What should we test?\
 What are the characteristics of a good test?\
 What should be the first test?\
@@ -27,12 +31,28 @@ What do you do when the test passes without failing?\
 What do you do when a new requirement breaks an existing test?\
 What do you do when get a bug report?\
 What do you do when a test fails intermittently?\
-What are the root causes of fragile tests?\
+\pard\tx720\fi720\pardirnatural
+\cf0 Sometimes they pass and sometimes they fail. If the cause cannot be easily determined, collect data systematically over a period of time. In which environments did the tests pass and where did they fail? Were all the tests being run or just a subset of them? Did any change in behavior occur when the test suite was run several times in a row? Did any change in behavior occur when it was run from several test runners at the same time.\
+\
+Once we have some data, match up the observed symptoms with those listed for each of the potential causes and to narrow the list of possibilities to a handful of candidates. Then we can collect some more data focusing on differences in symptoms between the possible causes.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+\cf0 What are the root causes of fragile tests?\
 What does it mean when a customer test fails but no unit tests fail?\
 What are the reasons for complicated tests?\
 What is untestable code?\
 What is a well-designed system from a testing perspective?\
 What does testing concerns separately buy us?\
+What are the different techniques to write tests?\
+What are the techniques for isolating the SUT from it\'92s dependencies?\
+What are the problems with testing a cluster of objects?\
+What is the advantage of verifying one condition per test?\
+What makes a test repeatable?\
+What is the advantage of minimizing test overlap?\
+What is the right size for a test method?\
+What is the starting state of a refactoring step? Can it be red?\
+What is false positive? (Test that fails when the SUT is working properly)\
+What is false negative? (Test that passes when the SUT is not working properly)\
+What is the consequence of \'93just do it in-line\'94 mentality?\
 \
 
 \b How\
@@ -51,17 +71,68 @@ How do you communicate intent in test?\
 How do you write a robust test?\
 How do you avoid obscure tests?\
 How do you avoid over specified software?\
-How can you achieve defect localization?\
+\pard\tx720\fi720\pardirnatural
+\cf0  The main issue is that the tests describe 
+\i how
+\i0  the software should do something, not 
+\i what 
+\i0 it should achieve. That is, the tests will pass only if the software is implemented in a particular way. This problem can be avoided by applying the principle Use the Front Door First whenever possible to avoid encoding too much knowledge about the implementation of the SUT into the tests.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+\cf0 How can you achieve defect localization?\
 How can you keep tests independent?\
 How can you isolate the SUT?\
 How can you prove that all of the functionality works correctly in all possible combinations?\
 How can you minimize untestable code?\
-How do you name a method?\
+\pard\tx720\fi720\pardirnatural
+\cf0 Focus on the big picture (the intent) of the test. Write the test methods in an outside-in manner, focusing on their intent. Whenever we need to do something that involves several lines of code, we simply call a nonexistent test utility method to do it. We write all our tests this way and then fill in implementations of the test utility methods to get the tests to compile and run.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+\cf0 How do you name a method?\
 How can we avoid multiple assertions in a test?\
 How do you know it is time to create a new class by looking at your test?\
+How much effort should it take to write or modify tests?\
+How can improve the diagnostics message in a test?\
+How can you test asynchronous behavior?\
+How do you eliminate if statements in tests?\
+How can you avoid using loops in tests?\
+How can you exercise untested code paths in the SUT that are impossible to traverse when using real objects?\
+How can you minimize test overlap?\
+How can you control indirect inputs?\
+How can you control indirect outputs?\
+How do you deal with non-deterministic component?\
+How do you deal with non-deterministic test?\
+\pard\tx720\fi720\pardirnatural
+\cf0 The first step is to make our tests repeatable by ensuring that they execute in a completely linear fashion by removing any conditional test logic. Then we go about replacing any random values with deterministic values.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+\cf0 How can you verify indirect output behavior?\
+How can you make the cause and effect between fixture and verification logic clear?\
+How can you make the cause - effect relationship between inputs and expected outputs clear?\
+How do you hide irrelevant information in setup step?\
+How do you hide irrelevant information in result verification step?\
+How do you test overly coupled code?\
+How do you keep mocks in synch with real objects?\
+\pard\tx720\fi720\pardirnatural
+\cf0 We may be missing the component tests for a cluster of classes (i.e., a component) that would point out an integration error between the individual classes. This can happen when we use mock objects extensively to replace depended on objects but the unit tests of the depended on objects don\'92t match the way the mock objects are programmed to behave.\
 \
+Write unit tests for individual classes as well as component tests for the collections of related classes to ensure we have good defect localization.\
+\
+If the system is large in size, it is a good idea to break it into a number of fairly independent subsystems or components. This allows teams working on each component to work independently and to run only those tests specific to their own component. Some of those tests should act as proxies for how the other components would use the component; they must be kept up-to-date if the interface contract changes.\
+\
+If the problem is missing customer tests, we need to write at least enough customer tests to ensure that all components are integrated properly. This may require improving the design-for-testability of the application by separating the presentation layer from the business logic layer. \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
+\cf0 How can you speed up slow tests?\
+How do you deal with untested code?\
+\
+\pard\tx720\fi720\pardirnatural
+\cf0 If the untested code is caused by an inability to control the indirect inputs of the SUT, the most common solution is to use a test stub to feed the various kinds of indirect inputs into the SUT to cover all the code paths. Otherwise it may be sufficient to configure the DoC to cause it to return the various indirect inputs required to fully test the SUT.\
+\
+How can we verify logic independently when we cannot use a round-trip test?\
+How can we verify logic independently when it is part of a layered architecture?\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
 
-\b When\
+\b \cf0 \
+When\
 \
 
 \b0 When do you write a test?\
@@ -70,4 +141,9 @@ When do you use state verification?\
 When do you use behavior verification?\
 When is it ok to violate single assertion rule?\
 \
-Start learning journal entry from Principles of Test Automation - Minimize untestable code\'85}
+Start learning journal entry from Principles of Test Automation - Minimize untestable code\'85\
+Stubs are used to verify indirect inputs. Mocks are used to verify indirect outputs.\
+Mocks can be programmed with any indirect inputs required to allow the SUT to advance to the point where\
+It would generate the indirect outputs they are verifying.\
+\
+Draw a simple diagram of one object and then two objects where one depends on another}

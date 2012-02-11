@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
 {\fonttbl\f0\fnil\fcharset0 Verdana;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\fi720\pardirnatural
@@ -57,7 +57,7 @@ This is the likely order in which a project team might reasonably expect to lear
 To run the happy path through the SUT, we must automate one simple success test as a simple round-trip test through the SUT\'92s API. To get this test to pass, we might simply hard-code some of the logic in the SUT, especially where it might call other components to retrieve information it needs to make decisions that would drive the test down the happy path. Before exercising the SUT, we need to set up the test fixture by initializing the SUT to the pre-test state. As long as the SUT executes without raising any errors, we consider the test as having passed; at this level of maturity we don\'92t check the actual results against the expected results.\
 \
 
-\b Verity Direct Outputs of the Happy Path
+\b Verify Direct Outputs of the Happy Path
 \b0 \
 \
 Once the happy path is executing successfully we can add result verification logic to turn our test into a self-checking test. This involves adding calls to assertion methods to compare the expected results with what actually occurred. We can easily make this change for any objects or values returned to the test by the SUT. We can also call other methods on the SUT or use public fields to access the post-test state of the SUT; we can then call assertion methods on these values as well.\
