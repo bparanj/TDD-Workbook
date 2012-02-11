@@ -442,7 +442,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>212,0</TextSelection>
+                        <TextSelection>5488,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="47" Type="PDF" Created="2010-07-27 02:13:11 -0700" Modified="2010-07-27 02:13:12 -0700">
@@ -480,6 +480,16 @@
                     </MetaData>
                     <TextSettings>
                         <TextSelection>5503,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="51" Type="Text" Created="2012-02-10 15:38:47 -0800" Modified="2012-02-10 18:00:13 -0800">
+                    <Title>Outline</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
             </Children>

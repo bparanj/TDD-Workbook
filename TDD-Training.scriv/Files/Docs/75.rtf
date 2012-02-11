@@ -112,6 +112,20 @@ Developer specs are implemented as isolation tests.\
 \pard\pardeftab720
 \cf0 An acknowledged issue with state-based verification is that it can lead to creating query methods only to support verification. It's never comfortable to add methods to the API of an object purely for testing, using behavior verification avoids that problem.\
 \
+
+\b Side Effects
+\b0 \
+\
+A function or expression has a side effect if, in addition to returning a value, it also modifies some state or has an observable interaction with calling functions or the outside world. For example, a function might modify a global or static variable, modify one of its arguments, raise an exception, write data to a display or file, read data, or call other side-effecting functions. Side effects are the most common way to enable a program to interact with the outside world (people, filesystems, other computers on networks).\
+\
+
+\b Interaction Testing
+\b0 \
+\
+Classes whose primary concern is to aide the forwarding of the call stack (rather than exposing a change in state) are defined solely by how they interact with collaborating objects.\
+\
+Examples of such types of classes include Proxies, Marshallers and Composites, to name but a few, none of which change state as a result of their behavior.\
+\
 {\field{\*\fldinst{HYPERLINK "http://static.mockobjects.com/files/endotesting.pdf"}}{\fldrslt http://static.mockobjects.com/files/endotesting.pdf}}\
 \
 {\field{\*\fldinst{HYPERLINK "https://www.relishapp.com/rspec"}}{\fldrslt https://www.relishapp.com/rspec}}}

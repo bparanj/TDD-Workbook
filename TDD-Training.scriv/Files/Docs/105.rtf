@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
 {\fonttbl\f0\fnil\fcharset0 Verdana;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\fi720\pardirnatural
@@ -20,7 +20,7 @@ Writing the tests before we write the code forces the code to be designed for te
 \
 Objects have several kinds of interfaces. There is the public interface that clients are expected to use. There may also be a private interface. Many objects also have an outgoing interface consisting of the used part of the interfaces of any objects on which they depend. \
 \
-The types of interfaces we use influence the robustness of our tests. Overuse of behavior verification and mock objects can result in over specified software and test that are brittle and may discourage developers from doing  desirable refactorings.\
+The types of interfaces we use influence the robustness of our tests. Overuse of behavior verification and mock objects can result in over specified software and test that are brittle and may discourage developers from doing desirable refactorings.\
 \
 When all choices are equally effective, we should use round-trip tests to test our SUT. To do so, we test an object through its public interface and use state verification to determine whether it behaved correctly. If this is not sufficient to accurately describe the expected behavior, we can make our tests layer-crossing test and use behavior verification to verify the calls the SUT makes to DoCs. If we must replace a slow or unavailable DoC with a faster test double, using a fake object is preferable because it encodes fewer assumptions into the test (the only assumption is that the component that the fake object replaces is actually needed).\
 \
@@ -95,11 +95,13 @@ A well-designed system (from a testing perspective) is one that allows for the i
 
 \b Verify One Condition Per Test
 \b0 \
+\pard\tx720\fi720\pardirnatural
 
-\i Single-Condition Test\
+\i \cf0 Single-Condition Test\
 \
+\pard\tx720\fi720\pardirnatural
 
-\i0 Many tests require a starting state other than the default state of the SUT, and many operations of the SUT leave it in a different state from its original state. There is a strong temptation to reuse the end state of one test condition as the starting state of the next test condition by combining the verification of the two test conditions into a single test method because it takes testing more efficient. This approach is not recommended, because when one assertion fails, the rest of the test will not be executed. As a consequence, it becomes more difficult to achieve defect localization.\
+\i0 \cf0 Many tests require a starting state other than the default state of the SUT, and many operations of the SUT leave it in a different state from its original state. There is a strong temptation to reuse the end state of one test condition as the starting state of the next test condition by combining the verification of the two test conditions into a single test method because it takes testing more efficient. This approach is not recommended, because when one assertion fails, the rest of the test will not be executed. As a consequence, it becomes more difficult to achieve defect localization.\
 \
 With automated tests, a single failed assertion will cause the test to stop running and the rest of the test will provide no data on what works and what doesn\'92t.\
 \
