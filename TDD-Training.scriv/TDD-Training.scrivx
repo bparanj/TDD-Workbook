@@ -444,7 +444,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>4025,0</TextSelection>
+                        <TextSelection>7830,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="114" Type="Text" Created="2011-12-23 17:46:31 -0800" Modified="2011-12-28 12:28:09 -0800">
@@ -537,7 +537,7 @@
                         <TextSelection>308,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="121" Type="Text" Created="2011-12-25 12:04:28 -0800" Modified="2011-12-26 17:08:26 -0800">
+                <BinderItem ID="121" Type="Text" Created="2011-12-25 12:04:28 -0800" Modified="2012-02-11 09:10:06 -0800">
                     <Title>Achieving Object Oriented Design</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
@@ -710,7 +710,7 @@
         </Collection>
         <Collection Type="RecentSearch" ID="B354D6F8-AC67-4657-81C3-0C2E718C7629" Color="0.922 0.91 0.98">
             <Title>Search Results</Title>
-            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">false negative</SearchSettings>
+            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">context indep</SearchSettings>
         </Collection>
     </Collections>
     <LabelSettings>
@@ -737,7 +737,7 @@
     <ProjectTargets Notify="No">
         <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="No" Deadline="2011-12-11 11:50:00 -0800" IgnoreDeadline="Yes">0</DraftTarget>
         <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="Yes" ResetType="Midnight" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
-        <PreviousSession Words="1" Characters="3" Date="2012-02-06 16:16:10 -0800"></PreviousSession>
+        <PreviousSession Words="0" Characters="0" Date="2012-02-06 16:16:10 -0800"></PreviousSession>
     </ProjectTargets>
     <PrintSettings PaperSize="612.0,792.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="na-letter" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
 </ScrivenerProject>
