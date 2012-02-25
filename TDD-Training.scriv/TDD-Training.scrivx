@@ -244,7 +244,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>5353,0</TextSelection>
+                        <TextSelection>7480,144</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="93" Type="Text" Created="2011-12-19 23:55:46 -0800" Modified="2012-02-09 20:23:12 -0800">
@@ -254,7 +254,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>5951,78</TextSelection>
+                        <TextSelection>5912,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="94" Type="Text" Created="2011-12-20 10:19:11 -0800" Modified="2012-02-09 20:27:28 -0800">
@@ -264,7 +264,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>1840,0</TextSelection>
+                        <TextSelection>2673,102</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="95" Type="Text" Created="2011-12-20 10:48:09 -0800" Modified="2011-12-23 02:18:11 -0800">
@@ -274,7 +274,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>4744,153</TextSelection>
+                        <TextSelection>4744,154</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="96" Type="Text" Created="2011-12-20 11:40:47 -0800" Modified="2012-01-06 18:00:41 -0800">
@@ -284,7 +284,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>1336,0</TextSelection>
+                        <TextSelection>2043,428</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="98" Type="Text" Created="2011-12-21 10:52:23 -0800" Modified="2011-12-23 02:19:47 -0800">
@@ -304,7 +304,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>921,116</TextSelection>
+                        <TextSelection>33,211</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="100" Type="Text" Created="2011-12-21 11:45:46 -0800" Modified="2011-12-27 23:41:14 -0800">
@@ -324,7 +324,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>0,0</TextSelection>
+                        <TextSelection>1763,320</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="102" Type="Text" Created="2011-12-21 15:50:44 -0800" Modified="2011-12-22 23:57:33 -0800">
@@ -344,7 +344,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>4448,0</TextSelection>
+                        <TextSelection>6522,593</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="104" Type="Text" Created="2011-12-21 17:38:20 -0800" Modified="2011-12-23 02:21:45 -0800">
@@ -364,7 +364,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>10679,538</TextSelection>
+                        <TextSelection>5635,664</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="106" Type="Text" Created="2011-12-22 00:28:57 -0800" Modified="2011-12-23 02:22:56 -0800">
@@ -374,7 +374,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>892,0</TextSelection>
+                        <TextSelection>596,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="107" Type="Text" Created="2011-12-22 11:19:21 -0800" Modified="2011-12-23 02:23:03 -0800">
@@ -394,7 +394,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>5995,0</TextSelection>
+                        <TextSelection>5756,262</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="109" Type="Text" Created="2011-12-22 17:41:58 -0800" Modified="2012-02-10 18:48:00 -0800">
@@ -434,7 +434,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>7792,456</TextSelection>
+                        <TextSelection>8099,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="113" Type="Text" Created="2011-12-23 16:31:06 -0800" Modified="2012-02-10 19:56:56 -0800">
@@ -464,7 +464,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>12791,132</TextSelection>
+                        <TextSelection>11820,115</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="119" Type="Text" Created="2011-12-24 17:49:49 -0800" Modified="2011-12-28 15:27:33 -0800">
@@ -484,7 +484,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>6589,0</TextSelection>
+                        <TextSelection>8186,149</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="88" Type="Text" Created="2011-12-18 11:02:52 -0800" Modified="2012-01-06 19:23:18 -0800">
@@ -710,7 +710,7 @@
         </Collection>
         <Collection Type="RecentSearch" ID="B354D6F8-AC67-4657-81C3-0C2E718C7629" Color="0.922 0.91 0.98">
             <Title>Search Results</Title>
-            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">starter test</SearchSettings>
+            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">reconcile di</SearchSettings>
         </Collection>
     </Collections>
     <LabelSettings>
