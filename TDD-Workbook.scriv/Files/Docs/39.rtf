@@ -1,43 +1,43 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
 {\fonttbl\f0\froman\fcharset0 Times-Roman;\f1\fnil\fcharset0 LucidaGrande;}
-{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red0\green37\blue85;\red38\green38\blue38;
-\red249\green249\blue249;}
+{\colortbl;\red255\green255\blue255;\red0\green37\blue85;\red38\green38\blue38;\red249\green249\blue249;
+}
 \deftab720
 \pard\pardeftab720
 
-\f0\fs48 \cf0 \cb2 State vs Interaction Based Testing\
+\f0\fs48 \cf0 State vs Interaction Based Testing\
 \pard\pardeftab720
 
 \fs20 \cf0 \
 \pard\pardeftab720\sa320
 {\field{\*\fldinst{HYPERLINK "http://www.martinfowler.com/"}}{\fldrslt 
-\fs32 \cf3 \ul \ulc3 Martin Fowler}}
-\fs32  has recently written an {\field{\*\fldinst{HYPERLINK "http://www.martinfowler.com/articles/mocksArentStubs.html"}}{\fldrslt \cf3 \ul \ulc3 article}} comparing what he calls "state-based" and "interaction-based" unit testing. The article doesn't really cover the subject in much depth but one statement in particular surprised me: "interaction-based tests are ... more coupled to the implementation of a method." I think that Martin is spot on when he says "one of the hardest things for people to understand in OO design is the 'Tell Don't Ask' principle," but that principle has a big influence on how you write tests and is exactly what makes interaction-based testing necessary. In an object-oriented design, an object's 
-\i state
+\fs32 \cf2 \ul \ulc2 Martin Fowler}}
+\fs32  has recently written an {\field{\*\fldinst{HYPERLINK "http://www.martinfowler.com/articles/mocksArentStubs.html"}}{\fldrslt \cf2 \ul \ulc2 article}} comparing what he calls "state-based" and "interaction-based" unit testing. The article doesn't really cover the subject in much depth but one statement in particular surprised me: "interaction-based tests are ... more coupled to the implementation of a method." I think that Martin is spot on when he says "one of the hardest things for people to understand in OO design is the 'Tell Don't Ask' principle," but that principle has a big influence on how you write tests and is exactly what makes interaction-based testing necessary. In an object-oriented design, an object's 
+\i state 
 \i0 is an implementation detail that should be properly encapsulated and its interactions with its environment should be its only visible behaviour. If you follow the "Tell, Don't Ask" style, objects have very little visible state to assert about.\
 When writing a program, I care only about what that program does, not the internal state that the program uses to control what it does. The only visible behaviour that a program has is its interactions with external entities, such as I/O devices or remote processes. When a program is divided into modules, likewise the internal state of a module is unimportant; it is only how a module interacts with other modules that matters.\
 In a procedural program, modules interact by reading and writing state that is stored in shared data structures, and so changes to that state should be tested. In an object oriented program, on the other hand, a program is modularised as collaborating objects that perform actions by sending messages to other objects. To effect changes in the program's environment, application objects send messages to objects that represent entities in the environment. The behaviour of a program, and that of the objects within it, is defined solely in terms of message sending, and those messaging interactions are what should be tested.\
-In software that has a pure object-oriented design, in which logic operating upon state is defined only in the objects that hold that state and objects interact in a "Tell, Don't Ask" style, objects expose next to no visible state that can be used for state based testing. Making assertions about state and state changes therefore requires objects to provide access to their internals that is not neccessary for the normal execution of the software, and ties the tests to implementation details that should be properly encapsulated.\
-Blaming "brittleness" of tests upon interaction-based testing is a red herring. Both interaction-based tests and state-based tests become brittle if they make assertions upon implementation details and overly constrain the interfaces between modules. Whether you prefer a procedural style in which you test the changes of visible state in data structures, or an object-oriented style in which you test the coordination of actions between objects, you need to carefully choose what your tests specify to keep them from being brittle. In state based tests you have to be careful that you don't test for inconsequential state changes or make too tight assertions about state values. In interaction tests you have to be careful not to test for inconsequential interactions and make too tight assertions about parameter values. This is why {\field{\*\fldinst{HYPERLINK "http://www.jmock.org/"}}{\fldrslt \cf3 \ul \ulc3 jMock}} provides so much flexibility in the way a test can define constraints upon method signature, parameter values, invocation ordering, expected invocation counts, etc.\
+In software that has a pure object-oriented design, in which logic operating upon state is defined only in the objects that hold that state and objects interact in a "Tell, Don't Ask" style, objects expose next to no visible state that can be used for state based testing. Making assertions about state and state changes therefore requires objects to provide access to their internals that is not necessary for the normal execution of the software, and ties the tests to implementation details that should be properly encapsulated.\
+Blaming "brittleness" of tests upon interaction-based testing is a red herring. Both interaction-based tests and state-based tests become brittle if they make assertions upon implementation details and overly constrain the interfaces between modules. Whether you prefer a procedural style in which you test the changes of visible state in data structures, or an object-oriented style in which you test the coordination of actions between objects, you need to carefully choose what your tests specify to keep them from being brittle. In state based tests you have to be careful that you don't test for inconsequential state changes or make too tight assertions about state values. In interaction tests you have to be careful not to test for inconsequential interactions and make too tight assertions about parameter values. This is why {\field{\*\fldinst{HYPERLINK "http://www.jmock.org/"}}{\fldrslt \cf2 \ul \ulc2 jMock}} provides so much flexibility in the way a test can define constraints upon method signature, parameter values, invocation ordering, expected invocation counts, etc.\
 I think that the most important benefit of interaction based testing is that it helps 
 \i reduce
-\i0  the amount of mutable state in a program. {\field{\*\fldinst{HYPERLINK "http://www-106.ibm.com/developerworks/java/library/j-djc01153.html"}}{\fldrslt \cf3 \ul \ulc3 Mutable state makes a program harder to understand and maintain}} because the behaviour of a piece of code cannnot be easily predicted merely by reading the text but depends on the sequence of events that put it and its environment into signigicant states. By concentrating on the interactions between objects instead of state changes, interaction-based testing guides the design towards objects that transform data as they pass it around rather than store data and perform logic on the state of other objects.\
-I know this makes me sound like a {\field{\*\fldinst{HYPERLINK "http://www.haskell.org/"}}{\fldrslt \cf3 \ul \ulc3 functional programming}} zealot instead of an object-oriented programming zealot, so I've dug up this quote by {\field{\*\fldinst{HYPERLINK "http://www.smalltalk.org/alankay.html"}}{\fldrslt \cf3 \ul \ulc3 Alan Kay}} to reestablish my OO purist credentials:\
+\i0  the amount of mutable state in a program. {\field{\*\fldinst{HYPERLINK "http://www-106.ibm.com/developerworks/java/library/j-djc01153.html"}}{\fldrslt \cf2 \ul \ulc2 Mutable state makes a program harder to understand and maintain}} because the behaviour of a piece of code cannot be easily predicted merely by reading the text but depends on the sequence of events that put it and its environment into significant states. By concentrating on the interactions between objects instead of state changes, interaction-based testing guides the design towards objects that transform data as they pass it around rather than store data and perform logic on the state of other objects.\
+I know this makes me sound like a {\field{\*\fldinst{HYPERLINK "http://www.haskell.org/"}}{\fldrslt \cf2 \ul \ulc2 functional programming}} zealot instead of an object-oriented programming zealot, so I've dug up this quote by {\field{\*\fldinst{HYPERLINK "http://www.smalltalk.org/alankay.html"}}{\fldrslt \cf2 \ul \ulc2 Alan Kay}} to reestablish my OO purist credentials:\
 \pard\pardeftab720
 
 \i \cf0 "Doing encapsulation right is a commitment not just to abstraction of state, but to eliminate state oriented metaphors from programming."
-\i0  - Alan Kay, {\field{\*\fldinst{HYPERLINK "http://www.iam.unibe.ch/~ducasse/FreeBooks/SmalltalkHistoryHOPL.pdf"}}{\fldrslt \cf3 \ul \ulc3 Early History of Smaltalk}}.\
+\i0  - Alan Kay, {\field{\*\fldinst{HYPERLINK "http://www.iam.unibe.ch/~ducasse/FreeBooks/SmalltalkHistoryHOPL.pdf"}}{\fldrslt \cf2 \ul \ulc2 Early History of Smaltalk}}.\
 \pard\pardeftab720\sa320
 \cf0 I have come to think of object oriented programming as an inversion of functional programming. In a lazy functional language data is pulled through functions that transform the data and combine it into a single result. In an object oriented program, data is pushed out in messages to objects that transform the data and push it out to other objects for further processing.\
-Update: {\field{\*\fldinst{HYPERLINK "http://www.natpryce.com/articles/000356.html"}}{\fldrslt \cf3 \ul \ulc3 example and code}}.\
+Update: {\field{\*\fldinst{HYPERLINK "http://www.natpryce.com/articles/000356.html"}}{\fldrslt \cf2 \ul \ulc2 example and code}}.\
 \pard\pardeftab720\sl320
 
-\f1\fs26 \cf4 \cb5 I think the whole division of TDD practice into "mockist" vs "state based" is pointless, distracting and does a disservice to people trying to learn and use TDD. \
+\f1\fs26 \cf3 \cb4 I think the whole division of TDD practice into "mockist" vs "state based" is pointless, distracting and does a disservice to people trying to learn and use TDD. \
 \
 Mock objects are just a tool. They are one of many tools that you need to use when doing TDD. Like any tool, they are designed to help solve a set of problems in a specific context. Outside that context they do not help and can be a hindrance.\
 \
 \pard\pardeftab720\sl320
-\cf4 \cb2 For my own part, I *always* mock at system defined boundaries (e.g. filesystem, network, database, etc.) I usually mock when I want to elicit loose coupling between an interface and it's client in a top-down direction. And, I generally don't mock when the object I am interacting with is small and easily faked/stubbed.\
+\cf3 \cb1 For my own part, I *always* mock at system defined boundaries (e.g. filesystem, network, database, etc.) I usually mock when I want to elicit loose coupling between an interface and it's client in a top-down direction. And, I generally don't mock when the object I am interacting with is small and easily faked/stubbed.\
 \pard\pardeftab720\sl320
 
 \f0\fs32 \cf0 \

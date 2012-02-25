@@ -6,12 +6,13 @@
 \pard\pardeftab720
 
 \f0\b\fs28 \cf0 The Five Characteristics of Good Tests\
+\pard\pardeftab720
 
-\b0 \
+\b0 \cf0 \
 Tests are code that don\'92t have tests. Your code is verified by your tests, but your tests are verified by nothing. So, having\
 your tests be as clear and manageable as possible is the only way to keep your tests honest and keep them going.\
 \
-A successful test has the following five charteristics:\
+A successful test has the following five characteristics:\
 \
 \'95 Independent\
 \'95 Repeatable\
@@ -19,10 +20,12 @@ A successful test has the following five charteristics:\
 \'95 Concise\
 \'95 Robust\
 \
+\pard\pardeftab720
 
-\b Independent\
+\b \cf0 Independent\
+\pard\pardeftab720
 
-\b0 \
+\b0 \cf0 \
 A test is independent if the test does not depend on any external tests or data to run. An independent test suite gives the same results no matter\
 what order the tests are run and also tends to limit the scope of test failures to only those tests that cover the buggy method. In contrast, a\
 change in one part of an application with a very dependent test suite could trigger failures throughout your tests. A clear sign that your tests\
@@ -37,10 +40,12 @@ Other than the use of fixtures, most Rails developers know to steer clear of glo
 reason\'97code that has strange, hard-to-trace dependencies. One reason factory tools are preferable to fixtures is that they result in tests\
 that have better independence.\
 \
+\pard\pardeftab720
 
-\b Repeatable\
+\b \cf0 Repeatable\
+\pard\pardeftab720
 
-\b0 \
+\b0 \cf0 \
 A test is repeatable if running the same test multiple times gives the same result. The hallmark of a test suite that lacks repeatability is intermittent test failure.\
 \
 Two classic causes of repeatability problems are time and date testing and random numbers. In both cases, the issue is that your test data\
@@ -55,8 +60,9 @@ The basic approach to solving this problem is similar for both cases and applies
 \
 The exact mix of encapsulation and mocking varies. Timecop, for example, stubs the time and date classes with no encapsulation. Creating a time service is a superior solution.\
 \
+\pard\pardeftab720
 
-\b Clarity
+\b \cf0 Clarity
 \b0 \
 \
  A test is clear if its purpose is immediately understandable. Clarity in testing has two components. The first is the readability that applies to tests as it applies to any code. The second is the kind of clarity that describes how the test fits into the larger test suite. Every test should have a point, meaning it should test something different from the other tests, and that purpose should be easy to discern from reading the test.\
@@ -92,8 +98,9 @@ On the other hand, if you can\'92t write clean tests, consider the possibility t
 \
 There\'92s an old programming aphorism that since debugging is more complicated than coding, if you\'92ve written code that is as complicated as you can make it, then you are by definition not skilled enough to debug it. Because tests don\'92t have their own tests and need to be correct, this aphorism suggests that you should keep your tests simple, so as to give yourself some cognitive room to understand them. In particular, this guideline argues against clever tricks to reduce duplication among multiple tests that share a similar structure. If you find yourself starting to metaprogram to generate multiple tests in your suite, you\'92re probably going to find that complexity working against you at some point. You never want to be in a position to have to decide whether a bug is in your test or in the code. Well, you\'92ll be in that position at some point, but it\'92s an easier place to be if the test side is relatively simple.\
 \
+\pard\pardeftab720
 
-\b Concise
+\b \cf0 Concise
 \b0 \
 \
  A test is concise if it uses the minimum amount of code and objects to achieve its goal. Concise and clear are sometimes in conflict, as in the previous example, where the clear version is a couple of lines longer than the original version. Clear beats concise. Conciseness is useful only to the extent that it makes writing and maintaining the test suite easier.\
@@ -124,8 +131,9 @@ def \cf2 test_user_point_level\
 \pard\pardeftab720
 \cf0  That works out to one assertion for the start of each new level, plus an assertion for the special cases 0 and nil, and an assertion at the end of a level to assure that I don\'92t have an off-by-one bug. That\'92s a total of eight assertions. Given the way this code would probably be implemented, as a case  statement with the while  clauses using ranges, I don\'92t feel the need to test the end condition of more than one field, nor do I feel the need to test every point value in a range. \
 \
+\pard\pardeftab720
 
-\b Robust
+\b \cf0 Robust
 \b0 \
 \
  A test is robust if it actually tests the logic as intended. That is, the test passes when the underlying code is correct and fails when the underlying code is wrong. \
@@ -169,8 +177,9 @@ def \cf2 test_user_point_level\
 \
 Speaking of tautologies, mock objects have their own special robustness issues. It\'92s easy to create a tautology by using a mock object. It\'92s also easy to create a brittle test by virtue of the fact that a mock object often creates a hard expectation of exactly what methods will be called on the mock object. If you add an unexpected method call to the code being tested, then you can get mock object failures simply because an unexpected method has been called. I\'92ve had changes to a login filter cause hundreds of test failures because mock users going through the login filter bounced off the new call. One workaround, depending on your mock package, is to use something like Mocha\'92s mock_everything ( ) method, which automatically returns nil  for any unexpected method call without triggering an error.\
 \
+\pard\pardeftab720
 
-\b Find the Seam
+\b \cf0 Find the Seam
 \b0 \
 \
 Mock objects are a specific version of a more general technique for working with legacy code, which involves finding seams in the code and exploiting them to make testing the legacy functionality possible. A seam is a place where we can change the behavior of our application without changing the actual code. A mock object package acts as a seam because adding the mock object, which happens in the test, changes the behavior of the code by mandating a specific response to a method call without actually executing the method. Again, the behavior of the method under test changes in the test environment without affecting behavior in the production and without changing the existing development code.\
