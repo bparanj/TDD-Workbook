@@ -3,15 +3,21 @@ require 'spec_helper'
 module AngryRock
   describe Game do
     it "picks paper as the winner over rock" do
-      player_one = stub(:player, :name => "Green_Day", :choose => "paper")
-      player_two = stub(:player, :name => "minder", :choose => "rock")
+      player_one = stub(:player, :name => "Green_Day", :choose => Game::PAPER)
+      player_two = stub(:player, :name => "minder", :choose => Game::ROCK)
       
       game = Game.new(player_one, player_two)
-      game.winner.should == "Green_Day"
-      
+      game.winner.should == "Green_Day"      
     end
     
-    it "picks scissors as the winner over paper"
+    xit "picks scissors as the winner over paper" do
+      player_one = stub(:player, :name => "Green_Day", :choose => "paper")
+      player_two = stub(:player, :name => "minder", :choose => "scissors")
+      
+      game = Game.new(player_one, player_two)
+      game.winner.should == "minder"
+    end
+    
     it "picks rock as the winner over scissors "
     
   end
