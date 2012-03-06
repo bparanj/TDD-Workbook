@@ -1,0 +1,1 @@
+require 'angry_rock/game'
