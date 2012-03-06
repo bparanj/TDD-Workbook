@@ -1,0 +1,1 @@
+1. rspec spec/angry_rock/game_spec.rb --color --format doc
