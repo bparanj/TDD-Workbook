@@ -519,7 +519,7 @@
         </Collection>
         <Collection Type="RecentSearch" ID="8F9C3C00-4BC3-43C1-AB00-B009BD09626F" Color="0.922 0.91 0.98">
             <Title>Search Results</Title>
-            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">resource optim</SearchSettings>
+            <SearchSettings Operator="Exact" Type="All" CaseSensitive="No">doc</SearchSettings>
         </Collection>
     </Collections>
     <LabelSettings>
