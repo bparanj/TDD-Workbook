@@ -12,6 +12,8 @@ module AngryRock
     def winner
       if @player_one.choose == PAPER && @player_two.choose == ROCK
         @player_one.name
+      elsif @player_one.choose == ROCK && @player_two.choose == SCISSORS
+        @player_one.name
       else
         @player_two.name
       end

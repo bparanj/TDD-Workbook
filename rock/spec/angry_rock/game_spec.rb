@@ -18,7 +18,13 @@ module AngryRock
       game.winner.should == "minder"
     end
     
-    it "picks rock as the winner over scissors "
+    it "picks rock as the winner over scissors " do
+      player_one = stub(:player, :name => "Green_Day", :choose => Game::ROCK)
+      player_two = stub(:player, :name => "minder", :choose => Game::SCISSORS)
+      
+      game = Game.new(player_one, player_two)
+      game.winner.should == "Green_Day"
+    end
     
   end
 end

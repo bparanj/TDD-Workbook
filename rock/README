@@ -1,2 +1,6 @@
 1. rspec spec/angry_rock/game_spec.rb --color --format doc
 2. For this version of the code. Are we ready to deploy this code to production?
+3. All tests pass. Test code is bad. Production code is bad.
+
+Task:
+Refactor the test code.
