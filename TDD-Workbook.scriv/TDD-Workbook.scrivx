@@ -164,7 +164,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>411,0</TextSelection>
+                        <TextSelection>443,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="28" Type="Text" Created="2011-12-28 19:22:51 -0800" Modified="2011-12-28 19:23:56 -0800">
@@ -422,7 +422,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>12359,0</TextSelection>
+                        <TextSelection>337,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="45" Type="Text" Created="2012-01-26 15:50:48 -0800" Modified="2012-02-03 10:41:48 -0800">
@@ -491,6 +491,25 @@
                     <TextSettings>
                         <TextSelection>616,0</TextSelection>
                     </TextSettings>
+                </BinderItem>
+                <BinderItem ID="52" Type="Text" Created="2012-03-09 09:40:29 -0800" Modified="2012-03-09 09:42:22 -0800">
+                    <Title>Untitled</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="53" Type="Image" Created="2012-03-09 09:37:59 -0800" Modified="2012-03-09 09:37:59 -0800">
+                    <Title>sample_acctg_equation</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <FileExtension>gif</FileExtension>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                        <ShowSynopsisImage>Yes</ShowSynopsisImage>
+                    </MetaData>
                 </BinderItem>
             </Children>
         </BinderItem>
