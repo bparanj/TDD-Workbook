@@ -12,7 +12,7 @@ module AngryRock
       @player_two.stub(:choose => Game::ROCK)
       
       game = Game.new(@player_one, @player_two)
-      game.winner.should == "Green_Day"      
+      game.winner.should == @player_one.name      
     end
     
     it "picks scissors as the winner over paper" do
@@ -20,7 +20,7 @@ module AngryRock
       @player_two.stub(:choose => Game::SCISSORS)
       
       game = Game.new(@player_one, @player_two)
-      game.winner.should == "minder"
+      game.winner.should == @player_two.name
     end
     
     it "picks rock as the winner over scissors " do
@@ -28,7 +28,7 @@ module AngryRock
       @player_two.stub(:choose => Game::SCISSORS)
       
       game = Game.new(@player_one, @player_two)
-      game.winner.should == "Green_Day"
+      game.winner.should == @player_one.name
     end
     
   end
