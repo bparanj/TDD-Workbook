@@ -16,18 +16,18 @@ module AngryRock
     end
     
     it "picks scissors as the winner over paper" do
-      player_one = stub(:player, :name => "Green_Day", :choose => Game::PAPER)
-      player_two = stub(:player, :name => "minder", :choose => Game::SCISSORS)
+      @player_one.stub(:choose => Game::PAPER)
+      @player_two.stub(:choose => Game::SCISSORS)
       
-      game = Game.new(player_one, player_two)
+      game = Game.new(@player_one, @player_two)
       game.winner.should == "minder"
     end
     
     it "picks rock as the winner over scissors " do
-      player_one = stub(:player, :name => "Green_Day", :choose => Game::ROCK)
-      player_two = stub(:player, :name => "minder", :choose => Game::SCISSORS)
+      @player_one.stub(:choose => Game::ROCK)
+      @player_two.stub(:choose => Game::SCISSORS)
       
-      game = Game.new(player_one, player_two)
+      game = Game.new(@player_one, @player_two)
       game.winner.should == "Green_Day"
     end
     
