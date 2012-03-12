@@ -1,6 +1,8 @@
 1. rspec spec/angry_rock/game_spec.rb --color --format doc
 2. For this version of the code. Are we ready to deploy this code to production?
 3. All tests pass. Test code is bad. Production code is bad.
+4. Refactored the test code. Green -> Green
 
 Task:
-Refactor the test code.
+Refactor production code.
+Goal : Do not use any control flow statements such as if, switch etc in game.rb.
