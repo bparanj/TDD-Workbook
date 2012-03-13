@@ -11,24 +11,32 @@ module AngryRock
       @player_one.stub(:choose => 'paper')
       @player_two.stub(:choose => 'rock')
       
-      game = Game.new(@player_one.choose, @player_two.choose)
-      game.winner.should be_true      
+      game = Game.new(@player_one, @player_two)
+      game.winner.should == 'Green_Day'   
     end
     
     it "picks scissors as the winner over paper" do
       @player_one.stub(:choose => 'scissor')
       @player_two.stub(:choose => 'paper')
       
-      game = Game.new(@player_one.choose, @player_two.choose)
-      game.winner.should be_true
+      game = Game.new(@player_one, @player_two)
+      game.winner.should == 'Green_Day'
     end
     
     it "picks rock as the winner over scissors " do
       @player_one.stub(:choose => 'rock')
       @player_two.stub(:choose => 'scissor')
       
-      game = Game.new(@player_one.choose, @player_two.choose)
-      game.winner.should be_true
+      game = Game.new(@player_one, @player_two)
+      game.winner.should == 'Green_Day'
+    end
+
+    it "picks rock as the winner over scissors. Verify player name. " do
+       @player_one.stub(:choose => 'scissor')
+       @player_two.stub(:choose => 'rock')
+
+       game = Game.new(@player_one, @player_two)
+       game.winner.should == 'minder'
     end
     
   end
