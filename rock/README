@@ -2,7 +2,28 @@
 2. For this version of the code. Are we ready to deploy this code to production?
 3. All tests pass. Test code is bad. Production code is bad.
 4. Refactored the test code. Green -> Green
+5. We minimized if conditional statements. Moved it to the main partition and kept our
+   application partition clean.
 
-Task:
-Refactor production code.
-Goal : Do not use any control flow statements such as if, switch etc in game.rb.
+TODO:
+
+Weird bug in pick_winner method of game coordinator in the case of scissor. Not able to get rid of string and generalize it.
+
+
+Possible combinations = 9
+Rock  Rock
+Rock  Paper
+Rock  Scissor
+
+Paper Rock
+Paper Paper
+Paper Scissor
+
+Scissor Rock
+Scissor Paper
+Scissor Scissor
+
+Number of items
+Rock 
+Paper
+Scissor

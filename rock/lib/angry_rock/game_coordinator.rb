@@ -9,26 +9,14 @@ module AngryRock
     def initialize(player_one, player_two)
       @player_one = player_one
       @player_two = player_two
-      @choice_one = player_one.choose
-      @choice_two = player_two.choose
+      @choice_one = player_one.choice
+      @choice_two = player_two.choice
     end
 
-    def winner
-      result = false
+    def winner      
+      result = pick_winner
       
-      if @choice_one == 'paper'
-        result = select_winner(Paper.new, classify(@choice_two).new)
-      elsif @choice_one == 'rock'
-        result = select_winner(Rock.new, classify(@choice_two).new)
-      elsif @choice_one == 'scissor'
-        result = select_winner(Scissor.new, classify(@choice_two).new)
-      end
-      
-      if result
-        @player_one.name
-      else
-        @player_two.name
-      end
+      winner_name(result)
     end
     
     private 
@@ -39,6 +27,24 @@ module AngryRock
     
     def classify(string)
       Object.const_get(@choice_two.capitalize)
+    end
+    
+    def winner_name(result)
+      if result
+        @player_one.name
+      else
+        @player_two.name
+      end
+    end
+    
+    def pick_winner
+      result = false
+       if @choice_one == 'scissor'
+         result = select_winner(Scissor.new, classify(@choice_two).new)
+       else
+         result = select_winner(classify(@choice_one).new, classify(@choice_two).new)
+       end
+       result
     end
   end
   
