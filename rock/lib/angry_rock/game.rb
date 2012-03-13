@@ -1,22 +1,15 @@
+require_relative 'game_coordinator'
+
 module AngryRock
   class Game
-    PAPER = 0
-    ROCK = 1
-    SCISSORS = 2
-
     def initialize(player_one, player_two)
       @player_one = player_one
       @player_two = player_two
     end
     
     def winner
-      if @player_one.choose == PAPER && @player_two.choose == ROCK
-        @player_one.name
-      elsif @player_one.choose == ROCK && @player_two.choose == SCISSORS
-        @player_one.name
-      else
-        @player_two.name
-      end
+      coordinator = GameCoordinator.new(@player_one, @player_two)
+      coordinator.winner
     end
     
   end
