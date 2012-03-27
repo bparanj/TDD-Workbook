@@ -487,16 +487,6 @@
                         <TextSelection>5485,324</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="132" Type="Text" Created="2012-03-12 17:18:23 -0700" Modified="2012-03-12 20:10:23 -0700">
-                    <Title>1. Requires coverage:</Title>
-                    <MetaData>
-                        <IncludeInCompile>Yes</IncludeInCompile>
-                        <NotesTextSelection>0,0</NotesTextSelection>
-                    </MetaData>
-                    <TextSettings>
-                        <TextSelection>0,0</TextSelection>
-                    </TextSettings>
-                </BinderItem>
                 <BinderItem ID="88" Type="Text" Created="2011-12-18 11:02:52 -0800" Modified="2012-01-06 19:23:18 -0800">
                     <Title>The Art of Unit Testing</Title>
                     <MetaData>
@@ -504,7 +494,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>46525,0</TextSelection>
+                        <TextSelection>46337,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="115" Type="Text" Created="2011-12-24 08:52:36 -0800" Modified="2011-12-28 16:17:48 -0800">
@@ -712,6 +702,18 @@
             <MetaData>
                 <IncludeInCompile>Yes</IncludeInCompile>
             </MetaData>
+            <Children>
+                <BinderItem ID="132" Type="Text" Created="2012-03-12 17:18:23 -0700" Modified="2012-03-26 17:10:16 -0700">
+                    <Title>1. Requires coverage:</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+            </Children>
         </BinderItem>
     </Binder>
     <Collections>
