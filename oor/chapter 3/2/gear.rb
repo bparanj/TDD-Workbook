@@ -21,3 +21,4 @@ end
 
 p "Gear expects a polymorphic type that knows 'diameter'"
 p Gear.new(52, 11, Wheel.new(26, 1.5)).gear_inches
+
