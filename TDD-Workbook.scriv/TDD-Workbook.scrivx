@@ -442,7 +442,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>5488,0</TextSelection>
+                        <TextSelection>274,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="47" Type="PDF" Created="2010-07-27 02:13:11 -0700" Modified="2010-07-27 02:13:12 -0700">
@@ -532,7 +532,7 @@
                         <ImageScalesProportionally>No</ImageScalesProportionally>
                     </MediaSettings>
                 </BinderItem>
-                <BinderItem ID="54" Type="Text" Created="2012-04-10 22:04:37 -0700" Modified="2012-04-10 22:13:01 -0700">
+                <BinderItem ID="54" Type="Text" Created="2012-04-10 22:04:37 -0700" Modified="2012-04-11 06:59:21 -0700">
                     <Title>Before After Code Examples</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
