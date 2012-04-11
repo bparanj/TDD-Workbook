@@ -463,6 +463,9 @@
                         <FileExtension>pdf</FileExtension>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
+                    <MediaSettings>
+                        <CurrentPDFPage>0</CurrentPDFPage>
+                    </MediaSettings>
                 </BinderItem>
                 <BinderItem ID="49" Type="PDF" Created="2012-02-06 16:16:31 -0800" Modified="2012-02-06 16:16:31 -0800">
                     <Title>endotesting</Title>
@@ -471,6 +474,9 @@
                         <FileExtension>pdf</FileExtension>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
+                    <MediaSettings>
+                        <CurrentPDFPage>0</CurrentPDFPage>
+                    </MediaSettings>
                 </BinderItem>
                 <BinderItem ID="50" Type="Text" Created="2012-02-06 17:10:58 -0800" Modified="2012-02-06 17:13:34 -0800">
                     <Title>Unit Testing with Mock Objects</Title>
@@ -492,14 +498,24 @@
                         <TextSelection>616,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="52" Type="Text" Created="2012-03-09 09:40:29 -0800" Modified="2012-03-09 09:42:22 -0800">
-                    <Title>Untitled</Title>
+                <BinderItem ID="52" Type="Text" Created="2012-03-09 09:40:29 -0800" Modified="2012-04-10 22:11:08 -0700">
+                    <Title>Double Entry Accounting</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>0,0</TextSelection>
+                        <TextSelection>1,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="55" Type="Text" Created="2012-04-10 22:11:11 -0700" Modified="2012-04-10 22:11:18 -0700">
+                    <Title>Simplicity</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>378,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="53" Type="Image" Created="2012-03-09 09:37:59 -0800" Modified="2012-03-09 09:37:59 -0800">
@@ -510,6 +526,21 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                         <ShowSynopsisImage>Yes</ShowSynopsisImage>
                     </MetaData>
+                    <MediaSettings>
+                        <ImageScaleFactor>1.0</ImageScaleFactor>
+                        <ImageRotation>None</ImageRotation>
+                        <ImageScalesProportionally>No</ImageScalesProportionally>
+                    </MediaSettings>
+                </BinderItem>
+                <BinderItem ID="54" Type="Text" Created="2012-04-10 22:04:37 -0700" Modified="2012-04-10 22:13:01 -0700">
+                    <Title>Before After Code Examples</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>165,0</TextSelection>
+                    </TextSettings>
                 </BinderItem>
             </Children>
         </BinderItem>
