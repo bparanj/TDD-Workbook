@@ -435,7 +435,7 @@
                         <TextSelection>8110,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="46" Type="Text" Created="2012-01-28 10:04:36 -0800" Modified="2012-02-09 20:47:35 -0800">
+                <BinderItem ID="46" Type="Text" Created="2012-01-28 10:04:36 -0800" Modified="2012-04-10 22:55:58 -0700">
                     <Title>Questions</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
@@ -539,7 +539,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>165,0</TextSelection>
+                        <TextSelection>324,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
             </Children>
