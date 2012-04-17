@@ -4,12 +4,12 @@
 <dict>
 	<key>binderSelection</key>
 	<array>
-		<integer>36</integer>
+		<integer>54</integer>
 	</array>
 	<key>binderSplitFrames</key>
 	<array>
-		<string>{{0, 0}, {191, 1070}}</string>
-		<string>{{192, 0}, {1078, 1070}}</string>
+		<string>{{0, 0}, {253, 1070}}</string>
+		<string>{{254, 0}, {1016, 1070}}</string>
 	</array>
 	<key>binderState</key>
 	<array>
@@ -37,7 +37,7 @@
 	<real>1.4141967296600342</real>
 	<key>mainDocumentEditor.binderDocuments</key>
 	<array>
-		<integer>38</integer>
+		<integer>56</integer>
 	</array>
 	<key>mainDocumentEditor.currentEditorViewMode</key>
 	<integer>0</integer>
@@ -46,7 +46,7 @@
 	<key>mainDocumentEditor.navigationHistory</key>
 	<dict>
 		<key>CurrentIndex</key>
-		<integer>25</integer>
+		<integer>29</integer>
 		<key>NavigationHistoryArray</key>
 		<array>
 			<dict>
@@ -257,12 +257,44 @@
 				<key>ViewMode</key>
 				<integer>0</integer>
 			</dict>
+			<dict>
+				<key>BinderDocIDs</key>
+				<array>
+					<integer>1</integer>
+				</array>
+				<key>ViewMode</key>
+				<integer>2</integer>
+			</dict>
+			<dict>
+				<key>BinderDocIDs</key>
+				<array>
+					<integer>56</integer>
+				</array>
+				<key>ViewMode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocIDs</key>
+				<array>
+					<integer>51</integer>
+				</array>
+				<key>ViewMode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocIDs</key>
+				<array>
+					<integer>56</integer>
+				</array>
+				<key>ViewMode</key>
+				<integer>0</integer>
+			</dict>
 		</array>
 	</dict>
 	<key>mainDocumentEditor.scrollRect</key>
-	<string>{{0, 559}, {1078, 998}}</string>
+	<string>{{0, 0}, {1016, 998}}</string>
 	<key>mainDocumentEditor.selectedRanges</key>
-	<string>{1228, 75}</string>
+	<string>{287, 0}</string>
 	<key>mainDocumentEditor.textEditorState</key>
 	<dict>
 		<key>hasMultiplePages</key>

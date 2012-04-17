@@ -1853,11 +1853,17 @@ isolate the problem</Text>
             <Text>Structure for Presentation
 
 Learning Objective
-Concept : Explain
+Divide the material into 10 minute segments. 
+Explain the concept.
 Demo Example : Recorded screencast
+Ask questions.
+Case Study.
+Before / After code samples.
+Image relevant to the concept.
 Q &amp; A
 Exercise : Work as a pair and finish the exercise within given time limit.
 Review and Q &amp; A : Where did you have difficulty?
+
 
 Structure for Book
 
@@ -1869,10 +1875,13 @@ Code centric. Example of anti-patterns. Example of best practices. Before / Afte
 Illustrate near miss when refactoring from anti-patterns to best practice.
 Chapter Summary
 Exercises
-
+Include FAQ in the book based on workshop questions
 Appendix
 Answer Key
 References
+
+Where to go next:
+Read my concise version of Martin Fowler’s blog post on “Mocks are Not Stubs”.
 
 Three Levels in Learning
 
@@ -1887,9 +1896,7 @@ Focus
 Characteristics
 Tarzan at TDD
 Code
-Can write unit test that will execute in the runner.
-Assert.isTrue().  May start with a test, but soon drifts into
-code first development. Tests may break when ‘not on my box’.
+ May start with a test, but soon drifts into code first development. Tests may break when ‘not on my box’.
 Getting to TDD
 Coverage
 Uses red, green, refactor cycle. Begins to see defect
@@ -1897,7 +1904,6 @@ reduction, less ‘silly’ bugs.  Tests may have duplicate setup
 or code. Long ‘work-flow’ tests with many assertions. Inappropriate use of file or db resources. Test files and class files may be many to many relationship. CI build may begin to take a longer time.
 What happened at TDD?
 Maintainability
-Learns from TDD experience how to write better tests.
 Code quality of tests as good as core code. Effective use of
 setup and teardown. Organizes tests effectively, parity between tests and classes. Uses mocks effectively. Tests and Code still
 seen as separate steps in a process. Tests run in CI in effective time
