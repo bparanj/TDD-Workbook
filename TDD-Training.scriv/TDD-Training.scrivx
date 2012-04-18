@@ -7,14 +7,14 @@
                 <IncludeInCompile>Yes</IncludeInCompile>
             </MetaData>
             <Children>
-                <BinderItem ID="4" Type="Text" Created="2011-12-11 11:52:42 -0800" Modified="2012-04-17 13:43:48 -0700">
+                <BinderItem ID="4" Type="Text" Created="2011-12-11 11:52:42 -0800" Modified="2012-04-18 13:53:52 -0700">
                     <Title>Structure</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>911,0</TextSelection>
+                        <TextSelection>996,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="3" Type="Text" Created="2011-12-11 11:50:01 -0800" Modified="2011-12-27 22:20:45 -0800">
@@ -749,7 +749,7 @@
     <ProjectTargets Notify="No">
         <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="No" Deadline="2011-12-11 11:50:00 -0800" IgnoreDeadline="Yes">0</DraftTarget>
         <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="Yes" ResetType="Midnight" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
-        <PreviousSession Words="27" Characters="149" Date="2012-04-17 13:42:11 -0700"></PreviousSession>
+        <PreviousSession Words="67" Characters="345" Date="2012-04-18 13:51:20 -0700"></PreviousSession>
     </ProjectTargets>
     <PrintSettings PaperSize="612.0,792.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="na-letter" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
 </ScrivenerProject>
