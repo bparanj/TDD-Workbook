@@ -405,7 +405,7 @@
                         <TextSelection>1904,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="43" Type="Text" Created="2012-01-25 12:03:09 -0800" Modified="2012-02-06 15:44:46 -0800">
+                <BinderItem ID="43" Type="Text" Created="2012-01-25 12:03:09 -0800" Modified="2012-04-21 19:41:35 -0700">
                     <Title>Notes</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
@@ -606,7 +606,7 @@
     <ProjectTargets Notify="No">
         <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="No" Deadline="2011-12-28 17:47:21 -0800" IgnoreDeadline="Yes">0</DraftTarget>
         <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="Yes" ResetType="Midnight" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
-        <PreviousSession Words="0" Characters="0" Date="2012-04-17 14:18:26 -0700"></PreviousSession>
+        <PreviousSession Words="0" Characters="0" Date="2012-04-21 19:40:43 -0700"></PreviousSession>
     </ProjectTargets>
     <PrintSettings PaperSize="612.0,792.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="na-letter" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
 </ScrivenerProject>

@@ -5,7 +5,20 @@
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
 
-\f0\fs28 \cf0 Testability has two facets: controllability and observability. To test a component we must be able to control the input (and internal state) and observe its outputs.\
+\f0\b\fs28 \cf0 Side Effect
+\b0 \
+\
+A function or expression modifies some state or has an observable interaction with calling functions or the outside world in addition to returning a value. For example, a function might modify a global or static variable, modify one of its arguments, raise an exception, write data to a display or file, read data, or call other side-effecting functions. In the presence of side effects, a program's behavior depends on history; that is, the order of evaluation matters. Understanding a program with side effects requires knowledge about the context and its possible histories; and is therefore hard to read, understand and debug.\
+\
+Side effects are the most common way to enable a program to interact with the outside world (people, filesystems, other computers on networks). But the degree to which side effects are used depends on the programming paradigm. Imperative programming is known for its frequent utilization of side effects. In functional programming, side effects are rarely used. \
+\
+Source: Wikipedia\
+\
+
+\b Testability
+\b0 \
+\
+Testability has two facets: controllability and observability. To test a component we must be able to control the input (and internal state) and observe its outputs.\
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\sl360
 \ls1\ilvl0
