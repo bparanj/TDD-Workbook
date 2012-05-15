@@ -2467,141 +2467,12 @@ http://static.mockobjects.com/files/endotesting.pdf
 
 https://www.relishapp.com/rspec</Text>
         </Document>
-        <Document ID="77">
-            <Title>Refactoring times method</Title>
-            <Text> When we are done with this chapter we will have a single class to represent Money. The two implementations of times() are close, but not identical.
-
-Franc
-Money times(int multiplier) {
-return Money.franc(amount * multiplier);
-}
-Dollar
-Money times(int multiplier) {
-return Money.dollar(amount * multiplier);
-}
-
- There’s not an obvious way to make them identical. Sometimes you have to go backwards to go forwards, a little like a Rubik’s Cube. What happens if we inline the factory methods? 
-
-Franc
-Money times(int multiplier) {
-return new Franc(amount * multiplier, "CHF");
-}
-
-Dollar
-Money times(int multiplier) {
-return new Dollar(amount * multiplier, "USD");
-}
-
-In Franc, though, we know that the currency instance variable is always “CHF”, so we can write:
-
-Franc
-Money times(int multiplier) {
-return new Franc(amount * multiplier, currency);
-}
-
-That works. The same trick works in Dollar:
-
-Dollar
-Money times(int multiplier) {
-return new Dollar(amount * multiplier, currency);
-}
-
-We’re almost there. Does it really matter whether we have a Franc or a Money? We could carefully reason about this given our knowledge of the system. However, we have clean code and we have tests that give us confidence that the clean code works. Rather than apply minutes of suspect reasoning, we can just ask the computer by making the change and running the tests. In teaching TDD I see this situation all the time—excellent programmers spending 5-10 minutes reasoning about a question that can be answered by the computer in 15 seconds. Without the tests you
-have no choice, you have to reason. With the tests you can decide whether an experiment would answer the question faster. Sometimes you should just ask the computer.
-
-To run our experiment we change Franc.times() to return a Money:
-
-Franc
-Money times(int multiplier) {
-return new Money(amount * multiplier, currency);
-}
-
-The compiler tells us that Money must be a concrete class:
-
-Money
-class Money
-Money times(int amount) {
-return null;
-}
-
-And we get a red bar. The error message says, “expected:&lt;Money.Franc@31aebf>
-but was: &lt;Money.Money@478a43>”. Not as helpful as we would perhaps like. We
-can define toString() to give us a better error message:
-
-Money
-public String toString() {
-return amount + " " + currency;
-}
-
-Whoa! Code without a test? Can you do that? We could certainly have written a test
-for toString() before we coded it. However:
-• We are about to see the results on the screen
-• Since toString() is only used for debug output, the risk of it failing is low
-• We already have a red bar, and we’d prefer not to write a test when we have a
-red bar
-Exception noted.
-
-Now the error message says: “expected:&lt;10 CHF> but was:&lt;10 CHF>”. That’s a
-little better, but still confusing. We got the right data in the answer, but the class
-was wrong—Money instead of Franc. The problem is in our implementation of
-equals():
-
-Money
-public boolean equals(Object object) {
-Money money = (Money) object;
-return amount == money.amount
-&amp;&amp; getClass().equals(money.getClass());
-}
-
-We really should be checking to see that the currencies are the same, not that the
-classes are the same.
-We’d prefer not to write a test when we have a red bar. However, we are about to
-change real model code, and we can’t change model code without a test. The conservative 
-course is to back out the change that caused the red bar so we’re back to
-green. Then we can change the test for equals(), fix the implementation, and re-try
-the original change.
-This time, we’ll be conservative.
-
-Franc
-Money times(int multiplier) {
-return new Franc(amount * multiplier, currency);
-}
- That gets us back to green. The situation that we had was a Franc(10, “CHF”) and a
-Money(10, “CHF”) that were reported to be not equal, even though we would like
-them to be equal. We can use exactly this for our test:
-public void testDifferentClassEquality() {
-assertTrue(new Money(10, "CHF").equals(new Franc(10, "CHF")));
-}
- It fails, as expected. The equals() code should compare currencies, not classes:
-Money
-public boolean equals(Object object) {
-Money money = (Money) object;
-return amount == money.amount
-&amp;&amp; currency().equals(money.currency());
-}
- Now we can return a Money from Franc.times() and still pass the tests:
-Franc
-Money times(int multiplier) {
-return new Money(amount * multiplier, currency);
-}
- Will the same will work for Dollar.times()?
-Dollar
-Money times(int multiplier) {
-return new Money(amount * multiplier, currency);
-}
-
- Yes! Now the two implementations are identical, so we can push them up.
-Money
-Money times(int multiplier) {
-return new Money(amount * multiplier, currency);
-}
- Multiplication in place, we are ready to eliminate the stupid subclasses. Reviewing,
-we:
-
-•  Reconciled two methods (times()) by first inlining the methods they called and then replacing constants with variables
-•  Wrote a toString() without a test just to help us debug
-•  Tried a change (returning Money instead of Franc) and let the tests tell us whether it worked
-•  Backed out an experiment and wrote another test. Making the test work made the experiment work.
+        <Document ID="91">
+            <Title>Dealing with Failure</Title>
+            <Text>Reviewing, we:
+Made our small scale test work
+Reintroduced the larger scale test
+Made the larger test work quickly using the mechanism demonstrated by the smaller test
 </Text>
         </Document>
         <Document ID="118">
@@ -2812,13 +2683,112 @@ It’s often better to define domain types to wrap not only strings but other bu
         <Document ID="132">
             <Title>1. Requires coverage:</Title>
         </Document>
-        <Document ID="91">
-            <Title>Dealing with Failure</Title>
-            <Text>Reviewing, we:
-Made our small scale test work
-Reintroduced the larger scale test
-Made the larger test work quickly using the mechanism demonstrated by the smaller test
-</Text>
+        <Document ID="84">
+            <Title>Abstraction</Title>
+            <Text> We need to implement Sum.plus() to finish Expression.plus, and then we need
+Expression.times(), and then we’re finished with the whole example. Here’s the test
+for Sum.plus():
+
+public void testSumPlusMoney() {
+Expression fiveBucks= Money.dollar(5);
+Expression tenFrancs= Money.franc(10);
+Bank bank= new Bank();
+bank.addRate("CHF", "USD", 2);
+Expression sum= new Sum(fiveBucks, tenFrancs).plus(fiveBucks);
+Money result= bank.reduce(sum, "USD");
+assertEquals(Money.dollar(15), result);
+}
+
+ We could have created a Sum by adding fiveBucks and tenFrancs, but the form
+above, where we explicitly create the Sum, communicates more directly. You are
+writing these tests not just to make your experience of programming more fun and
+rewarding, but also as a Rosetta Stone for future generations to appreciate your
+genius. Think, oh think, of your readers.
+
+The test, in this case, is longer than the code. The code is the same as the code in
+Money (do I hear an abstract class in the distance?):
+
+Sum
+public Expression plus(Expression addend) {
+return new Sum(this, addend);
+}
+
+You will likely end up with about the same number of lines of test code as model
+code when TDDing. For TDD to make economic sense, either you will have to be
+able to write twice as many lines per day as before, or write half as many lines for
+the same functionality. You’ll have to measure and see what effect TDD has on
+your own practice. Be sure to factor debugging, integrating, and explaining time
+into your metrics, though.
+
+If we can make Sum.times() work, then declaring Expression.times() will be one
+simple step. The test is:
+public void testSumTimes() {
+Expression fiveBucks= Money.dollar(5);
+Expression tenFrancs= Money.franc(10);
+Bank bank= new Bank();
+bank.addRate("CHF", "USD", 2);
+Expression sum= new Sum(fiveBucks, tenFrancs).times(2);
+Money result= bank.reduce(sum, "USD");
+assertEquals(Money.dollar(20), result);
+}
+
+Again, the test is longer than the code (you JUnit geeks will know how to fix that—
+the rest of you will have to read Fixture):
+
+Sum
+Expression times(int multiplier) {
+return new Sum(augend.times(multiplier),
+addend.times(multiplier));
+}
+
+Since we abstracted augend and addend to Expressions in the last chapter, we now
+have to declare times() in Expression before the code will compile:
+
+Expression
+Expression times(int multiplier);
+Which forces us to raise the visibility of Money.times() and Sum.times():
+
+Sum
+public Expression times(int multiplier) {
+return new Sum(augend.times(multiplier),
+addend.times(multiplier));
+}
+
+Money
+public Expression times(int multiplier) {
+return new Money(amount * multiplier, currency);
+}
+
+And it works.
+The only loose end to tie up is to experiment with returning a Money when we add
+$5 + $5. The test would be:
+
+public void testPlusSameCurrencyReturnsMoney() {
+Expression sum= Money.dollar(1).plus(Money.dollar(1));
+assertTrue(sum instanceof Money);
+}
+
+This test is a little ugly, because it is testing the guts of the implementation, not the
+externally visible behavior of the objects. However, it will drive us to make the
+changes we need to make, and this is only an experiment, after all. Here is the code
+we would have to modify to make it work:
+Money
+public Expression plus(Expression addend) {
+return new Sum(this, addend);
+}
+
+There is no obvious, clean way (not to me, anyway, I’m sure you could think of
+something) to check the currency of the argument if and only if it is a Money. The
+experiment fails, we delete the test (which we didn’t like much anyway), and away
+we go.
+
+Reviewing, we:
+
+• Wrote a test with future readers in mind
+• Suggested an experiment comparing TDD with your current programming style
+• Once again had changes of declarations ripple through the system, and once
+again followed the compiler’s advice to fix them
+ Tried a brief experiment, then discarded it when it didn’t work out</Text>
         </Document>
         <Document ID="78">
             <Title>Q &amp; A</Title>
@@ -2946,113 +2916,6 @@ You are refactoring a simulation and expect precisely the same answers when you 
 Evident Data
 
 How do you represent the intent of the data? Include expected and actual results in the test itself and try to make their relationship apparent.</Text>
-        </Document>
-        <Document ID="84">
-            <Title>Abstraction</Title>
-            <Text> We need to implement Sum.plus() to finish Expression.plus, and then we need
-Expression.times(), and then we’re finished with the whole example. Here’s the test
-for Sum.plus():
-
-public void testSumPlusMoney() {
-Expression fiveBucks= Money.dollar(5);
-Expression tenFrancs= Money.franc(10);
-Bank bank= new Bank();
-bank.addRate("CHF", "USD", 2);
-Expression sum= new Sum(fiveBucks, tenFrancs).plus(fiveBucks);
-Money result= bank.reduce(sum, "USD");
-assertEquals(Money.dollar(15), result);
-}
-
- We could have created a Sum by adding fiveBucks and tenFrancs, but the form
-above, where we explicitly create the Sum, communicates more directly. You are
-writing these tests not just to make your experience of programming more fun and
-rewarding, but also as a Rosetta Stone for future generations to appreciate your
-genius. Think, oh think, of your readers.
-
-The test, in this case, is longer than the code. The code is the same as the code in
-Money (do I hear an abstract class in the distance?):
-
-Sum
-public Expression plus(Expression addend) {
-return new Sum(this, addend);
-}
-
-You will likely end up with about the same number of lines of test code as model
-code when TDDing. For TDD to make economic sense, either you will have to be
-able to write twice as many lines per day as before, or write half as many lines for
-the same functionality. You’ll have to measure and see what effect TDD has on
-your own practice. Be sure to factor debugging, integrating, and explaining time
-into your metrics, though.
-
-If we can make Sum.times() work, then declaring Expression.times() will be one
-simple step. The test is:
-public void testSumTimes() {
-Expression fiveBucks= Money.dollar(5);
-Expression tenFrancs= Money.franc(10);
-Bank bank= new Bank();
-bank.addRate("CHF", "USD", 2);
-Expression sum= new Sum(fiveBucks, tenFrancs).times(2);
-Money result= bank.reduce(sum, "USD");
-assertEquals(Money.dollar(20), result);
-}
-
-Again, the test is longer than the code (you JUnit geeks will know how to fix that—
-the rest of you will have to read Fixture):
-
-Sum
-Expression times(int multiplier) {
-return new Sum(augend.times(multiplier),
-addend.times(multiplier));
-}
-
-Since we abstracted augend and addend to Expressions in the last chapter, we now
-have to declare times() in Expression before the code will compile:
-
-Expression
-Expression times(int multiplier);
-Which forces us to raise the visibility of Money.times() and Sum.times():
-
-Sum
-public Expression times(int multiplier) {
-return new Sum(augend.times(multiplier),
-addend.times(multiplier));
-}
-
-Money
-public Expression times(int multiplier) {
-return new Money(amount * multiplier, currency);
-}
-
-And it works.
-The only loose end to tie up is to experiment with returning a Money when we add
-$5 + $5. The test would be:
-
-public void testPlusSameCurrencyReturnsMoney() {
-Expression sum= Money.dollar(1).plus(Money.dollar(1));
-assertTrue(sum instanceof Money);
-}
-
-This test is a little ugly, because it is testing the guts of the implementation, not the
-externally visible behavior of the objects. However, it will drive us to make the
-changes we need to make, and this is only an experiment, after all. Here is the code
-we would have to modify to make it work:
-Money
-public Expression plus(Expression addend) {
-return new Sum(this, addend);
-}
-
-There is no obvious, clean way (not to me, anyway, I’m sure you could think of
-something) to check the currency of the argument if and only if it is a Money. The
-experiment fails, we delete the test (which we didn’t like much anyway), and away
-we go.
-
-Reviewing, we:
-
-• Wrote a test with future readers in mind
-• Suggested an experiment comparing TDD with your current programming style
-• Once again had changes of declarations ripple through the system, and once
-again followed the compiler’s advice to fix them
- Tried a brief experiment, then discarded it when it didn’t work out</Text>
         </Document>
         <Document ID="76">
             <Title>Eliminating Subclasses</Title>
@@ -3291,6 +3154,92 @@ As simply as possible
 
 Make it Better
 Refactor</Text>
+        </Document>
+        <Document ID="85">
+            <Title>Money Retrospective</Title>
+            <Text> Let’s take a look back at the Money example, both the process we used and the
+results. We will look at:
+
+•  What Next?
+•  Metaphor—the dramatic effect metaphor has on the structure of the design
+•  JUnit Usage—when we ran tests and how we used JUnit
+•  Code Metrics—a numerical abstract of the resulting code
+•  Process—we say red/green/refactor, but how much work goes into each step?
+•  Test Quality—how do TDD tests stack up by conventional test metrics?
+
+What Next?
+
+ Is the code finished? No. There is that nasty duplication between Sum.plus() and
+Money.plus(). If we made Expression a class instead of an interface (not the usual
+direction, as classes more often become interfaces), we would have a natural home
+for the common code.
+
+I don’t believe in “finished”. TDD can be used as a way to strive for perfection, but
+that isn’t its most effective use. If you have a big system, the parts that you touch all
+the time should be absolutely rock solid, so you can make daily changes confidently.
+As you drift out to the periphery of the system, to parts that don’t change
+ often, the tests can be spottier and the design uglier without interfering with your
+confidence.
+
+When I’ve done all of the obvious tasks, I like running a code critic, like SmallLint
+for Smalltalk. Many of the suggestions that come up I already know about, or I disagree
+with. Automated critics don’t forget, though, so if I don’t delete an obsolete
+implementation I don’t have to stress. The critic will point it out.
+
+Another “what next?” question is, “What additional tests do I need?” Sometimes
+you think of a test that “shouldn’t” work, and it does. Then you need to find out
+why. Sometimes a test that shouldn’t work really doesn’t, and you can record it as a
+known limitation or as work to be done later.
+Finally, when the list is empty is a good time to review the design. Do the words
+and concepts play together? Is there duplication that is difficult to eliminate given
+the current design (lingering duplication is a symptom of latent design.)
+
+Metaphor
+
+ The biggest surprise for me in coding the Money example is how different it came
+out this time. I have programmed Money in production at least three times that I
+can think of. I have used it as an example in print another half dozen times. I have
+programmed it live on stage (relax, it’s not as exciting as it sounds…) another fifteen
+times. I coded another three or four times preparing for writing (I ripped out
+Section I and rewrote it based on early reviews.) Then, while I was writing this, I
+thought of using Expression as the metaphor and the design went in a completely
+different direction than it has gone before.
+
+I really didn’t expect the metaphor to be so powerful. A metaphor should just be a
+source of names, shouldn’t it? Apparently not.
+The metaphor Ward used for “several monies together with potentially different
+currencies” was a vector, like a mathematic vector where the coefficients were currencies
+instead of x2 . I used MoneySum for a while, then MoneyBag (which is nice
+and physical), and finally Wallet (which is commoner in most folks’ experience).
+All of these metaphors imply that the collection of Money’s is flat. For example, “2
+USD + 5 CHF + 3 USD” would result in “5 USD + 5 CHF”. Two values with the
+same currency would be merged.
+
+ The Expression metaphor freed me from a bunch of nasty issues about merging
+duplicated currencies. The code came out cleaner and clearer than I’ve ever seen it
+before. I’m concerned about the performance of Expressions, but I’m happy to wait
+until I see some usage statistics before I start optimizing.
+
+What if I got to rewrite everything I ever wrote 20 times? Would I keep finding
+insight and surprise every time? Is there some way to be more mindful as I program
+so I can squeeze all the insight out of the first three times? The first time?
+
+Process
+
+The TDD cycle is:
+
+• Write a test
+• Make it compile, run it to see it fail
+• Make it run
+• Remove duplication
+
+ The three items that come up time and again as surprises when teaching TDD are:
+
+•  The three approaches to making a test work cleanly—fake it, triangulate, and
+just typing in the right solution to begin with
+•  Removing duplication between test and code as a way to drive the design
+•  The ability to control the gap between tests to increase traction when the road
+gets slippery and cruise faster when conditions are clear</Text>
         </Document>
         <Document ID="86">
             <Title>Set the Table</Title>
@@ -3733,193 +3682,6 @@ Our aim is to do what we can to make each level of code as readable and self-exp
 
 </Text>
         </Document>
-        <Document ID="85">
-            <Title>Money Retrospective</Title>
-            <Text> Let’s take a look back at the Money example, both the process we used and the
-results. We will look at:
-
-•  What Next?
-•  Metaphor—the dramatic effect metaphor has on the structure of the design
-•  JUnit Usage—when we ran tests and how we used JUnit
-•  Code Metrics—a numerical abstract of the resulting code
-•  Process—we say red/green/refactor, but how much work goes into each step?
-•  Test Quality—how do TDD tests stack up by conventional test metrics?
-
-What Next?
-
- Is the code finished? No. There is that nasty duplication between Sum.plus() and
-Money.plus(). If we made Expression a class instead of an interface (not the usual
-direction, as classes more often become interfaces), we would have a natural home
-for the common code.
-
-I don’t believe in “finished”. TDD can be used as a way to strive for perfection, but
-that isn’t its most effective use. If you have a big system, the parts that you touch all
-the time should be absolutely rock solid, so you can make daily changes confidently.
-As you drift out to the periphery of the system, to parts that don’t change
- often, the tests can be spottier and the design uglier without interfering with your
-confidence.
-
-When I’ve done all of the obvious tasks, I like running a code critic, like SmallLint
-for Smalltalk. Many of the suggestions that come up I already know about, or I disagree
-with. Automated critics don’t forget, though, so if I don’t delete an obsolete
-implementation I don’t have to stress. The critic will point it out.
-
-Another “what next?” question is, “What additional tests do I need?” Sometimes
-you think of a test that “shouldn’t” work, and it does. Then you need to find out
-why. Sometimes a test that shouldn’t work really doesn’t, and you can record it as a
-known limitation or as work to be done later.
-Finally, when the list is empty is a good time to review the design. Do the words
-and concepts play together? Is there duplication that is difficult to eliminate given
-the current design (lingering duplication is a symptom of latent design.)
-
-Metaphor
-
- The biggest surprise for me in coding the Money example is how different it came
-out this time. I have programmed Money in production at least three times that I
-can think of. I have used it as an example in print another half dozen times. I have
-programmed it live on stage (relax, it’s not as exciting as it sounds…) another fifteen
-times. I coded another three or four times preparing for writing (I ripped out
-Section I and rewrote it based on early reviews.) Then, while I was writing this, I
-thought of using Expression as the metaphor and the design went in a completely
-different direction than it has gone before.
-
-I really didn’t expect the metaphor to be so powerful. A metaphor should just be a
-source of names, shouldn’t it? Apparently not.
-The metaphor Ward used for “several monies together with potentially different
-currencies” was a vector, like a mathematic vector where the coefficients were currencies
-instead of x2 . I used MoneySum for a while, then MoneyBag (which is nice
-and physical), and finally Wallet (which is commoner in most folks’ experience).
-All of these metaphors imply that the collection of Money’s is flat. For example, “2
-USD + 5 CHF + 3 USD” would result in “5 USD + 5 CHF”. Two values with the
-same currency would be merged.
-
- The Expression metaphor freed me from a bunch of nasty issues about merging
-duplicated currencies. The code came out cleaner and clearer than I’ve ever seen it
-before. I’m concerned about the performance of Expressions, but I’m happy to wait
-until I see some usage statistics before I start optimizing.
-
-What if I got to rewrite everything I ever wrote 20 times? Would I keep finding
-insight and surprise every time? Is there some way to be more mindful as I program
-so I can squeeze all the insight out of the first three times? The first time?
-
-Process
-
-The TDD cycle is:
-
-• Write a test
-• Make it compile, run it to see it fail
-• Make it run
-• Remove duplication
-
- The three items that come up time and again as surprises when teaching TDD are:
-
-•  The three approaches to making a test work cleanly—fake it, triangulate, and
-just typing in the right solution to begin with
-•  Removing duplication between test and code as a way to drive the design
-•  The ability to control the gap between tests to increase traction when the road
-gets slippery and cruise faster when conditions are clear</Text>
-        </Document>
-        <Document ID="87">
-            <Title>Cleaning Up After</Title>
-            <Text> Tests will sometimes need to allocate external resources in setUp(). If we want the
-tests to remain independent, a test that allocates external resources should release
-them before it is done, perhaps in a tearDown() method.
-
-The simple minded way to write the test for deallocation is to introduce yet another
-flag. All those flags are starting to bug me, and they are missing an important aspect
-of the methods—setUp() is called before the test method is run, and tearDown() is
-called afterwards. I’m going to change the testing strategy to keep a little log of
-what methods are called. By always appending to the log, we will preserve the
-order in which the methods are called.
-
-WasRun
-def setUp(self):
-self.wasRun= None
-self.wasSetUp= 1
-self.log= "setUp "
-
- Now we can change testSetUp() to look at the log instead of the flag:
-TestCaseTest
-
-def testSetUp(self):
-self.test.run()
-assert("setUp " == self.test.log)
-
- Now we can delete the wasSetUp flag. We can record the running of the test
-method, too:
-
-WasRun
-def testMethod(self):
-self.wasRun= 1
-self.log= self.log + "testMethod "
- This breaks testSetUp, because the actual log contains “setUp testMethod ”. We
-change the expected value:
-
-TestCaseTest
-def testSetUp(self):
-self.test.run()
-assert("setUp testMethod " == self.test.log)
- Now this test is doing the work of both tests, so we can delete testRunning and
-rename testSetUp:
-
-TestCaseTest
-def setUp(self):
-self.test= WasRun("testMethod")
-def testTemplateMethod(self):
-self.test.run()
-assert("setUp testMethod " == self.test.log)
- Unfortunately, we are only using the instance if WasRun in one place, so we have
-to undo our clever setUp hack:
-
-TestCaseTest
-def testTemplateMethod(self):
-test= WasRun("testMethod")
-test.run()
-assert("setUp testMethod " == test.log)
- (Doing a refactoring based on a couple of early uses, then having to undo it soon
-after is fairly common. Some folks wait until they have three or four uses before
-refactoring because they don’t like undoing work. I prefer to spend my thinking
-cycles on design, so I just reflexively do the refactorings without worrying about
-whether I will have to undo them immediately afterward.)
-
- Now we are ready to implement tearDown(). Got you! We are ready to test for tear-
-Down:
-TestCaseTest
-def testTemplateMethod(self):
-test= WasRun("testMethod")
-test.run()
-assert("setUp testMethod tearDown " == test.log)
- This fails. Making it work is simple:
-TestCase
-def run(self, result):
-result.testStarted()
-self.setUp()
-exec "self." + self.name + "()"
-self.tearDown()
-WasRun
-def setUp(self):
-self.log= "setUp "
-def testMethod(self):
-self.log= self.log + "testMethod "
-def tearDown(self):
-self.log= self.log + "tearDown "
- Surprisingly, we get an error, not in WasRun, but in the TestCaseTest. We don’t
-have a no-op implementation of tearDown() in TestCase:
-TestCase
-def tearDown(self):
-pass
- This time we got value out of using the same testing framework we are developing.
-Yippee…
-No refactoring necessary. The Obvious Implementation, after that one glitch,
-worked and was clean.
-Next we’ll go on to report the results of running a test explicitly, instead of letting
-Python’s native error handling and reporting system tell us when there is a problem
-with an assertion. Reviewing, in this chapter we:
- Restructured the testing strategy from flags to a log
-
-•  Tested and implemented tearDown() using the new log
-•  Found a problem and, daringly, fixed it instead of backing up</Text>
-        </Document>
         <Document ID="93">
             <Title>Red Bar Patterns</Title>
             <Text>These patterns are about when you write tests, where you write tests and when you stop writing tests.
@@ -4022,6 +3784,292 @@ Cheap Desk, Nice Chair
 
 What physical setup should you use for TDD? Get a really nice chair, skimping on the rest.</Text>
         </Document>
+        <Document ID="87">
+            <Title>Cleaning Up After</Title>
+            <Text> Tests will sometimes need to allocate external resources in setUp(). If we want the
+tests to remain independent, a test that allocates external resources should release
+them before it is done, perhaps in a tearDown() method.
+
+The simple minded way to write the test for deallocation is to introduce yet another
+flag. All those flags are starting to bug me, and they are missing an important aspect
+of the methods—setUp() is called before the test method is run, and tearDown() is
+called afterwards. I’m going to change the testing strategy to keep a little log of
+what methods are called. By always appending to the log, we will preserve the
+order in which the methods are called.
+
+WasRun
+def setUp(self):
+self.wasRun= None
+self.wasSetUp= 1
+self.log= "setUp "
+
+ Now we can change testSetUp() to look at the log instead of the flag:
+TestCaseTest
+
+def testSetUp(self):
+self.test.run()
+assert("setUp " == self.test.log)
+
+ Now we can delete the wasSetUp flag. We can record the running of the test
+method, too:
+
+WasRun
+def testMethod(self):
+self.wasRun= 1
+self.log= self.log + "testMethod "
+ This breaks testSetUp, because the actual log contains “setUp testMethod ”. We
+change the expected value:
+
+TestCaseTest
+def testSetUp(self):
+self.test.run()
+assert("setUp testMethod " == self.test.log)
+ Now this test is doing the work of both tests, so we can delete testRunning and
+rename testSetUp:
+
+TestCaseTest
+def setUp(self):
+self.test= WasRun("testMethod")
+def testTemplateMethod(self):
+self.test.run()
+assert("setUp testMethod " == self.test.log)
+ Unfortunately, we are only using the instance if WasRun in one place, so we have
+to undo our clever setUp hack:
+
+TestCaseTest
+def testTemplateMethod(self):
+test= WasRun("testMethod")
+test.run()
+assert("setUp testMethod " == test.log)
+ (Doing a refactoring based on a couple of early uses, then having to undo it soon
+after is fairly common. Some folks wait until they have three or four uses before
+refactoring because they don’t like undoing work. I prefer to spend my thinking
+cycles on design, so I just reflexively do the refactorings without worrying about
+whether I will have to undo them immediately afterward.)
+
+ Now we are ready to implement tearDown(). Got you! We are ready to test for tear-
+Down:
+TestCaseTest
+def testTemplateMethod(self):
+test= WasRun("testMethod")
+test.run()
+assert("setUp testMethod tearDown " == test.log)
+ This fails. Making it work is simple:
+TestCase
+def run(self, result):
+result.testStarted()
+self.setUp()
+exec "self." + self.name + "()"
+self.tearDown()
+WasRun
+def setUp(self):
+self.log= "setUp "
+def testMethod(self):
+self.log= self.log + "testMethod "
+def tearDown(self):
+self.log= self.log + "tearDown "
+ Surprisingly, we get an error, not in WasRun, but in the TestCaseTest. We don’t
+have a no-op implementation of tearDown() in TestCase:
+TestCase
+def tearDown(self):
+pass
+ This time we got value out of using the same testing framework we are developing.
+Yippee…
+No refactoring necessary. The Obvious Implementation, after that one glitch,
+worked and was clean.
+Next we’ll go on to report the results of running a test explicitly, instead of letting
+Python’s native error handling and reporting system tell us when there is a problem
+with an assertion. Reviewing, in this chapter we:
+ Restructured the testing strategy from flags to a log
+
+•  Tested and implemented tearDown() using the new log
+•  Found a problem and, daringly, fixed it instead of backing up</Text>
+        </Document>
+        <Document ID="94">
+            <Title>Testing Patterns</Title>
+            <Text>Child Test
+
+How do you get a test case running that turns out to be too big? Write a smaller test case that represents the broken part of the bigger test case. Get the smaller test case running. Reintroduce the larger test case.
+
+The red/green/refactor rhythm is so important for continuous success that when you are at risk of losing it, it is work extra effort to maintain it. This happens when the test accidentally requires several changes to make it work. Minimize the time in red bar.
+
+When I write a test that is too big, I first try to learn the lesson. Why was it too big? What could I have done differently that would have made it smaller? How am I feeling right now?
+
+Delete or x the offending test and start over. 
+
+Mock Object
+
+How do you test an object that relies on an expensive or complicated resource? Create a fake version of the resource that answers constants. Mocks improve performance, reliability and readability. 
+
+If you want to use Mock Objects, you can’t easily store expensive resources in global variables. If you do, you will have to set the global to a Mock Object, run the test, and be sure to reset the global when you are done.
+
+Mocks will encourage you down the path of carefully considering the visibility of every object, reducing the coupling in your designs.
+
+Mock Objects add a risk to the project - what if the mock doesn’t behave like the real object? You can reduce this risk by having a set of tests for the mock that can also be applied to the real object when it becomes available.
+
+Self Shunt
+
+How do you test that one object communicates correctly with another? Have the object under test communicate with the test case instead of with the object it expects.
+
+Tests written with Self Shunt read better.
+
+Log String
+
+How do you test that the sequence in which messages are called is correct?
+
+Crash Test Dummy
+
+How do you test error code that is unlikely to be invoked? Invoke it anyway with a special object that throws an exception instead of doing real work. Examples: File system is full, Out of memory error, network connectivity problem etc.
+
+Simulate the real world problems by using crash test dummy. A crash test dummy is like a mock object, except you don’t need to mock up the whole object. You can override just the one method you want.
+
+Broken Test
+
+How do you leave a programming session when you’re programming alone? Leave the last test broken. When you come back to the code, you have an obvious place to start you have a concrete bookmark to help you remember what you were thinking and making that test work should be quick work, so you’ll quickly get your feet back on that victory road.
+
+Clean Check-In
+
+How do you leave a programming session when you’re programming in a team? Leave all the tests running.
+
+</Text>
+        </Document>
+        <Document ID="77">
+            <Title>Refactoring times method</Title>
+            <Text> When we are done with this chapter we will have a single class to represent Money. The two implementations of times() are close, but not identical.
+
+Franc
+Money times(int multiplier) {
+return Money.franc(amount * multiplier);
+}
+Dollar
+Money times(int multiplier) {
+return Money.dollar(amount * multiplier);
+}
+
+ There’s not an obvious way to make them identical. Sometimes you have to go backwards to go forwards, a little like a Rubik’s Cube. What happens if we inline the factory methods? 
+
+Franc
+Money times(int multiplier) {
+return new Franc(amount * multiplier, "CHF");
+}
+
+Dollar
+Money times(int multiplier) {
+return new Dollar(amount * multiplier, "USD");
+}
+
+In Franc, though, we know that the currency instance variable is always “CHF”, so we can write:
+
+Franc
+Money times(int multiplier) {
+return new Franc(amount * multiplier, currency);
+}
+
+That works. The same trick works in Dollar:
+
+Dollar
+Money times(int multiplier) {
+return new Dollar(amount * multiplier, currency);
+}
+
+We’re almost there. Does it really matter whether we have a Franc or a Money? We could carefully reason about this given our knowledge of the system. However, we have clean code and we have tests that give us confidence that the clean code works. Rather than apply minutes of suspect reasoning, we can just ask the computer by making the change and running the tests. In teaching TDD I see this situation all the time—excellent programmers spending 5-10 minutes reasoning about a question that can be answered by the computer in 15 seconds. Without the tests you
+have no choice, you have to reason. With the tests you can decide whether an experiment would answer the question faster. Sometimes you should just ask the computer.
+
+To run our experiment we change Franc.times() to return a Money:
+
+Franc
+Money times(int multiplier) {
+return new Money(amount * multiplier, currency);
+}
+
+The compiler tells us that Money must be a concrete class:
+
+Money
+class Money
+Money times(int amount) {
+return null;
+}
+
+And we get a red bar. The error message says, “expected:&lt;Money.Franc@31aebf>
+but was: &lt;Money.Money@478a43>”. Not as helpful as we would perhaps like. We
+can define toString() to give us a better error message:
+
+Money
+public String toString() {
+return amount + " " + currency;
+}
+
+Whoa! Code without a test? Can you do that? We could certainly have written a test
+for toString() before we coded it. However:
+• We are about to see the results on the screen
+• Since toString() is only used for debug output, the risk of it failing is low
+• We already have a red bar, and we’d prefer not to write a test when we have a
+red bar
+Exception noted.
+
+Now the error message says: “expected:&lt;10 CHF> but was:&lt;10 CHF>”. That’s a
+little better, but still confusing. We got the right data in the answer, but the class
+was wrong—Money instead of Franc. The problem is in our implementation of
+equals():
+
+Money
+public boolean equals(Object object) {
+Money money = (Money) object;
+return amount == money.amount
+&amp;&amp; getClass().equals(money.getClass());
+}
+
+We really should be checking to see that the currencies are the same, not that the
+classes are the same.
+We’d prefer not to write a test when we have a red bar. However, we are about to
+change real model code, and we can’t change model code without a test. The conservative 
+course is to back out the change that caused the red bar so we’re back to
+green. Then we can change the test for equals(), fix the implementation, and re-try
+the original change.
+This time, we’ll be conservative.
+
+Franc
+Money times(int multiplier) {
+return new Franc(amount * multiplier, currency);
+}
+ That gets us back to green. The situation that we had was a Franc(10, “CHF”) and a
+Money(10, “CHF”) that were reported to be not equal, even though we would like
+them to be equal. We can use exactly this for our test:
+public void testDifferentClassEquality() {
+assertTrue(new Money(10, "CHF").equals(new Franc(10, "CHF")));
+}
+ It fails, as expected. The equals() code should compare currencies, not classes:
+Money
+public boolean equals(Object object) {
+Money money = (Money) object;
+return amount == money.amount
+&amp;&amp; currency().equals(money.currency());
+}
+ Now we can return a Money from Franc.times() and still pass the tests:
+Franc
+Money times(int multiplier) {
+return new Money(amount * multiplier, currency);
+}
+ Will the same will work for Dollar.times()?
+Dollar
+Money times(int multiplier) {
+return new Money(amount * multiplier, currency);
+}
+
+ Yes! Now the two implementations are identical, so we can push them up.
+Money
+Money times(int multiplier) {
+return new Money(amount * multiplier, currency);
+}
+ Multiplication in place, we are ready to eliminate the stupid subclasses. Reviewing,
+we:
+
+•  Reconciled two methods (times()) by first inlining the methods they called and then replacing constants with variables
+•  Wrote a toString() without a test just to help us debug
+•  Tried a change (returning Money instead of Franc) and let the tests tell us whether it worked
+•  Backed out an experiment and wrote another test. Making the test work made the experiment work.
+</Text>
+        </Document>
         <Document ID="68">
             <Title>Equality</Title>
             <Text>If I have an integer and I add 1 to it, I don’t expect the original integer to change. I expect to to use the new value. Objects usually don’t behave that way. We can use objects as values, as we are using our Dollar now. The pattern for this is Value Object. One of the constraints of Value Objects is that the value of the instance variables of the object never change once they have been set in the constructor.
@@ -4097,54 +4145,6 @@ Equal nil
 Equal object
 
 
-
-</Text>
-        </Document>
-        <Document ID="94">
-            <Title>Testing Patterns</Title>
-            <Text>Child Test
-
-How do you get a test case running that turns out to be too big? Write a smaller test case that represents the broken part of the bigger test case. Get the smaller test case running. Reintroduce the larger test case.
-
-The red/green/refactor rhythm is so important for continuous success that when you are at risk of losing it, it is work extra effort to maintain it. This happens when the test accidentally requires several changes to make it work. Minimize the time in red bar.
-
-When I write a test that is too big, I first try to learn the lesson. Why was it too big? What could I have done differently that would have made it smaller? How am I feeling right now?
-
-Delete or x the offending test and start over. 
-
-Mock Object
-
-How do you test an object that relies on an expensive or complicated resource? Create a fake version of the resource that answers constants. Mocks improve performance, reliability and readability. 
-
-If you want to use Mock Objects, you can’t easily store expensive resources in global variables. If you do, you will have to set the global to a Mock Object, run the test, and be sure to reset the global when you are done.
-
-Mocks will encourage you down the path of carefully considering the visibility of every object, reducing the coupling in your designs.
-
-Mock Objects add a risk to the project - what if the mock doesn’t behave like the real object? You can reduce this risk by having a set of tests for the mock that can also be applied to the real object when it becomes available.
-
-Self Shunt
-
-How do you test that one object communicates correctly with another? Have the object under test communicate with the test case instead of with the object it expects.
-
-Tests written with Self Shunt read better.
-
-Log String
-
-How do you test that the sequence in which messages are called is correct?
-
-Crash Test Dummy
-
-How do you test error code that is unlikely to be invoked? Invoke it anyway with a special object that throws an exception instead of doing real work. Examples: File system is full, Out of memory error, network connectivity problem etc.
-
-Simulate the real world problems by using crash test dummy. A crash test dummy is like a mock object, except you don’t need to mock up the whole object. You can override just the one method you want.
-
-Broken Test
-
-How do you leave a programming session when you’re programming alone? Leave the last test broken. When you come back to the code, you have an obvious place to start you have a concrete bookmark to help you remember what you were thinking and making that test work should be quick work, so you’ll quickly get your feet back on that victory road.
-
-Clean Check-In
-
-How do you leave a programming session when you’re programming in a team? Leave all the tests running.
 
 </Text>
         </Document>

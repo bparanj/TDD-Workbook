@@ -737,6 +737,21 @@ VisualAge is a trademark of IBM
 9
 </Text>
         </Document>
+        <Document ID="57">
+            <Title>Design Principles</Title>
+            <Text>• Separate the things that change from those that stay the same. 
+	Separate policy from implementation. Do not mix abstractions at different levels. Related to Dependency Inversion Principle. Find abstractions and separate generic algorithms from implementation details. When making changes, aim for changes:
+1. Additive
+    This is ideal. Open Closed Principle is used to achieve this kind of change.
+2. Localize 
+    This is the next option to additive change. Use abstractions. 
+• Program to an interface, not an implementation. 
+By programming to an interface you can separate the things that change from those that stay the same. This is accomplished by using Dependency Injection. Find the Seams in the system and inject dependencies. Program to a general types. Use polymorphism.
+• Prefer composition over inheritance. Liskov Substitution Principle.
+• Delegate, delegate, delegate.
+
+Source Ruby Design Patterns</Text>
+        </Document>
         <Document ID="3">
             <Title>Rhythm of TDD</Title>
             <Text>Rhythm of TDD
