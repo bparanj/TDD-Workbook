@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
 {\fonttbl\f0\fnil\fcharset0 Verdana;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\fi360\sl288\slmult1\pardirnatural
@@ -20,7 +20,10 @@ structure, and avoid polluting domain code with testing infrastructure.\
 \b Introduction
 \b0 \
 \
-Unit testing is a fundamental practice in Extreme Programming, but most nontrivial code is difficult to test in isolation. You need to make sure that you test one feature at a time, and you want to be notified as soon as any problem occurs. Normal unit testing is hard because you are trying to test the code from outside.\
+Unit testing is a fundamental practice in Extreme Programming, but most nontrivial code is \
+difficult to test in isolation. You need to make sure that you test one feature at a time, and \
+you want to be notified as soon as any problem occurs. Normal unit testing is hard because \
+you are trying to test the code from outside.\
 \
 We propose a technique called Mock Objects in which we replace domain code with dummy\
 implementations that emulate real code. These Mock Objects are passed to the target domain\
@@ -31,9 +34,8 @@ is usual, and we use our tests and stubs to drive the development of our product
  Developing unit tests with Mock Objects leads to stronger tests and to\
 better structure of both domain and test code. Unit tests written with Mock Objects have a\
 regular format that gives the development team a common vocabulary. Code\
-should be written to make it easy to test. Mock Objects is a good\
-technique to achieve this. Refactoring Mock Objects drives down the\
-cost of writing stub code.\
+should be written to make it easy to test. Mock Objects is a good technique to achieve this. \
+Refactoring Mock Objects drives down the cost of writing stub code.\
 \
 In this paper, we first describe how Mock Objects are used for unit testing. Then we describe\
 the benefits and costs of Mock Objects when writing unit tests and code. Finally we describe a\
@@ -81,10 +83,14 @@ coding style of passing stub objects as parameters, rather than relinking the do
 clarifies the scope of unit testing, and reduces the risk of mistakes during a build.\
 \
 
-\b Why use Mock Objects?
+\b Why use Mock Objects?\
+
 \b0 \
  Localizing unit tests\
- Deferring Infrastructure Choices\
+\
+
+\b Deferring Infrastructure Choices
+\b0 \
 \
 An important aspect of Extreme Programming is not to commit to infrastructure before you\
 have to. For example, we might wish to write functionality without committing to a particular\
@@ -146,7 +152,6 @@ The mock widget lets us run tests on development machines with no actual widget 
 We can also instrument the mock widget to verify that it was called correctly, which might not\
 even be possible with the real widget.\
 \
-\
 Better tests\
 Failures fail fast\
 \
@@ -156,9 +161,9 @@ made together after the domain code has executed. This makes it difficult to iso
 point at which a failure occurred.\
 \
  One of the authors experienced such problems during the development of a financial pricing library. \
-The unit tests compared sets of results after each\
-calculation had finished. Each failure required considerable tracing to isolate its cause, and it\
-was difficult to test for intermediate values without breaking encapsulation.\
+The unit tests compared sets of results after each calculation had finished. Each failure required \
+considerable tracing to isolate its cause, and it was difficult to test for intermediate values \
+without breaking encapsulation.\
 \
 On the other hand, a mock implementation can test assertions each time it interacts with\
 domain code and so is more likely to fail at the right time and generate a useful message. This\
@@ -180,7 +185,9 @@ class MockWidget \
   end\
 end\
 \
-Refactored assertions\
+
+\b Refactored assertions
+\b0 \
 \
 When testing without Mock Objects, each unit test tends to have its own set of assertions\
 about the domain code. These may be refactored into shared methods within a unit test, but\
@@ -197,18 +204,19 @@ programmers have forgotten, but sometimes this is because the failing constraint
 always relevant. These cases suggest candidates for refactoring of either the domain code or\
 Mock Objects, and help to push the developers towards a better understanding of the system.\
 \
-Effects on coding style\
+
+\b Effects on coding style
+\b0 \
 \
 We have found that developing with Mock Objects has had beneficial effects on the coding\
 style of our teams.\
 \
-Developing with Mock Objects reduces the need to\
-expose the structure of domain code. A test knows more about the behavior and less about\
-the structure of tested code.\
+Developing with Mock Objects reduces the need to expose the structure of domain code. \
+A test knows more about the behavior and less about the structure of tested code.\
 \
- Developing with Mock Objects\
-encourages a coding style where objects are passed into the code that needs them. This makes\
-substitution possible and reduces the risk of unexpected side-effects.\
+ Developing with Mock Objects encourages a coding style where objects are passed \
+into the code that needs them. This makes substitution possible and reduces the risk of \
+unexpected side-effects.\
 \
 Thirdly, developing with Mock Objects tends to push behaviour towards Visitor-like objects\
 [Gamma 1994] that are passed around; we call these Smart Handlers. For example, rather\
@@ -265,9 +273,8 @@ void testPersonHandler() \{\
     myMockPrintWriter.verify();\
 \}\
 These three effects mean that code developed with Mock Objects tends to conform to the Law\
-of Demeter, as an emergent property. The unit tests push us towards\
-writing domain code that refers only to local objects and parameters, without an explicit policy\
-to do so.\
+of Demeter, as an emergent property. The unit tests push us towards writing domain code that \
+refers only to local objects and parameters, without an explicit policy to do so.\
 \
 Interface discovery\
 \

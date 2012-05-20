@@ -1708,163 +1708,83 @@ Don’t fall into the new hammer trap. Overuse of test doubles (especially mock 
 
 </Text>
         </Document>
-        <Document ID="82">
-            <Title>Change</Title>
-            <Text> Reduce Money with conversion
+        <Document ID="68">
+            <Title>Equality</Title>
+            <Text>If I have an integer and I add 1 to it, I don’t expect the original integer to change. I expect to to use the new value. Objects usually don’t behave that way. We can use objects as values, as we are using our Dollar now. The pattern for this is Value Object. One of the constraints of Value Objects is that the value of the instance variables of the object never change once they have been set in the constructor.
 
-we are thinking about a much simpler form of
-change—we have 2 francs and we want a dollar. That sounds like a test case
-already:
+The advantage of using Value Objects is that there is no aliasing problems. Say I have one Check and I set its amount to $5, and then I set another Check’s amount to the same $5. Nastiest bugs can occur when changing the first Check’s value inadvertently change the second Check’s value. This is aliasing.
 
-public void testReduceMoneyDifferentCurrency() {
-Bank bank= new Bank();
-bank.addRate("CHF", "USD", 2);
-Money result= bank.reduce(Money.franc(2), "USD");
-assertEquals(Money.dollar(1), result);
-}
+With value objects there is no aliasing. If I have $5, I am guaranteed that it will always be $5. If someone wants $7, they have to make an entirely new object. One implication of Value Object is all operations must return a new object, as we saw in the previous chapter. Another implication is that value objects should implement equals, since $5 is as good as another.
 
- When I go from francs to dollars, I divide by two (we’re still studiously ignoring all
-those nasty numerical problems.) We can make the bar green in one piece of ugliness:
+If you use Dollar as the key to a hash you have to implement hashcode if you implement equals. We’ll put that in the list and get to it when it’s a problem.
 
-Money
-public Money reduce(String to) {
-int rate = (currency.equals("CHF") &amp;&amp; to.equals("USD"))
-? 2
-: 1;
-return new Money(amount / rate, to);
-}
+Updated To-Do List
 
- Now, suddenly, Money knows about exchange rates. Yuck. The Bank should be the
-only place we care about exchange rates. We’ll have to pass the Bank as a parameter
-to Expression.reduce() (see, we knew  we would need it, and we were right. In
-the words of the grandfather in The Princess Bride , “You’re very clever…”) First
-the caller:
+$5 + 10 CHF = $10 if rate is 2:1
+$5 * 2 = $10
+Dollar side-effects?
+Money rounding?
+equals
+Hascode
 
-Bank
-Money reduce(Expression source, String to) {
-return source.reduce(this, to);
-}
+Thinking Process
 
- Then the implementors:
-Expression
-Money reduce(Bank bank, String to);
-Sum
-public Money reduce(Bank bank, String to) {
-int amount= augend.amount + addend.amount;
-return new Money(amount, to);
-}
+Think about how to test equality. First, $5 should equal $5.
 
-Money
-public Money reduce(Bank bank, String to) {
-int rate = (currency.equals("CHF") &amp;&amp; to.equals("USD"))
-? 2
-: 1;
-return new Money(amount / rate, to);
-}
+Etest_equality
+  Assert(Dollar.new(5).equals(Dollar.new(5)))
 
- The methods have to be public because methods in interfaces have to be public (for
-some excellent reason, I’m sure.)
-Now we can calculate the rate in the Bank:
-Bank
-int rate(String from, String to) {
-return (from.equals("CHF") &amp;&amp; to.equals("USD"))
-? 2
-: 1;
-}
- And ask the bank for the right rate:
+We get a failing test. The fake implementation is to just return true:
 
-Money
-public Money reduce(Bank bank, String to) {
-int rate = bank.rate(currency, to);
-return new Money(amount / rate, to);
-}
+Equals(object)
+  Return true
+End
 
-That pesky “2” still appears in both the test and the code. To get rid of it,we need to
-keep a table of rates in the Bank and look up a rate when we need it. We could use
-a Hashtable mapping pairs of currencies to rates. Can we use a two element array
-containing the two currencies as the key? Does Array.equals() check to see if the
-elements are equal?
+You might know that true is really ‘5 == 5’ which is really ‘amount == 5’ which is really ‘amount == dollar.amount’. For the sake of demonstrating the third and most conservative implementation strategy, triangulation, we will stay away from that approach.
 
-public void testArrayEquals() {
-assertEquals(new Object[] {"abc"}, new Object[] {"abc"});
-}
+If two receiving stations at a known distance from each other can both measure the direction of a radio signal, there is enough information to calculate the range and bearing of the signal. This calculation is called triangulation.
 
-Nope. The test fails, so we have to create a real object for the key:
-Pair
-private class Pair {
-private String from;
-private String to;
-Pair(String from, String to) {
-this.from= from;
-this.to= to;
-}
-}
+By analogy, when we Triangulate, we only generalize code when we have two or more examples. We briefly ignore the duplication between test and model code. When the second example demands a more general solution, then and only then do we generalize.
 
-Because we are using Pairs as keys, we have to implement equals() and hash-
-Code(). I’m not going to write tests for these, because we are writing this code in
-the context of a refactoring. If we get to the payoff of the refactoring and all the
-tests run, we expect the code to have been exercised. If I was programming with
-someone who didn’t see exactly where we were going with this, or if the logic
-became the least bit complex, I would begin writing separate tests.
+So, to triangulate we need a second example. How about $5 != $6?
 
-Pair
-public boolean equals(Object object) {
-Pair pair= (Pair) object;
-return from.equals(pair.from) &amp;&amp; to.equals(pair.to);
-}
+Assert(Dollar.new(5).equals(Dollar.new(5)))
+Assert_false(Dollar.new(5).equals(Dollar.new(5)))
 
-public int  hashCode() {
-return  0;
-}
+Now we need to generalize equality:
 
-“0” is a terrible hash value, but it has the advantage that it’s easy to implement and
-it will get us running quickly. Currency lookup will look like linear search. Later,
-when we get lots of currencies, we can do a more thorough job with real usage data.
-We need somewhere to store the rates:
+Equals(object)
+Return amount == object.amount
+End
 
-Bank
-private  Hashtable rates= new  Hashtable();
-We need to set the rate when told:
-Bank
-void  addRate(String from, String to, int  rate) {
-rates.put(new  Pair(from, to), new  Integer(rate));
-}
+We could have used triangulation to drive the generalization of times also. If we had $5 x 2 = $10 and $5 x 3 = $15 we would no longer have been able to return a constant.
 
-And then we can look up the rate when asked:
-Bank
-int  rate(String from, String to) {
-Integer rate= (Integer) rates.get(new  Pair(from, to));
-return  rate.intValue();
-}
+Use Triangulation when you not sure how to refactor. If you can see how to eliminate duplication between code and tests and create the general solution, just do it. When the design thoughts just aren’t coming, triangulation gives you a chance to think about the problem from a slightly different direction. What axes of variability are you trying to support in your design? Make some of them vary and the answer may become clearer.
 
-Wait a minute!?We got a red bar. What happened? A little snooping around tells us
-that if we ask for the rate from USD to USD, we expect the value to be 1. Since this
-was a surprise, let’s write a test to communicate what we discovered:
+So equality is done for the moment. What about comparing with null and comparing with other objects? These are commonly used operations, but not necessary at the moment, so we’ll add them to the list.
 
-public void  testIdentityRate() {
-assertEquals(1, new  Bank().rate("USD" , "USD" ));
-}
+Now that we have equality, we can directly compare Dollars to Dollars. That will let us make amount private, which is a good thing. Reviewing the above, we:
 
-Now we have three errors, but we expect them all to be fixed with one change:
-Bank
-int  rate(String from, String to) {
-if  (from.equals(to)) return  1;
+1. Noticed that our design pattern (value object) implied an operation
+2. Tested for that operation
+3. Implemented it simply
+4. Didn’t refactor immediately, but instead tested further
+5. Refactored to capture the two cases at once
 
- Integer rate= (Integer) rates.get(new  Pair(from, to));
-return  rate.intValue();
-}
+Updated To-Do List
 
-Green bar!
-Next we’ll implement our last big test, $5 + 10 CHF. Several significant techniques
-have slipped into this chapter:
+$5 + 10 CHF = $10 if rate is 2:1
+$5 * 2 = $10
+Dollar side-effects?
+Money rounding?
+equals
+Hascode
+Equal nil
+Equal object
 
-• Added a parameter, in seconds, that we expected we would need
-• Factored out the data duplication between code and tests
-• Wrote a test (testArrayEquals) to check an assumption about the operation of
-Java
-• Introduced a private helper class without distinct tests of its own
-• Made a mistake in a refactoring and chose to forge ahead, writing another test to
-isolate the problem</Text>
+
+
+</Text>
         </Document>
         <Document ID="4">
             <Title>Structure</Title>
@@ -2264,6 +2184,164 @@ Wrote a fake implementation, and gradually began making it real by replacing con
 Wrote another test.
 When that test failed, we wrote yet another test, at a smaller scale to support making the failing test work.</Text>
         </Document>
+        <Document ID="82">
+            <Title>Change</Title>
+            <Text> Reduce Money with conversion
+
+we are thinking about a much simpler form of
+change—we have 2 francs and we want a dollar. That sounds like a test case
+already:
+
+public void testReduceMoneyDifferentCurrency() {
+Bank bank= new Bank();
+bank.addRate("CHF", "USD", 2);
+Money result= bank.reduce(Money.franc(2), "USD");
+assertEquals(Money.dollar(1), result);
+}
+
+ When I go from francs to dollars, I divide by two (we’re still studiously ignoring all
+those nasty numerical problems.) We can make the bar green in one piece of ugliness:
+
+Money
+public Money reduce(String to) {
+int rate = (currency.equals("CHF") &amp;&amp; to.equals("USD"))
+? 2
+: 1;
+return new Money(amount / rate, to);
+}
+
+ Now, suddenly, Money knows about exchange rates. Yuck. The Bank should be the
+only place we care about exchange rates. We’ll have to pass the Bank as a parameter
+to Expression.reduce() (see, we knew  we would need it, and we were right. In
+the words of the grandfather in The Princess Bride , “You’re very clever…”) First
+the caller:
+
+Bank
+Money reduce(Expression source, String to) {
+return source.reduce(this, to);
+}
+
+ Then the implementors:
+Expression
+Money reduce(Bank bank, String to);
+Sum
+public Money reduce(Bank bank, String to) {
+int amount= augend.amount + addend.amount;
+return new Money(amount, to);
+}
+
+Money
+public Money reduce(Bank bank, String to) {
+int rate = (currency.equals("CHF") &amp;&amp; to.equals("USD"))
+? 2
+: 1;
+return new Money(amount / rate, to);
+}
+
+ The methods have to be public because methods in interfaces have to be public (for
+some excellent reason, I’m sure.)
+Now we can calculate the rate in the Bank:
+Bank
+int rate(String from, String to) {
+return (from.equals("CHF") &amp;&amp; to.equals("USD"))
+? 2
+: 1;
+}
+ And ask the bank for the right rate:
+
+Money
+public Money reduce(Bank bank, String to) {
+int rate = bank.rate(currency, to);
+return new Money(amount / rate, to);
+}
+
+That pesky “2” still appears in both the test and the code. To get rid of it,we need to
+keep a table of rates in the Bank and look up a rate when we need it. We could use
+a Hashtable mapping pairs of currencies to rates. Can we use a two element array
+containing the two currencies as the key? Does Array.equals() check to see if the
+elements are equal?
+
+public void testArrayEquals() {
+assertEquals(new Object[] {"abc"}, new Object[] {"abc"});
+}
+
+Nope. The test fails, so we have to create a real object for the key:
+Pair
+private class Pair {
+private String from;
+private String to;
+Pair(String from, String to) {
+this.from= from;
+this.to= to;
+}
+}
+
+Because we are using Pairs as keys, we have to implement equals() and hash-
+Code(). I’m not going to write tests for these, because we are writing this code in
+the context of a refactoring. If we get to the payoff of the refactoring and all the
+tests run, we expect the code to have been exercised. If I was programming with
+someone who didn’t see exactly where we were going with this, or if the logic
+became the least bit complex, I would begin writing separate tests.
+
+Pair
+public boolean equals(Object object) {
+Pair pair= (Pair) object;
+return from.equals(pair.from) &amp;&amp; to.equals(pair.to);
+}
+
+public int  hashCode() {
+return  0;
+}
+
+“0” is a terrible hash value, but it has the advantage that it’s easy to implement and
+it will get us running quickly. Currency lookup will look like linear search. Later,
+when we get lots of currencies, we can do a more thorough job with real usage data.
+We need somewhere to store the rates:
+
+Bank
+private  Hashtable rates= new  Hashtable();
+We need to set the rate when told:
+Bank
+void  addRate(String from, String to, int  rate) {
+rates.put(new  Pair(from, to), new  Integer(rate));
+}
+
+And then we can look up the rate when asked:
+Bank
+int  rate(String from, String to) {
+Integer rate= (Integer) rates.get(new  Pair(from, to));
+return  rate.intValue();
+}
+
+Wait a minute!?We got a red bar. What happened? A little snooping around tells us
+that if we ask for the rate from USD to USD, we expect the value to be 1. Since this
+was a surprise, let’s write a test to communicate what we discovered:
+
+public void  testIdentityRate() {
+assertEquals(1, new  Bank().rate("USD" , "USD" ));
+}
+
+Now we have three errors, but we expect them all to be fixed with one change:
+Bank
+int  rate(String from, String to) {
+if  (from.equals(to)) return  1;
+
+ Integer rate= (Integer) rates.get(new  Pair(from, to));
+return  rate.intValue();
+}
+
+Green bar!
+Next we’ll implement our last big test, $5 + 10 CHF. Several significant techniques
+have slipped into this chapter:
+
+• Added a parameter, in seconds, that we expected we would need
+• Factored out the data duplication between code and tests
+• Wrote a test (testArrayEquals) to check an assumption about the operation of
+Java
+• Introduced a private helper class without distinct tests of its own
+• Made a mistake in a refactoring and chose to forge ahead, writing another test to
+isolate the problem</Text>
+        </Document>
         <Document ID="83">
             <Title>Mixed Currencies</Title>
             <Text> Now we are finally ready to add the test that started it all, $5 + 10 CHF:
@@ -2393,79 +2471,6 @@ We are ready to finish generalizing Money to Expression, but first we’ll revie
 (the test case)
 •  Followed the compiler when we made a change (Expression fiveBucks) which
 caused changes to ripple (added plus() to Expression, etc.)</Text>
-        </Document>
-        <Document ID="75">
-            <Title>References</Title>
-            <Text>1. Test Driven Development by Example - Kent Beck
-2. The Art of Unit Testing with Examples in .NET
-3. Growing Object Oriented Software Guided by Tests
-4. xUnit Test Patterns    
-5. Brain Fitness : Peak Performance
-
-Recommended Books
-
-1. Refactoring by Marin Fowler
-2. Object Oriented Design Heuristics by Arthur Reihl
-3. Object Oriented Software Construction by Bertrand Meyer
-4. Design Patterns 
-
-http://softwaregreenhouses.com/2011/01/30/using-wayk-to-describe-tdd-fluency/
-
-	▪	We verify stubs by checking state after an interaction.
-	▪	We tell mocks to verify interactions.
-	▪	Sometimes stubs just make the system run.
-
-Isolation from Non-Determinism:  randomness, time etc.
-Isolation from External Dependencies:  Database, Network, Third Party API etc
-Polymorphic Collaborators: E.g., employee that knows how to pay itself, uses a strategy. 
-payment_strategy = mock() 
-employee = E.new(payment_strategy) 
-payment_strategy.expects(:pay) 
-employee.pay
-When are message expectations helpful?
-Side Effects: background processing
-Caching: only call a network zipcode lookup once
-Interface discovery: tool to discover the parts of the system that you haven't really worked out yet. Mock something out that doesn't exist yet, while designing its interface.
-
-All of these concepts are Isolation Testing - testing an object in isolation from others. This is a good fit when you have lots of little objects.
-
-BDD Approach : 
-Customer specs are implemented as end to end testing.
-Developer specs are implemented as isolation tests.
-
-	▪	Keep things simple
-	▪	Focus on Roles
-	▪	Try to avoid tight coupling
-	▪	Complex setup is a red flag for design issues
-	▪	Don't stub and mock the object that you are testing
-	▪	Concern: impedes refactoring (but some say refactoring is improving design without changing behavior, so tests should not change. This really depends what level you are refactoring at).
-	▪	Concern: false positives
-
-Stubs - a common helper to testing environments. There is a difference in how test results are verified: a distinction between state verification and behavior verification. Focusing on one element of the software at a time -hence the common term unit testing. The problem is that to make a single unit work, you often need other units.
-
-	•	Dummy objects are passed around but never actually used. Usually they are just used to fill parameter lists.
-	•	Fake objects actually have working implementations, but usually take some shortcut which makes them not suitable for production (an in memory database is a good example).
-	•	Stubs provide canned answers to calls made during the test, usually not responding at all to anything outside what's programmed in for the test. Stubs may also record information about calls, such as an email gateway stub that remembers the messages it 'sent', or maybe only how many messages it 'sent'.
-	•	Mocks are what we are talking about here: objects pre-programmed with expectations which form a specification of the calls they are expected to receive.
-
-Only mocks insist upon behavior verification. The other doubles can, and usually do, use state verification.
-
-The classical TDD style is to use real objects if possible and a double if it's awkward to use the real thing. A mockist TDD practitioner, however, will always use a mock for any object with interesting behavior.
-An acknowledged issue with state-based verification is that it can lead to creating query methods only to support verification. It's never comfortable to add methods to the API of an object purely for testing, using behavior verification avoids that problem.
-
-Side Effects
-
-A function or expression has a side effect if, in addition to returning a value, it also modifies some state or has an observable interaction with calling functions or the outside world. For example, a function might modify a global or static variable, modify one of its arguments, raise an exception, write data to a display or file, read data, or call other side-effecting functions. Side effects are the most common way to enable a program to interact with the outside world (people, filesystems, other computers on networks).
-
-Interaction Testing
-
-Classes whose primary concern is to aide the forwarding of the call stack (rather than exposing a change in state) are defined solely by how they interact with collaborating objects.
-
-Examples of such types of classes include Proxies, Marshallers and Composites, to name but a few, none of which change state as a result of their behavior.
-
-http://static.mockobjects.com/files/endotesting.pdf
-
-https://www.relishapp.com/rspec</Text>
         </Document>
         <Document ID="91">
             <Title>Dealing with Failure</Title>
@@ -2683,112 +2688,78 @@ It’s often better to define domain types to wrap not only strings but other bu
         <Document ID="132">
             <Title>1. Requires coverage:</Title>
         </Document>
-        <Document ID="84">
-            <Title>Abstraction</Title>
-            <Text> We need to implement Sum.plus() to finish Expression.plus, and then we need
-Expression.times(), and then we’re finished with the whole example. Here’s the test
-for Sum.plus():
+        <Document ID="75">
+            <Title>References</Title>
+            <Text>1. Test Driven Development by Example - Kent Beck
+2. The Art of Unit Testing with Examples in .NET
+3. Growing Object Oriented Software Guided by Tests
+4. xUnit Test Patterns    
+5. Brain Fitness : Peak Performance
 
-public void testSumPlusMoney() {
-Expression fiveBucks= Money.dollar(5);
-Expression tenFrancs= Money.franc(10);
-Bank bank= new Bank();
-bank.addRate("CHF", "USD", 2);
-Expression sum= new Sum(fiveBucks, tenFrancs).plus(fiveBucks);
-Money result= bank.reduce(sum, "USD");
-assertEquals(Money.dollar(15), result);
-}
+Recommended Books
 
- We could have created a Sum by adding fiveBucks and tenFrancs, but the form
-above, where we explicitly create the Sum, communicates more directly. You are
-writing these tests not just to make your experience of programming more fun and
-rewarding, but also as a Rosetta Stone for future generations to appreciate your
-genius. Think, oh think, of your readers.
+1. Refactoring by Marin Fowler
+2. Object Oriented Design Heuristics by Arthur Reihl
+3. Object Oriented Software Construction by Bertrand Meyer
+4. Design Patterns 
 
-The test, in this case, is longer than the code. The code is the same as the code in
-Money (do I hear an abstract class in the distance?):
+http://softwaregreenhouses.com/2011/01/30/using-wayk-to-describe-tdd-fluency/
 
-Sum
-public Expression plus(Expression addend) {
-return new Sum(this, addend);
-}
+	▪	We verify stubs by checking state after an interaction.
+	▪	We tell mocks to verify interactions.
+	▪	Sometimes stubs just make the system run.
 
-You will likely end up with about the same number of lines of test code as model
-code when TDDing. For TDD to make economic sense, either you will have to be
-able to write twice as many lines per day as before, or write half as many lines for
-the same functionality. You’ll have to measure and see what effect TDD has on
-your own practice. Be sure to factor debugging, integrating, and explaining time
-into your metrics, though.
+Isolation from Non-Determinism:  randomness, time etc.
+Isolation from External Dependencies:  Database, Network, Third Party API etc
+Polymorphic Collaborators: E.g., employee that knows how to pay itself, uses a strategy. 
+payment_strategy = mock() 
+employee = E.new(payment_strategy) 
+payment_strategy.expects(:pay) 
+employee.pay
+When are message expectations helpful?
+Side Effects: background processing
+Caching: only call a network zipcode lookup once
+Interface discovery: tool to discover the parts of the system that you haven't really worked out yet. Mock something out that doesn't exist yet, while designing its interface.
 
-If we can make Sum.times() work, then declaring Expression.times() will be one
-simple step. The test is:
-public void testSumTimes() {
-Expression fiveBucks= Money.dollar(5);
-Expression tenFrancs= Money.franc(10);
-Bank bank= new Bank();
-bank.addRate("CHF", "USD", 2);
-Expression sum= new Sum(fiveBucks, tenFrancs).times(2);
-Money result= bank.reduce(sum, "USD");
-assertEquals(Money.dollar(20), result);
-}
+All of these concepts are Isolation Testing - testing an object in isolation from others. This is a good fit when you have lots of little objects.
 
-Again, the test is longer than the code (you JUnit geeks will know how to fix that—
-the rest of you will have to read Fixture):
+BDD Approach : 
+Customer specs are implemented as end to end testing.
+Developer specs are implemented as isolation tests.
 
-Sum
-Expression times(int multiplier) {
-return new Sum(augend.times(multiplier),
-addend.times(multiplier));
-}
+	▪	Keep things simple
+	▪	Focus on Roles
+	▪	Try to avoid tight coupling
+	▪	Complex setup is a red flag for design issues
+	▪	Don't stub and mock the object that you are testing
+	▪	Concern: impedes refactoring (but some say refactoring is improving design without changing behavior, so tests should not change. This really depends what level you are refactoring at).
+	▪	Concern: false positives
 
-Since we abstracted augend and addend to Expressions in the last chapter, we now
-have to declare times() in Expression before the code will compile:
+Stubs - a common helper to testing environments. There is a difference in how test results are verified: a distinction between state verification and behavior verification. Focusing on one element of the software at a time -hence the common term unit testing. The problem is that to make a single unit work, you often need other units.
 
-Expression
-Expression times(int multiplier);
-Which forces us to raise the visibility of Money.times() and Sum.times():
+	•	Dummy objects are passed around but never actually used. Usually they are just used to fill parameter lists.
+	•	Fake objects actually have working implementations, but usually take some shortcut which makes them not suitable for production (an in memory database is a good example).
+	•	Stubs provide canned answers to calls made during the test, usually not responding at all to anything outside what's programmed in for the test. Stubs may also record information about calls, such as an email gateway stub that remembers the messages it 'sent', or maybe only how many messages it 'sent'.
+	•	Mocks are what we are talking about here: objects pre-programmed with expectations which form a specification of the calls they are expected to receive.
 
-Sum
-public Expression times(int multiplier) {
-return new Sum(augend.times(multiplier),
-addend.times(multiplier));
-}
+Only mocks insist upon behavior verification. The other doubles can, and usually do, use state verification.
 
-Money
-public Expression times(int multiplier) {
-return new Money(amount * multiplier, currency);
-}
+The classical TDD style is to use real objects if possible and a double if it's awkward to use the real thing. A mockist TDD practitioner, however, will always use a mock for any object with interesting behavior.
+An acknowledged issue with state-based verification is that it can lead to creating query methods only to support verification. It's never comfortable to add methods to the API of an object purely for testing, using behavior verification avoids that problem.
 
-And it works.
-The only loose end to tie up is to experiment with returning a Money when we add
-$5 + $5. The test would be:
+Side Effects
 
-public void testPlusSameCurrencyReturnsMoney() {
-Expression sum= Money.dollar(1).plus(Money.dollar(1));
-assertTrue(sum instanceof Money);
-}
+A function or expression has a side effect if, in addition to returning a value, it also modifies some state or has an observable interaction with calling functions or the outside world. For example, a function might modify a global or static variable, modify one of its arguments, raise an exception, write data to a display or file, read data, or call other side-effecting functions. Side effects are the most common way to enable a program to interact with the outside world (people, filesystems, other computers on networks).
 
-This test is a little ugly, because it is testing the guts of the implementation, not the
-externally visible behavior of the objects. However, it will drive us to make the
-changes we need to make, and this is only an experiment, after all. Here is the code
-we would have to modify to make it work:
-Money
-public Expression plus(Expression addend) {
-return new Sum(this, addend);
-}
+Interaction Testing
 
-There is no obvious, clean way (not to me, anyway, I’m sure you could think of
-something) to check the currency of the argument if and only if it is a Money. The
-experiment fails, we delete the test (which we didn’t like much anyway), and away
-we go.
+Classes whose primary concern is to aide the forwarding of the call stack (rather than exposing a change in state) are defined solely by how they interact with collaborating objects.
 
-Reviewing, we:
+Examples of such types of classes include Proxies, Marshallers and Composites, to name but a few, none of which change state as a result of their behavior.
 
-• Wrote a test with future readers in mind
-• Suggested an experiment comparing TDD with your current programming style
-• Once again had changes of declarations ripple through the system, and once
-again followed the compiler’s advice to fix them
- Tried a brief experiment, then discarded it when it didn’t work out</Text>
+http://static.mockobjects.com/files/endotesting.pdf
+
+https://www.relishapp.com/rspec</Text>
         </Document>
         <Document ID="78">
             <Title>Q &amp; A</Title>
@@ -2916,6 +2887,113 @@ You are refactoring a simulation and expect precisely the same answers when you 
 Evident Data
 
 How do you represent the intent of the data? Include expected and actual results in the test itself and try to make their relationship apparent.</Text>
+        </Document>
+        <Document ID="84">
+            <Title>Abstraction</Title>
+            <Text> We need to implement Sum.plus() to finish Expression.plus, and then we need
+Expression.times(), and then we’re finished with the whole example. Here’s the test
+for Sum.plus():
+
+public void testSumPlusMoney() {
+Expression fiveBucks= Money.dollar(5);
+Expression tenFrancs= Money.franc(10);
+Bank bank= new Bank();
+bank.addRate("CHF", "USD", 2);
+Expression sum= new Sum(fiveBucks, tenFrancs).plus(fiveBucks);
+Money result= bank.reduce(sum, "USD");
+assertEquals(Money.dollar(15), result);
+}
+
+ We could have created a Sum by adding fiveBucks and tenFrancs, but the form
+above, where we explicitly create the Sum, communicates more directly. You are
+writing these tests not just to make your experience of programming more fun and
+rewarding, but also as a Rosetta Stone for future generations to appreciate your
+genius. Think, oh think, of your readers.
+
+The test, in this case, is longer than the code. The code is the same as the code in
+Money (do I hear an abstract class in the distance?):
+
+Sum
+public Expression plus(Expression addend) {
+return new Sum(this, addend);
+}
+
+You will likely end up with about the same number of lines of test code as model
+code when TDDing. For TDD to make economic sense, either you will have to be
+able to write twice as many lines per day as before, or write half as many lines for
+the same functionality. You’ll have to measure and see what effect TDD has on
+your own practice. Be sure to factor debugging, integrating, and explaining time
+into your metrics, though.
+
+If we can make Sum.times() work, then declaring Expression.times() will be one
+simple step. The test is:
+public void testSumTimes() {
+Expression fiveBucks= Money.dollar(5);
+Expression tenFrancs= Money.franc(10);
+Bank bank= new Bank();
+bank.addRate("CHF", "USD", 2);
+Expression sum= new Sum(fiveBucks, tenFrancs).times(2);
+Money result= bank.reduce(sum, "USD");
+assertEquals(Money.dollar(20), result);
+}
+
+Again, the test is longer than the code (you JUnit geeks will know how to fix that—
+the rest of you will have to read Fixture):
+
+Sum
+Expression times(int multiplier) {
+return new Sum(augend.times(multiplier),
+addend.times(multiplier));
+}
+
+Since we abstracted augend and addend to Expressions in the last chapter, we now
+have to declare times() in Expression before the code will compile:
+
+Expression
+Expression times(int multiplier);
+Which forces us to raise the visibility of Money.times() and Sum.times():
+
+Sum
+public Expression times(int multiplier) {
+return new Sum(augend.times(multiplier),
+addend.times(multiplier));
+}
+
+Money
+public Expression times(int multiplier) {
+return new Money(amount * multiplier, currency);
+}
+
+And it works.
+The only loose end to tie up is to experiment with returning a Money when we add
+$5 + $5. The test would be:
+
+public void testPlusSameCurrencyReturnsMoney() {
+Expression sum= Money.dollar(1).plus(Money.dollar(1));
+assertTrue(sum instanceof Money);
+}
+
+This test is a little ugly, because it is testing the guts of the implementation, not the
+externally visible behavior of the objects. However, it will drive us to make the
+changes we need to make, and this is only an experiment, after all. Here is the code
+we would have to modify to make it work:
+Money
+public Expression plus(Expression addend) {
+return new Sum(this, addend);
+}
+
+There is no obvious, clean way (not to me, anyway, I’m sure you could think of
+something) to check the currency of the argument if and only if it is a Money. The
+experiment fails, we delete the test (which we didn’t like much anyway), and away
+we go.
+
+Reviewing, we:
+
+• Wrote a test with future readers in mind
+• Suggested an experiment comparing TDD with your current programming style
+• Once again had changes of declarations ripple through the system, and once
+again followed the compiler’s advice to fix them
+ Tried a brief experiment, then discarded it when it didn’t work out</Text>
         </Document>
         <Document ID="76">
             <Title>Eliminating Subclasses</Title>
@@ -3154,92 +3232,6 @@ As simply as possible
 
 Make it Better
 Refactor</Text>
-        </Document>
-        <Document ID="85">
-            <Title>Money Retrospective</Title>
-            <Text> Let’s take a look back at the Money example, both the process we used and the
-results. We will look at:
-
-•  What Next?
-•  Metaphor—the dramatic effect metaphor has on the structure of the design
-•  JUnit Usage—when we ran tests and how we used JUnit
-•  Code Metrics—a numerical abstract of the resulting code
-•  Process—we say red/green/refactor, but how much work goes into each step?
-•  Test Quality—how do TDD tests stack up by conventional test metrics?
-
-What Next?
-
- Is the code finished? No. There is that nasty duplication between Sum.plus() and
-Money.plus(). If we made Expression a class instead of an interface (not the usual
-direction, as classes more often become interfaces), we would have a natural home
-for the common code.
-
-I don’t believe in “finished”. TDD can be used as a way to strive for perfection, but
-that isn’t its most effective use. If you have a big system, the parts that you touch all
-the time should be absolutely rock solid, so you can make daily changes confidently.
-As you drift out to the periphery of the system, to parts that don’t change
- often, the tests can be spottier and the design uglier without interfering with your
-confidence.
-
-When I’ve done all of the obvious tasks, I like running a code critic, like SmallLint
-for Smalltalk. Many of the suggestions that come up I already know about, or I disagree
-with. Automated critics don’t forget, though, so if I don’t delete an obsolete
-implementation I don’t have to stress. The critic will point it out.
-
-Another “what next?” question is, “What additional tests do I need?” Sometimes
-you think of a test that “shouldn’t” work, and it does. Then you need to find out
-why. Sometimes a test that shouldn’t work really doesn’t, and you can record it as a
-known limitation or as work to be done later.
-Finally, when the list is empty is a good time to review the design. Do the words
-and concepts play together? Is there duplication that is difficult to eliminate given
-the current design (lingering duplication is a symptom of latent design.)
-
-Metaphor
-
- The biggest surprise for me in coding the Money example is how different it came
-out this time. I have programmed Money in production at least three times that I
-can think of. I have used it as an example in print another half dozen times. I have
-programmed it live on stage (relax, it’s not as exciting as it sounds…) another fifteen
-times. I coded another three or four times preparing for writing (I ripped out
-Section I and rewrote it based on early reviews.) Then, while I was writing this, I
-thought of using Expression as the metaphor and the design went in a completely
-different direction than it has gone before.
-
-I really didn’t expect the metaphor to be so powerful. A metaphor should just be a
-source of names, shouldn’t it? Apparently not.
-The metaphor Ward used for “several monies together with potentially different
-currencies” was a vector, like a mathematic vector where the coefficients were currencies
-instead of x2 . I used MoneySum for a while, then MoneyBag (which is nice
-and physical), and finally Wallet (which is commoner in most folks’ experience).
-All of these metaphors imply that the collection of Money’s is flat. For example, “2
-USD + 5 CHF + 3 USD” would result in “5 USD + 5 CHF”. Two values with the
-same currency would be merged.
-
- The Expression metaphor freed me from a bunch of nasty issues about merging
-duplicated currencies. The code came out cleaner and clearer than I’ve ever seen it
-before. I’m concerned about the performance of Expressions, but I’m happy to wait
-until I see some usage statistics before I start optimizing.
-
-What if I got to rewrite everything I ever wrote 20 times? Would I keep finding
-insight and surprise every time? Is there some way to be more mindful as I program
-so I can squeeze all the insight out of the first three times? The first time?
-
-Process
-
-The TDD cycle is:
-
-• Write a test
-• Make it compile, run it to see it fail
-• Make it run
-• Remove duplication
-
- The three items that come up time and again as surprises when teaching TDD are:
-
-•  The three approaches to making a test work cleanly—fake it, triangulate, and
-just typing in the right solution to begin with
-•  Removing duplication between test and code as a way to drive the design
-•  The ability to control the gap between tests to increase traction when the road
-gets slippery and cruise faster when conditions are clear</Text>
         </Document>
         <Document ID="86">
             <Title>Set the Table</Title>
@@ -3682,107 +3674,91 @@ Our aim is to do what we can to make each level of code as readable and self-exp
 
 </Text>
         </Document>
-        <Document ID="93">
-            <Title>Red Bar Patterns</Title>
-            <Text>These patterns are about when you write tests, where you write tests and when you stop writing tests.
+        <Document ID="85">
+            <Title>Money Retrospective</Title>
+            <Text> Let’s take a look back at the Money example, both the process we used and the
+results. We will look at:
 
-One Step Test
+•  What Next?
+•  Metaphor—the dramatic effect metaphor has on the structure of the design
+•  JUnit Usage—when we ran tests and how we used JUnit
+•  Code Metrics—a numerical abstract of the resulting code
+•  Process—we say red/green/refactor, but how much work goes into each step?
+•  Test Quality—how do TDD tests stack up by conventional test metrics?
 
-Which test should you pick next from the list? Pick a test that will teach you something and that you are confident you can implement.
+What Next?
 
-Each test should represent one step towards your overall goal. If we are looking at the following test list, which test should we pick next?
+ Is the code finished? No. There is that nasty duplication between Sum.plus() and
+Money.plus(). If we made Expression a class instead of an interface (not the usual
+direction, as classes more often become interfaces), we would have a natural home
+for the common code.
 
-Plus
-Minus
-Times
-Divide
-Plus like
-Equals
-Equals null
-Null exchange
-Exchange one currency
-Exchange two currencies
-Cross rate
+I don’t believe in “finished”. TDD can be used as a way to strive for perfection, but
+that isn’t its most effective use. If you have a big system, the parts that you touch all
+the time should be absolutely rock solid, so you can make daily changes confidently.
+As you drift out to the periphery of the system, to parts that don’t change
+ often, the tests can be spottier and the design uglier without interfering with your
+confidence.
 
-There is no right answer. What is one step for less domain expertise will be one tenth for someone with more domain knowledge.
+When I’ve done all of the obvious tasks, I like running a code critic, like SmallLint
+for Smalltalk. Many of the suggestions that come up I already know about, or I disagree
+with. Automated critics don’t forget, though, so if I don’t delete an obsolete
+implementation I don’t have to stress. The critic will point it out.
 
-When I look at a test list, I think, “That’s obvious, that’s obvious, I have no idea, obvious, what was I thinking about with that one, ah, this one I can do. That last test is the test I implement next. It didn’t strike me as obvious, but I’m also confident I can make it work.
+Another “what next?” question is, “What additional tests do I need?” Sometimes
+you think of a test that “shouldn’t” work, and it does. Then you need to find out
+why. Sometimes a test that shouldn’t work really doesn’t, and you can record it as a
+known limitation or as work to be done later.
+Finally, when the list is empty is a good time to review the design. Do the words
+and concepts play together? Is there duplication that is difficult to eliminate given
+the current design (lingering duplication is a symptom of latent design.)
 
-If you don’t find any test on the list that represents one step, add some new tests that would represent progress towards the items there.
+Metaphor
 
-A program grown from tests like this can appear to be written top-down, because you can begin with a test that represents a simple case of the entire computation. A program grown from tests can also appear to be written bottom-up, because you start with small pieces and aggregate them larger and larger.
+ The biggest surprise for me in coding the Money example is how different it came
+out this time. I have programmed Money in production at least three times that I
+can think of. I have used it as an example in print another half dozen times. I have
+programmed it live on stage (relax, it’s not as exciting as it sounds…) another fifteen
+times. I coded another three or four times preparing for writing (I ripped out
+Section I and rewrote it based on early reviews.) Then, while I was writing this, I
+thought of using Expression as the metaphor and the design went in a completely
+different direction than it has gone before.
 
-Programs change over time. Growth implies a kind of self-similar feedback loop where the environment affects the program and the program affects the environment. Second, known-to-known is a helpful description. It implies that we have some knowledge and experience on which to draw, and that we expect to learn in the course of development. Put these two together and we have programs growing from known to unknown.
+I really didn’t expect the metaphor to be so powerful. A metaphor should just be a
+source of names, shouldn’t it? Apparently not.
+The metaphor Ward used for “several monies together with potentially different
+currencies” was a vector, like a mathematic vector where the coefficients were currencies
+instead of x2 . I used MoneySum for a while, then MoneyBag (which is nice
+and physical), and finally Wallet (which is commoner in most folks’ experience).
+All of these metaphors imply that the collection of Money’s is flat. For example, “2
+USD + 5 CHF + 3 USD” would result in “5 USD + 5 CHF”. Two values with the
+same currency would be merged.
 
-Starter Test
+ The Expression metaphor freed me from a bunch of nasty issues about merging
+duplicated currencies. The code came out cleaner and clearer than I’ve ever seen it
+before. I’m concerned about the performance of Expressions, but I’m happy to wait
+until I see some usage statistics before I start optimizing.
 
-Which test should you start with? Start by testing a variant of an operation that doesn’t do anything.
+What if I got to rewrite everything I ever wrote 20 times? Would I keep finding
+insight and surprise every time? Is there some way to be more mindful as I program
+so I can squeeze all the insight out of the first three times? The first time?
 
-The first question you have to ask with a new operation is “Where does it belong?”. Until you’ve answered this question, you don’t know what to type for the test. In the spirit of solving one problem at a time, how can we answer just this question and no other?
+Process
 
-If you write a realistic test first, you find yourself solving a bunch of problems at once:
-Where does the operation belong?
-What are the correct inputs?
-What is the correct output given those inputs?
+The TDD cycle is:
 
-Beginning with a realistic test will leave you too long without feedback. Red/green/refactor, red/green/refactor. You want that loop to be minutes.
+• Write a test
+• Make it compile, run it to see it fail
+• Make it run
+• Remove duplication
 
-You can shorten the loop by choosing inputs and outputs that are trivially easy to discover. For example, let’s consider how to write a polygon reducer test-first. The input is a mesh of polygons and the output is a mesh of polygons that describes precisely the same surface, but with the fewest possible polygons. “How can I test-drive this problem since getting a test to work requires reading Ph.D. Theses?
+ The three items that come up time and again as surprises when teaching TDD are:
 
-Starter Test provides an answer:
-The output should be the same as the input. Some configurations of polygons are already normalized, incapable of further reduction.
-The input should be as small as possible, like a single polygon, or even an empty list of polygons.
-
-My starter test looked like this:
-
-Reducer = Reducer.new(Polygon.new())
-Assert(0, reducer.result.npoints)
-
-Boom! First test is running. Now for all the rest of the tests on the list…
-
-One Step Test applies. Pick a starter test that will teach you something but that you are certain you can get working quickly. If you are implementing something for the nth time, pick a test that will require an operation or two. You will be justifiably confident you can get it working.
-
-I find that my starter test is often at a higher level, more like an application test than the following tests. 
-
-Explanation Test
-
-How do you spread the use of automated testing? Ask for and give explanation in terms of tests.
-
-You can do this at higher levels of abstraction. If someone is explaining a sequence diagram to you, you can ask for permission to convert it to a more familiar notation. Then you type in a test case that contains all the externally visible objects and messages in the system.
-
-Learning Test
-
-When do you write tests for externally produced software? Before the first time you are going to use it.
-
-Write a little test that verifies that the API works as expected. If our understanding of the API is correct, the test will pass first time. When new releases arrive, the tests were first run (and fixed if necessary). If the tests didn’t run, there was no sense running the application because it certainly wouldn’t run. Once the tests run, the application will run.
-
-Another Test
-
-How do you keep a technical discussion from straying off topic? When a tangential idea arises, add a test to the list and go back to the topic.
-
-New ideas are greeted with respect but not allowed to divert attention. I write them down on the list, and get back to what I was working on.
-
-Regression Test
-
-What’s the first thing you do when a defect is reported? Write a smallest possible test that fails, and that once it runs, the defect will be repaired.
-
-Regression tests are test that with perfect foreknowledge, you would have written when coding originally. Every time you have to write a regression test, think about how you could have known to write the test in the first place.
-
-You will gain value by testing at the level of the whole application. Regression tests for the application give your users a chance to speak concretely to you about what is wrong and what they expect. Regression tests at smaller scale are a way for you to improve your testing. Add to your test list the lesson learned.
-
-You may have to refactor the system before you can easily isolate the defect. The defect in this case is your system’s way of telling you, “You aren’t quite done designing me yet.”
-
-Break
-
-What do you do when you feel tired or stuck? Take a break.
-
-Do Over
-
-What do you do when you are feeling lost? Throw away the code and start over.
-
-Cheap Desk, Nice Chair
-
-What physical setup should you use for TDD? Get a really nice chair, skimping on the rest.</Text>
+•  The three approaches to making a test work cleanly—fake it, triangulate, and
+just typing in the right solution to begin with
+•  Removing duplication between test and code as a way to drive the design
+•  The ability to control the gap between tests to increase traction when the road
+gets slippery and cruise faster when conditions are clear</Text>
         </Document>
         <Document ID="87">
             <Title>Cleaning Up After</Title>
@@ -3884,6 +3860,108 @@ with an assertion. Reviewing, in this chapter we:
 
 •  Tested and implemented tearDown() using the new log
 •  Found a problem and, daringly, fixed it instead of backing up</Text>
+        </Document>
+        <Document ID="93">
+            <Title>Red Bar Patterns</Title>
+            <Text>These patterns are about when you write tests, where you write tests and when you stop writing tests.
+
+One Step Test
+
+Which test should you pick next from the list? Pick a test that will teach you something and that you are confident you can implement.
+
+Each test should represent one step towards your overall goal. If we are looking at the following test list, which test should we pick next?
+
+Plus
+Minus
+Times
+Divide
+Plus like
+Equals
+Equals null
+Null exchange
+Exchange one currency
+Exchange two currencies
+Cross rate
+
+There is no right answer. What is one step for less domain expertise will be one tenth for someone with more domain knowledge.
+
+When I look at a test list, I think, “That’s obvious, that’s obvious, I have no idea, obvious, what was I thinking about with that one, ah, this one I can do. That last test is the test I implement next. It didn’t strike me as obvious, but I’m also confident I can make it work.
+
+If you don’t find any test on the list that represents one step, add some new tests that would represent progress towards the items there.
+
+A program grown from tests like this can appear to be written top-down, because you can begin with a test that represents a simple case of the entire computation. A program grown from tests can also appear to be written bottom-up, because you start with small pieces and aggregate them larger and larger.
+
+Programs change over time. Growth implies a kind of self-similar feedback loop where the environment affects the program and the program affects the environment. Second, known-to-known is a helpful description. It implies that we have some knowledge and experience on which to draw, and that we expect to learn in the course of development. Put these two together and we have programs growing from known to unknown.
+
+Starter Test
+
+Which test should you start with? Start by testing a variant of an operation that doesn’t do anything.
+
+The first question you have to ask with a new operation is “Where does it belong?”. Until you’ve answered this question, you don’t know what to type for the test. In the spirit of solving one problem at a time, how can we answer just this question and no other?
+
+If you write a realistic test first, you find yourself solving a bunch of problems at once:
+Where does the operation belong?
+What are the correct inputs?
+What is the correct output given those inputs?
+
+Beginning with a realistic test will leave you too long without feedback. Red/green/refactor, red/green/refactor. You want that loop to be minutes.
+
+You can shorten the loop by choosing inputs and outputs that are trivially easy to discover. For example, let’s consider how to write a polygon reducer test-first. The input is a mesh of polygons and the output is a mesh of polygons that describes precisely the same surface, but with the fewest possible polygons. “How can I test-drive this problem since getting a test to work requires reading Ph.D. Theses?
+
+Starter Test provides an answer:
+The output should be the same as the input. Some configurations of polygons are already normalized, incapable of further reduction.
+The input should be as small as possible, like a single polygon, or even an empty list of polygons.
+
+My starter test looked like this:
+
+Reducer = Reducer.new(Polygon.new())
+Assert(0, reducer.result.npoints)
+
+Boom! First test is running. Now for all the rest of the tests on the list…
+
+One Step Test applies. Pick a starter test that will teach you something but that you are certain you can get working quickly. If you are implementing something for the nth time, pick a test that will require an operation or two. You will be justifiably confident you can get it working.
+
+I find that my starter test is often at a higher level, more like an application test than the following tests. 
+
+Explanation Test
+
+How do you spread the use of automated testing? Ask for and give explanation in terms of tests.
+
+You can do this at higher levels of abstraction. If someone is explaining a sequence diagram to you, you can ask for permission to convert it to a more familiar notation. Then you type in a test case that contains all the externally visible objects and messages in the system.
+
+Learning Test
+
+When do you write tests for externally produced software? Before the first time you are going to use it.
+
+Write a little test that verifies that the API works as expected. If our understanding of the API is correct, the test will pass first time. When new releases arrive, the tests were first run (and fixed if necessary). If the tests didn’t run, there was no sense running the application because it certainly wouldn’t run. Once the tests run, the application will run.
+
+Another Test
+
+How do you keep a technical discussion from straying off topic? When a tangential idea arises, add a test to the list and go back to the topic.
+
+New ideas are greeted with respect but not allowed to divert attention. I write them down on the list, and get back to what I was working on.
+
+Regression Test
+
+What’s the first thing you do when a defect is reported? Write a smallest possible test that fails, and that once it runs, the defect will be repaired.
+
+Regression tests are test that with perfect foreknowledge, you would have written when coding originally. Every time you have to write a regression test, think about how you could have known to write the test in the first place.
+
+You will gain value by testing at the level of the whole application. Regression tests for the application give your users a chance to speak concretely to you about what is wrong and what they expect. Regression tests at smaller scale are a way for you to improve your testing. Add to your test list the lesson learned.
+
+You may have to refactor the system before you can easily isolate the defect. The defect in this case is your system’s way of telling you, “You aren’t quite done designing me yet.”
+
+Break
+
+What do you do when you feel tired or stuck? Take a break.
+
+Do Over
+
+What do you do when you are feeling lost? Throw away the code and start over.
+
+Cheap Desk, Nice Chair
+
+What physical setup should you use for TDD? Get a really nice chair, skimping on the rest.</Text>
         </Document>
         <Document ID="94">
             <Title>Testing Patterns</Title>
@@ -4068,84 +4146,6 @@ we:
 •  Wrote a toString() without a test just to help us debug
 •  Tried a change (returning Money instead of Franc) and let the tests tell us whether it worked
 •  Backed out an experiment and wrote another test. Making the test work made the experiment work.
-</Text>
-        </Document>
-        <Document ID="68">
-            <Title>Equality</Title>
-            <Text>If I have an integer and I add 1 to it, I don’t expect the original integer to change. I expect to to use the new value. Objects usually don’t behave that way. We can use objects as values, as we are using our Dollar now. The pattern for this is Value Object. One of the constraints of Value Objects is that the value of the instance variables of the object never change once they have been set in the constructor.
-
-The advantage of using Value Objects is that there is no aliasing problems. Say I have one Check and I set its amount to $5, and then I set another Check’s amount to the same $5. Nastiest bugs can occur when changing the first Check’s value inadvertently change the second Check’s value. This is aliasing.
-
-With value objects there is no aliasing. If I have $5, I am guaranteed that it will always be $5. If someone wants $7, they have to make an entirely new object. One implication of Value Object is all operations must return a new object, as we saw in the previous chapter. Another implication is that value objects should implement equals, since $5 is as good as another.
-
-If you use Dollar as the key to a hash you have to implement hashcode if you implement equals. We’ll put that in the list and get to it when it’s a problem.
-
-Updated To-Do List
-
-$5 + 10 CHF = $10 if rate is 2:1
-$5 * 2 = $10
-Dollar side-effects?
-Money rounding?
-equals
-Hascode
-
-Thinking Process
-
-Think about how to test equality. First, $5 should equal $5.
-
-Etest_equality
-  Assert(Dollar.new(5).equals(Dollar.new(5)))
-
-We get a failing test. The fake implementation is to just return true:
-
-Equals(object)
-  Return true
-End
-
-You might know that true is really ‘5 == 5’ which is really ‘amount == 5’ which is really ‘amount == dollar.amount’. For the sake of demonstrating the third and most conservative implementation strategy, triangulation, we will stay away from that approach.
-
-If two receiving stations at a known distance from each other can both measure the direction of a radio signal, there is enough information to calculate the range and bearing of the signal. This calculation is called triangulation.
-
-By analogy, when we Triangulate, we only generalize code when we have two or more examples. We briefly ignore the duplication between test and model code. When the second example demands a more general solution, then and only then do we generalize.
-
-So, to triangulate we need a second example. How about $5 != $6?
-
-Assert(Dollar.new(5).equals(Dollar.new(5)))
-Assert_false(Dollar.new(5).equals(Dollar.new(5)))
-
-Now we need to generalize equality:
-
-Equals(object)
-Return amount == object.amount
-End
-
-We could have used triangulation to drive the generalization of times also. If we had $5 x 2 = $10 and $5 x 3 = $15 we would no longer have been able to return a constant.
-
-Use Triangulation when you not sure how to refactor. If you can see how to eliminate duplication between code and tests and create the general solution, just do it. When the design thoughts just aren’t coming, triangulation gives you a chance to think about the problem from a slightly different direction. What axes of variability are you trying to support in your design? Make some of them vary and the answer may become clearer.
-
-So equality is done for the moment. What about comparing with null and comparing with other objects? These are commonly used operations, but not necessary at the moment, so we’ll add them to the list.
-
-Now that we have equality, we can directly compare Dollars to Dollars. That will let us make amount private, which is a good thing. Reviewing the above, we:
-
-1. Noticed that our design pattern (value object) implied an operation
-2. Tested for that operation
-3. Implemented it simply
-4. Didn’t refactor immediately, but instead tested further
-5. Refactored to capture the two cases at once
-
-Updated To-Do List
-
-$5 + 10 CHF = $10 if rate is 2:1
-$5 * 2 = $10
-Dollar side-effects?
-Money rounding?
-equals
-Hascode
-Equal nil
-Equal object
-
-
-
 </Text>
         </Document>
         <Document ID="127">

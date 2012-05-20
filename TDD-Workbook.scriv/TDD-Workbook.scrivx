@@ -345,14 +345,14 @@
                         <TextSelection>5258,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
-                <BinderItem ID="37" Type="Text" Created="2012-01-22 10:04:02 -0800" Modified="2012-01-22 10:12:31 -0800">
+                <BinderItem ID="37" Type="Text" Created="2012-01-22 10:04:02 -0800" Modified="2012-05-19 21:28:31 -0700">
                     <Title>JB Rainsberger</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>3345,0</TextSelection>
+                        <TextSelection>828,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="38" Type="Text" Created="2012-01-22 11:07:45 -0800" Modified="2012-02-04 22:32:42 -0800">
@@ -478,14 +478,14 @@
                         <CurrentPDFPage>0</CurrentPDFPage>
                     </MediaSettings>
                 </BinderItem>
-                <BinderItem ID="50" Type="Text" Created="2012-02-06 17:10:58 -0800" Modified="2012-02-06 17:13:34 -0800">
+                <BinderItem ID="50" Type="Text" Created="2012-02-06 17:10:58 -0800" Modified="2012-05-19 22:21:20 -0700">
                     <Title>Unit Testing with Mock Objects</Title>
                     <MetaData>
                         <IncludeInCompile>Yes</IncludeInCompile>
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>5503,0</TextSelection>
+                        <TextSelection>18784,155</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="51" Type="Text" Created="2012-02-10 15:38:47 -0800" Modified="2012-02-10 20:01:51 -0800">
@@ -549,7 +549,7 @@
                         <NotesTextSelection>0,0</NotesTextSelection>
                     </MetaData>
                     <TextSettings>
-                        <TextSelection>497,0</TextSelection>
+                        <TextSelection>212,75</TextSelection>
                     </TextSettings>
                 </BinderItem>
                 <BinderItem ID="57" Type="Text" Created="2012-04-21 21:44:01 -0700" Modified="2012-04-21 22:25:23 -0700">
@@ -616,7 +616,7 @@
     <ProjectTargets Notify="No">
         <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="No" Deadline="2011-12-28 17:47:21 -0800" IgnoreDeadline="Yes">0</DraftTarget>
         <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="Yes" ResetType="Midnight" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
-        <PreviousSession Words="0" Characters="0" Date="2012-04-29 14:10:42 -0700"></PreviousSession>
+        <PreviousSession Words="0" Characters="0" Date="2012-05-19 21:14:32 -0700"></PreviousSession>
     </ProjectTargets>
     <PrintSettings PaperSize="612.0,792.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="na-letter" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
 </ScrivenerProject>

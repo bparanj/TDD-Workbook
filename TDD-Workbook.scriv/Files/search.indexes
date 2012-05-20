@@ -550,19 +550,6 @@ References:
 ￼Copyright © 2001, Michael C. Feathers, All Rights Reserved. 4 of 4
 </Text>
         </Document>
-        <Document ID="56">
-            <Title>My Thoughts</Title>
-            <Text>Consistency
-List when to use double
-Is call to db a direct output? Draw answer by using probing questions.
-Scenario outlines are bad idea.
-Class method to access time violates encapsulation mr. Org ruby book ex.
-Semantic Gap. Self evident, Obvious, Self-Explanatory. Don’t Make Me Think.
-Isolation
-Isolate from dependencies such as db, n/w, date, time etc. Gives you control over external things. Can simulate difficult to create
-Situations. Improves speed of tests. Results in reproducible tests.
-</Text>
-        </Document>
         <Document ID="49">
             <Title>endotesting</Title>
             <Text>Endo-Testing: Unit Testing with Mock Objects
@@ -735,6 +722,19 @@ We will be posting example code at http://www.xpdeveloper.com.
 11 Trademarks
 VisualAge is a trademark of IBM
 9
+</Text>
+        </Document>
+        <Document ID="56">
+            <Title>My Thoughts</Title>
+            <Text>Consistency
+List when to use double
+Is call to db a direct output? Draw answer by using probing questions.
+Scenario outlines are bad idea.
+Class method to access time violates encapsulation mr. Org ruby book ex.
+Semantic Gap. Self evident, Obvious, Self-Explanatory. Don’t Make Me Think.
+Isolation
+Isolate from dependencies such as db, n/w, date, time etc. Gives you control over external things. Can simulate difficult to create
+Situations. Improves speed of tests. Results in reproducible tests.
 </Text>
         </Document>
         <Document ID="57">
@@ -1266,9 +1266,6 @@ Defer decisions
 Keep the code compiling
 Emergent design</Text>
         </Document>
-        <Document ID="32">
-            <Title>New file</Title>
-        </Document>
         <Document ID="25">
             <Title>Test Strategy Patterns</Title>
             <Text>Minimal fixture
@@ -1308,6 +1305,9 @@ Dynamic as well as static design
 Distinguishing between test setup and assertions
 Other modeling techniques still work
 Domain types are better than string</Text>
+        </Document>
+        <Document ID="32">
+            <Title>New file</Title>
         </Document>
         <Document ID="40">
             <Title>Test Driven Development Practical Guide</Title>
@@ -1912,7 +1912,10 @@ structure, and avoid polluting domain code with testing infrastructure.
 
 Introduction
 
-Unit testing is a fundamental practice in Extreme Programming, but most nontrivial code is difficult to test in isolation. You need to make sure that you test one feature at a time, and you want to be notified as soon as any problem occurs. Normal unit testing is hard because you are trying to test the code from outside.
+Unit testing is a fundamental practice in Extreme Programming, but most nontrivial code is 
+difficult to test in isolation. You need to make sure that you test one feature at a time, and 
+you want to be notified as soon as any problem occurs. Normal unit testing is hard because 
+you are trying to test the code from outside.
 
 We propose a technique called Mock Objects in which we replace domain code with dummy
 implementations that emulate real code. These Mock Objects are passed to the target domain
@@ -1923,9 +1926,8 @@ is usual, and we use our tests and stubs to drive the development of our product
  Developing unit tests with Mock Objects leads to stronger tests and to
 better structure of both domain and test code. Unit tests written with Mock Objects have a
 regular format that gives the development team a common vocabulary. Code
-should be written to make it easy to test. Mock Objects is a good
-technique to achieve this. Refactoring Mock Objects drives down the
-cost of writing stub code.
+should be written to make it easy to test. Mock Objects is a good technique to achieve this. 
+Refactoring Mock Objects drives down the cost of writing stub code.
 
 In this paper, we first describe how Mock Objects are used for unit testing. Then we describe
 the benefits and costs of Mock Objects when writing unit tests and code. Finally we describe a
@@ -1969,8 +1971,10 @@ coding style of passing stub objects as parameters, rather than relinking the do
 clarifies the scope of unit testing, and reduces the risk of mistakes during a build.
 
 Why use Mock Objects?
+
  Localizing unit tests
- Deferring Infrastructure Choices
+
+Deferring Infrastructure Choices
 
 An important aspect of Extreme Programming is not to commit to infrastructure before you
 have to. For example, we might wish to write functionality without committing to a particular
@@ -2028,7 +2032,6 @@ The mock widget lets us run tests on development machines with no actual widget 
 We can also instrument the mock widget to verify that it was called correctly, which might not
 even be possible with the real widget.
 
-
 Better tests
 Failures fail fast
 
@@ -2038,9 +2041,9 @@ made together after the domain code has executed. This makes it difficult to iso
 point at which a failure occurred.
 
  One of the authors experienced such problems during the development of a financial pricing library. 
-The unit tests compared sets of results after each
-calculation had finished. Each failure required considerable tracing to isolate its cause, and it
-was difficult to test for intermediate values without breaking encapsulation.
+The unit tests compared sets of results after each calculation had finished. Each failure required 
+considerable tracing to isolate its cause, and it was difficult to test for intermediate values 
+without breaking encapsulation.
 
 On the other hand, a mock implementation can test assertions each time it interacts with
 domain code and so is more likely to fail at the right time and generate a useful message. This
@@ -2084,13 +2087,12 @@ Effects on coding style
 We have found that developing with Mock Objects has had beneficial effects on the coding
 style of our teams.
 
-Developing with Mock Objects reduces the need to
-expose the structure of domain code. A test knows more about the behavior and less about
-the structure of tested code.
+Developing with Mock Objects reduces the need to expose the structure of domain code. 
+A test knows more about the behavior and less about the structure of tested code.
 
- Developing with Mock Objects
-encourages a coding style where objects are passed into the code that needs them. This makes
-substitution possible and reduces the risk of unexpected side-effects.
+ Developing with Mock Objects encourages a coding style where objects are passed 
+into the code that needs them. This makes substitution possible and reduces the risk of 
+unexpected side-effects.
 
 Thirdly, developing with Mock Objects tends to push behaviour towards Visitor-like objects
 [Gamma 1994] that are passed around; we call these Smart Handlers. For example, rather
@@ -2147,9 +2149,8 @@ void testPersonHandler() {
     myMockPrintWriter.verify();
 }
 These three effects mean that code developed with Mock Objects tends to conform to the Law
-of Demeter, as an emergent property. The unit tests push us towards
-writing domain code that refers only to local objects and parameters, without an explicit policy
-to do so.
+of Demeter, as an emergent property. The unit tests push us towards writing domain code that 
+refers only to local objects and parameters, without an explicit policy to do so.
 
 Interface discovery
 
@@ -2655,7 +2656,7 @@ You will learn…
 		how test-driven development can help you earn revenue sooner on your software projects
 		how to perform the steps of test-driven development
 		the secrets of truly modular software design
-		how to practise test-driven development and integrate it into your daily practice
+		how to practice test-driven development and integrate it into your daily practice
 		how to design effectively with interfaces
 		how to test-drive a web user interface without having to deploy your application
 Topics
